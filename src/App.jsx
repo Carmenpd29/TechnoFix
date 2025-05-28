@@ -23,6 +23,7 @@ const Container = styled.main`
   display:grid;
   grid-template-columns: 1fr;
   background-color: #90e0ef;
+;
   color:#003459;
 
   .contentSidebar{
