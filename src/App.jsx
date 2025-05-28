@@ -7,7 +7,7 @@ function App() {
     <Container>
         <GlobalStyles/>
         <section className="contentSidebar">
-          <Lateral/>
+          
         </section>
         <section className="contentMenuHambur">
           Menu Hamburguesa
