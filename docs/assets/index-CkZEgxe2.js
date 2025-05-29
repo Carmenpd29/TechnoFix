@@ -63,7 +63,7 @@ Error generating stack: `+u.message+`
 `;const Qv={tablet:"768px"},Zv={tablet:`(min-width: ${Qv.tablet})`};function Vv(){return Rl.jsxs(Lv,{children:[Rl.jsx(jv,{}),Rl.jsx("section",{className:"contentSidebar",children:Rl.jsx(Gv,{})}),Rl.jsx("section",{className:"contentMenuHambur",children:"Menu"}),Rl.jsx("section",{className:"contentRouters",children:Rl.jsx(Xv,{})})]})}const Lv=Dc.main`
   display:grid;
   grid-template-columns: 1fr;
-  background-color: #90e0ef;
+  background-color:rgb(221, 246, 250);
   color:#003459;
 
   .contentSidebar{
