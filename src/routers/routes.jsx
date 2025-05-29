@@ -1,10 +1,12 @@
-import { Route, Routes, BrowserRouter } from "react-router-dom";
-import { Home } from "../index";
+import { Route, Routes } from "react-router-dom";
+import { Home, TPV, Clientes } from "../index";
 
-export function MyRoutes() {
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
+export function MyRoutes({ user }) {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/tpv" element={<TPV />} />
+      <Route path="/clientes" element={<Clientes user={user} />} />
+    </Routes>
+  );
 }

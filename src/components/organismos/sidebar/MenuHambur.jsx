@@ -1,0 +1,149 @@
+import { useState } from "react";
+import styled from "styled-components";
+import { FiMenu, FiX, FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+
+const menu = [
+  { label: "TPV", to: "/tpv" },
+  { label: "Clientes", to: "/clientes" },
+];
+
+export function MenuHambur({ onLogout }) {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigate = (to) => {
+    setOpen(false);
+    navigate(to);
+  };
+
+  const handleLogout = () => {
+    setOpen(false);
+    onLogout();
+    navigate("/login");
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          position: "absolute",
+          top: "1.5rem",
+          left: "1.5rem",
+          zIndex: 100,
+        }}
+      >
+        <FiMenu size={30} />
+      </button>
+      {open && (
+        <Overlay>
+          <button
+            onClick={() => setOpen(false)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#003459",
+              position: "absolute",
+              top: "1.2rem",
+              right: "2rem",
+              cursor: "pointer",
+              zIndex: 201,
+            }}
+          >
+            <FiX size={30} />
+          </button>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              margin: "2.8rem 0 0 2.2rem",
+              gap: "1.1rem",
+            }}
+          >
+            {menu.map((item) => (
+              <MenuOption
+                key={item.to}
+                onClick={() => handleNavigate(item.to)}
+              >
+                {item.label}
+              </MenuOption>
+            ))}
+            <SalirButton onClick={handleLogout}>
+              <FiLogOut size={16} style={{ marginRight: 6 }} />
+              Salir
+            </SalirButton>
+          </div>
+        </Overlay>
+      )}
+    </>
+  );
+}
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  min-height: 120px;
+  z-index: 200;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  box-shadow: 0 4px 24px #00345944;
+  padding-bottom: 1.2rem;
+  overflow: hidden;
+  background: radial-gradient(circle at 60% 40%, #56c6d8 0%, #3782a5 40%, #003459 100%);
+`;
+
+const SalirButton = styled.button`
+  background: linear-gradient(200deg,rgba(85, 25, 25, 0.81) 0%,rgb(156, 37, 37) 40%, #ff6b6b 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  padding: 0.38rem 0.95rem;
+  cursor: pointer;
+  margin-top: 1.2rem;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 4px #d32f2f22;
+  border: 1px solid #fff; /* Menos borde blanco */
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+
+  &:hover {
+    background: linear-gradient(100deg, #8a1616 0%, #d32f2f 50%, #ff5252 100%);
+    box-shadow: 0 2px 8px #d32f2f44;
+    transform: translateY(-2px) scale(1.04);
+  }
+`;
+
+const MenuOption = styled.button`
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    transform 0.13s,
+    padding 0.2s;
+  text-align: left;
+
+  &:hover {
+    background:rgba(248, 250, 250, 0.34);
+    color: #003459;
+    padding: 0.4rem 2.2rem; 
+    transform: translateX(4px) scale(1.04);
+    text-decoration: none;
+  }
+`;

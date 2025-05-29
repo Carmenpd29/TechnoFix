@@ -8,11 +8,10 @@ export const GlobalStyles = createGlobalStyle`
   }  
 
   body {
+    font-family: 'Poppins';
+    color: #003459;
+    background: #f8fafc;
     margin: 0;
     padding: 0;
-    background-color:rgb(231, 247, 250);
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    color:#003459;
   }
 `;
