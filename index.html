@@ -7,12 +7,27 @@
   <!-- Cargar la fuente Poppins desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <!-- Icono -->
-  <link rel="icon" type="image/png" href="/TechnoFix/assets/Icono-BFAvFyIX.png" />
-  <script type="module" crossorigin src="/TechnoFix/assets/index-CgmRRQrR.js"></script>
+  <link rel="icon" type="image/png" href="src/assets/Icono.png" />
 </head>
 <body>
   <div id="root"></div>
 
   <!-- Script principal -->
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
+
+Tamaño dispositivos
+Creamos el breackpoint.jsx en src/styles
+const sizes = {
+  mobile: "576px",
+  tablet: "768px",
+  laptop: "992px",
+  desktop: "1200px",
+};
+export const Device = {
+  mobile: `(min-width: ${sizes.mobile})`,
+  tablet: `(min-width: ${sizes.tablet})`,
+  laptop: `(min-width: ${sizes.laptop})`,
+  desktop: `(min-width: ${sizes.desktop})`,
+};
