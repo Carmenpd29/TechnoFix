@@ -10,10 +10,10 @@ function App() {
           <Sidebar/>
         </section>
         <section className="contentMenuHambur">
-          Menu Hamburguesa
+          Menu
         </section>
         <section className="contentRouters">
-          <MyRoutes/>Rutas
+          <MyRoutes/>
         </section>
     </Container>
   );
