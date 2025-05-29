@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { GlobalStyles, MyRoutes, Lateral} from './index';
+import { GlobalStyles, MyRoutes, Sidebar} from './index';
 import { Device } from './styles/breakpoints'
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <Container>
         <GlobalStyles/>
         <section className="contentSidebar">
-          
+          <Sidebar/>
         </section>
         <section className="contentMenuHambur">
           Menu Hamburguesa

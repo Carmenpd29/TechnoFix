@@ -1,9 +1,14 @@
 import styled from "styled-components";
 
-export function Lateral() {
+const Container = styled.div`
+  /* estilos */
+`;
+
+export const Sidebar = () => {
   return (
     <Container>
       <span>Sidebar</span>
     </Container>
   );
-}
+};
+
