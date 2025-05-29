@@ -22,7 +22,7 @@ function App() {
 const Container = styled.main`
   display:grid;
   grid-template-columns: 1fr;
-  background-color: #90e0ef;
+  background-color:rgb(221, 246, 250);
   color:#003459;
 
   .contentSidebar{
