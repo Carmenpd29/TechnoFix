@@ -22,19 +22,19 @@ function App() {
 const Container = styled.main`
   display:grid;
   grid-template-columns: 1fr;
-  background-color:rgb(221, 246, 250);
+  background-color:rgb(231, 247, 250);
   color:#003459;
 
   .contentSidebar{
     display:none;
-    background-color:rgba(132, 148, 168, 0.5);
+    background-color:rgba(136, 180, 197, 0.5);
   }
   .contentMenuHambur{
     position:absolute;
-    background-color:rgba(75, 97, 126, 0.5);
+    background-color:rgba(55, 130, 165, 0.5);
   }
   .contentRouters{
-    background-color:rgba(44, 64, 90, 0.5);
+    background-color:rgba(33, 100, 131, 0.5);
     grid-column: 1;
     width:100%;
   }
