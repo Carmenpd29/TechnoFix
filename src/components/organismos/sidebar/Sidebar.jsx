@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FiLogOut } from "react-icons/fi";
-import logo from "/TechnoFix/assets/Logo.png"; 
 
 const menuTrabajador = [
   { label: "TPV", to: "/tpv" },
@@ -15,7 +14,7 @@ export function Sidebar({ user, onLogout }) {
   return (
     <Nav>
       <LogoContainer>
-        <Logo src={logo} alt="TechnoFix logo" />
+        <Logo src="/assets/Logo.png" alt="TechnoFix logo" />
       </LogoContainer>
       <Menu>
         {menu
