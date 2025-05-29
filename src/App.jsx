@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { GlobalStyles, MyRoutes, Sidebar} from './index';
-import { Device } from './styles/breakpoints'
+import { Device } from './styles/breakpoints';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
           <Sidebar/>
         </section>
         <section className="contentMenuHambur">
-          Menu
+          Menú
         </section>
         <section className="contentRouters">
           <MyRoutes/>
@@ -21,20 +21,22 @@ function App() {
 
 const Container = styled.main`
   display:grid;
+  height: 100%;
   grid-template-columns: 1fr;
   background-color:rgb(231, 247, 250);
   color:#003459;
 
   .contentSidebar{
     display:none;
-    background-color:rgba(136, 180, 197, 0.5);
+    background-color:rgba(55, 130, 165, 0.5);
   }
   .contentMenuHambur{
     position:absolute;
-    background-color:rgba(55, 130, 165, 0.5);
+    background-color:rgba(136, 180, 197, 0.5);
+    
   }
   .contentRouters{
-    background-color:rgba(33, 100, 131, 0.5);
+    background-color:rgba(136, 180, 197, 0.5);
     grid-column: 1;
     width:100%;
   }
