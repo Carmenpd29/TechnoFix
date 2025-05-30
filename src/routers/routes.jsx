@@ -11,10 +11,7 @@ export function MyRoutes({ user }) {
     <PageWrapper>
       <Content $isHome={isHome}>
         <Routes>
-<<<<<<< HEAD
           <Route path="/" element={<Navigate to="/home" replace />} />
-=======
->>>>>>> 5d5ddff2aeebb20bc006b78ed9edaad855113ea9
           <Route path="/home" element={<Home />} />
           <Route path="/tpv" element={<TPV />} />
           <Route path="/clientes" element={<Clientes user={user} />} />
