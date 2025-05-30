@@ -11,7 +11,7 @@ export function MyRoutes({ user }) {
     <PageWrapper>
       <Content $isHome={isHome}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/tpv" element={<TPV />} />
           <Route path="/clientes" element={<Clientes user={user} />} />
           <Route path="*" element={<Home />} />
