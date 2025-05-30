@@ -5,36 +5,46 @@ import { Login } from "./pages/Login";
 import { useUserStore } from "./store/userStore";
 import { MenuHambur } from "./components/menu/MenuHambur";
 import { FondoDegradadoMenu } from "./styles/FondoDegradadoMenu";
+import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 
 function App() {
   const user = useUserStore((state) => state.user);
   const login = useUserStore((state) => state.login);
   const logout = useUserStore((state) => state.logout);
-
-  console.log("user:", user);
-
-  if (!user) {
-    return (
-      <>
-        <GlobalStyles />
-        <Login onLogin={login} />
-      </>
-    );
-  }
+  const location = useLocation();
 
   return (
-    <Container>
+    <>
       <GlobalStyles />
-      <section className="contentSidebar">
-        <Sidebar user={user} onLogout={logout} />
-      </section>
-      <section className="contentMenuHambur">
-        <MenuHambur user={user} onLogout={logout} />
-      </section>
-      <section className="contentRouters">
-          <MyRoutes user={user} />
-      </section>
-    </Container>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            user ? <Navigate to="/" replace /> : <Login onLogin={login} />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            user ? (
+              <Container>
+                <section className="contentSidebar">
+                  <Sidebar user={user} onLogout={logout} />
+                </section>
+                <section className="contentMenuHambur">
+                  <MenuHambur user={user} onLogout={logout} />
+                </section>
+                <section className="contentRouters">
+                  <MyRoutes user={user} />
+                </section>
+              </Container>
+            ) : (
+              <Navigate to="/login" replace state={{ from: location }} />
+            )
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
@@ -46,8 +56,8 @@ const Container = styled.main`
   background: linear-gradient(
     120deg,
     #ffffff 0%,
-rgb(221, 244, 248) 40%,
-rgb(178, 198, 202) 100%
+    rgb(221, 244, 248) 40%,
+    rgb(178, 198, 202) 100%
   );
   color: #003459;
 
@@ -94,4 +104,5 @@ rgb(178, 198, 202) 100%
     }
   }
 `;
+
 export default App;
