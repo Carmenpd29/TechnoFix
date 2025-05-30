@@ -12,28 +12,33 @@ export function Sidebar({ user, onLogout }) {
   const navigate = useNavigate();
   const menu = menuTrabajador; 
   return (
-    <Nav>
-      <LogoContainer>
-        <Logo src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
-      </LogoContainer>
-      <Menu>
-        {menu
-          .filter((item) => item.action !== "logout")
-          .map((item) => (
-            <MenuOption key={item.to} onClick={() => navigate(item.to)}>
-              {item.label}
-            </MenuOption>
-          ))}
-      </Menu>
-      <SalirButton onClick={onLogout}>
-        <FiLogOut size={20} style={{ marginRight: 8 }} />
+    <SidebarLayout>
+      <div>
+        <LogoMenu src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
+        <BarraSeparadora />
+        <MenuLinks>
+          {menu
+            .filter((item) => item.action !== "logout")
+            .map((item) => (
+              <MenuOption key={item.to} onClick={() => navigate(item.to)}>
+                {item.label}
+              </MenuOption>
+            ))}
+        </MenuLinks>
+      </div>
+      <div>
+        <BarraSeparadora />
+        <SalirButton onClick={onLogout}>
+        <FiLogOut size={16} style={{ marginRight: 6 }} />
         Salir
       </SalirButton>
-    </Nav>
+      </div>
+      
+    </SidebarLayout>
   );
 }
 
-const Nav = styled.nav`
+const SidebarLayout = styled.nav`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -45,48 +50,42 @@ const Nav = styled.nav`
   box-sizing: border-box;
   background: linear-gradient(
     180deg,
-    rgb(190, 227, 235) 0%,
-    #a5c4ca 30%,
-    #82999e 60%,
-    #607074 80%,
+    rgb(144, 180, 189) 0%,
+rgb(117, 156, 163) 30%,
+rgb(92, 124, 131) 60%,
+rgb(64, 94, 102) 80%,
     #404a4c 100%
   );
   position: relative;
   overflow: hidden;
 `;
 
-const LogoContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 2.5rem;
-  margin-top: 1rem;
-`;
-
-const Logo = styled.img`
+const LogoMenu = styled.img`
   width: 90px;         
   height: auto;
   border-radius: 16px;
   box-shadow: 0 4px 18px #3782a533;
   background: #fff;
   padding: 0.5rem;
+  margin: 0 0 1.2rem 0.6rem;
 `;
 
-const Menu = styled.div`
+const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   align-items: stretch;
-  flex: 1;
-  justify-content: center;
+  margin: 2.2rem 0;
 `;
 
 const MenuOption = styled.button`
   background: none;
   border: none;
   color: #fff;
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-family: 'Poppins';
+  text-shadow: 0 0 2px rgb(83, 96, 99), 0 0 1px #404a4c;
+  font-size: 1.50rem;
+  font-weight: bold;
   padding: 0.7rem 1.2rem;
   border-radius: 6px;
   cursor: pointer;
@@ -98,7 +97,7 @@ const MenuOption = styled.button`
 
   &:hover {
     background: #e7f7fa;
-    color: #3782a5;
+    color:rgb(123, 168, 189);
     transform: translateX(4px) scale(1.04);
     text-decoration: none;
   }
@@ -113,12 +112,11 @@ const SalirButton = styled.button`
   font-weight: 700;
   padding: 0.38rem 0.95rem;
   cursor: pointer;
-  margin-top: 1.2rem;
-  margin-bottom: 0.2rem;
+  margin: 1.2rem auto 0.2rem auto; /* Centrado horizontal */
   display: flex;
   align-items: center;
   box-shadow: 0 1px 4px #d32f2f22;
-  border: 1px solid #fff; /* Menos borde blanco */
+  border: 1px solid #fff;
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
 
   &:hover {
@@ -126,5 +124,13 @@ const SalirButton = styled.button`
     box-shadow: 0 2px 8px #d32f2f44;
     transform: translateY(-2px) scale(1.04);
   }
+`;
+
+const BarraSeparadora = styled.div`
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(180deg, #caf0f8 0%, #a5c4ca 100%);
+  margin: 0.2rem 0;
+  border-radius: 2px;
 `;
 

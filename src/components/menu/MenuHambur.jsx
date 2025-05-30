@@ -133,7 +133,7 @@ const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.1rem;
+  gap: 0.4rem;
 `;
 
 const SalirColumn = styled.div`
@@ -182,22 +182,22 @@ const MenuOption = styled.button`
   background: none;
   border: none;
   color: #fff;
-  font-size: 1.15rem;
-  font-weight: 700;
-  padding: 0.4rem 1rem;
-  cursor: pointer;
+  font-family: 'Poppins';
+  text-shadow: 0 0 2px rgb(33, 41, 43), 0 0 1px #404a4c;
+  font-size: 1.50rem;
+  font-weight: bold;
+  padding: 0.7rem 1.2rem;
   border-radius: 6px;
+  cursor: pointer;
   transition:
     background 0.18s,
     color 0.18s,
-    transform 0.13s,
-    padding 0.2s;
+    transform 0.13s;
   text-align: left;
 
   &:hover {
-    background: rgba(248, 250, 250, 0.34);
-    color: #003459;
-    padding: 0.4rem 2.2rem;
+    background: #e7f7fa;
+    color:rgb(123, 168, 189);
     transform: translateX(4px) scale(1.04);
     text-decoration: none;
   }

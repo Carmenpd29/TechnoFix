@@ -13,8 +13,8 @@ export const GlobalStyles = createGlobalStyle`
     background: linear-gradient(
       120deg,
       #ffffff 0%,
-      #caf0f8 40%,
-      #a5c4ca 100%
+rgb(217, 243, 248) 40%,
+rgb(178, 197, 201) 100%
     );
     margin: 0;
     padding: 0;
