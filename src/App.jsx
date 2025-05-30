@@ -17,9 +17,9 @@ function App() {
       <GlobalStyles />
       <Routes>
         <Route
-          path="/TechnoFix/login"
+          path="/login"
           element={
-            user ? <Navigate to="/TechnoFix/" replace /> : <Login onLogin={login} />
+            user ? <Navigate to="/" replace /> : <Login onLogin={login} />
           }
         />
         <Route
@@ -38,7 +38,7 @@ function App() {
                 </section>
               </Container>
             ) : (
-              <Navigate to="/TechnoFix/login" replace state={{ from: location }} />
+              <Navigate to="/login" replace state={{ from: location }} />
             )
           }
         />
