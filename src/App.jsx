@@ -4,7 +4,6 @@ import { Device } from "./styles/breakpoints";
 import { Login } from "./pages/Login";
 import { useUserStore } from "./store/userStore";
 import { MenuHambur } from "./components/menu/MenuHambur";
-import { FondoDegradadoMenu } from "./styles/FondoDegradadoMenu";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 
 function App() {
