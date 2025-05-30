@@ -1,16 +1,17 @@
 import styled from "styled-components";
-import { GlobalStyles, MyRoutes, Sidebar } from './index';
-import { Device } from './styles/breakpoints';
-import { Login } from './pages/Login';
-import { useUserStore } from './store/userStore';
+import { GlobalStyles, MyRoutes, Sidebar } from "./index";
+import { Device } from "./styles/breakpoints";
+import { Login } from "./pages/Login";
+import { useUserStore } from "./store/userStore";
 import { MenuHambur } from "./components/menu/MenuHambur";
+import { FondoDegradadoMenu } from "./styles/FondoDegradadoMenu";
 
 function App() {
-  const user = useUserStore(state => state.user);
-  const login = useUserStore(state => state.login);
-  const logout = useUserStore(state => state.logout);
+  const user = useUserStore((state) => state.user);
+  const login = useUserStore((state) => state.login);
+  const logout = useUserStore((state) => state.logout);
 
-  console.log("user:", user); 
+  console.log("user:", user);
 
   if (!user) {
     return (
@@ -23,16 +24,16 @@ function App() {
 
   return (
     <Container>
-        <GlobalStyles/>
-        <section className="contentSidebar">
-          <Sidebar user={user} onLogout={logout} />
-        </section>
-        <section className="contentMenuHambur">
-          <MenuHambur onLogout={logout} />
-        </section>
-        <section className="contentRouters">
+      <GlobalStyles />
+      <section className="contentSidebar">
+        <Sidebar user={user} onLogout={logout} />
+      </section>
+      <section className="contentMenuHambur">
+        <MenuHambur onLogout={logout} />
+      </section>
+      <section className="contentRouters">
           <MyRoutes user={user} />
-        </section>
+      </section>
     </Container>
   );
 }
@@ -42,7 +43,12 @@ const Container = styled.main`
   height: 100vh;
   min-height: 100vh;
   grid-template-columns: 1fr;
-  background-color: rgb(231, 247, 250);
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #caf0f8 40%,
+    #a5c4ca 100%
+  );
   color: #003459;
 
   .contentSidebar,
@@ -50,22 +56,20 @@ const Container = styled.main`
   .contentRouters {
     height: 100vh;
     min-height: 100vh;
+    background: none; 
   }
 
   .contentSidebar {
     display: none;
-    background-color: rgba(55, 130, 165, 0.5);
   }
 
   .contentMenuHambur {
     position: absolute;
     width: 100vw;
-    background-color: rgba(136, 180, 197, 0.5);
     z-index: 10;
   }
 
   .contentRouters {
-    background-color: rgb(231, 247, 250);
     grid-column: 1;
     width: 100%;
     height: 100vh;
@@ -89,5 +93,5 @@ const Container = styled.main`
       min-height: 100vh;
     }
   }
-`
+`;
 export default App;

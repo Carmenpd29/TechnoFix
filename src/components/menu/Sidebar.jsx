@@ -14,7 +14,7 @@ export function Sidebar({ user, onLogout }) {
   return (
     <Nav>
       <LogoContainer>
-        <Logo src="/assets/Logo.png" alt="TechnoFix logo" />
+        <Logo src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
       </LogoContainer>
       <Menu>
         {menu
@@ -43,7 +43,14 @@ const Nav = styled.nav`
   min-width: 150px;
   max-width: 220px;
   box-sizing: border-box;
-  background: radial-gradient(circle at 60% 40%, #56c6d8 0%, #3782a5 40%, #003459 100%);
+  background: linear-gradient(
+    180deg,
+    rgb(190, 227, 235) 0%,
+    #a5c4ca 30%,
+    #82999e 60%,
+    #607074 80%,
+    #404a4c 100%
+  );
   position: relative;
   overflow: hidden;
 `;

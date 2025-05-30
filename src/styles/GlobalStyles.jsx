@@ -10,7 +10,12 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-family: 'Poppins';
     color: #003459;
-    background: #f8fafc;
+    background: linear-gradient(
+      120deg,
+      #ffffff 0%,
+      #caf0f8 40%,
+      #a5c4ca 100%
+    );
     margin: 0;
     padding: 0;
   }

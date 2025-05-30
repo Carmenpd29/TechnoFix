@@ -40,46 +40,37 @@ export function MenuHambur({ onLogout }) {
         <FiMenu size={30} />
       </button>
       {open && (
-        <Overlay>
-          <button
-            onClick={() => setOpen(false)}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#003459",
-              position: "absolute",
-              top: "1.2rem",
-              right: "2rem",
-              cursor: "pointer",
-              zIndex: 201,
-            }}
-          >
-            <FiX size={30} />
-          </button>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              margin: "2.8rem 0 0 2.2rem",
-              gap: "1.1rem",
-            }}
-          >
-            {menu.map((item) => (
-              <MenuOption
-                key={item.to}
-                onClick={() => handleNavigate(item.to)}
-              >
-                {item.label}
-              </MenuOption>
-            ))}
-            <SalirButton onClick={handleLogout}>
-              <FiLogOut size={16} style={{ marginRight: 6 }} />
-              Salir
-            </SalirButton>
-          </div>
-          <LogoHambur src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
-        </Overlay>
+        <>
+          <Backdrop onClick={() => setOpen(false)} />
+          <Overlay>
+            <CloseButton
+              onClick={() => setOpen(false)}
+              aria-label="Cerrar menú"
+            >
+              <FiX size={30} />
+            </CloseButton>
+            <MenuLayout>
+              <LogoHambur src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
+              <MenuLinks>
+                {menu.map((item) => (
+                  <MenuOption
+                    key={item.to}
+                    onClick={() => handleNavigate(item.to)}
+                  >
+                    {item.label}
+                  </MenuOption>
+                ))}
+              </MenuLinks>
+              <SalirColumn>
+                <div style={{ height: "2.5rem" }} /> {/* Espacio para la X */}
+                <SalirButton onClick={handleLogout}>
+                  <FiLogOut size={16} style={{ marginRight: 6 }} />
+                  Salir
+                </SalirButton>
+              </SalirColumn>
+            </MenuLayout>
+          </Overlay>
+        </>
       )}
     </>
   );
@@ -90,25 +81,76 @@ const Overlay = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  min-height: 120px;
   z-index: 200;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 24px;
   box-shadow: 0 4px 24px #00345944;
-  padding-bottom: 1.2rem;
+  padding: 1.2rem 2.2rem 1.2rem 2.2rem;
   overflow: hidden;
   background: linear-gradient(
     180deg,
-rgb(190, 227, 235) 0%,
+    rgb(190, 227, 235) 0%,
     #a5c4ca 30%,
     #82999e 60%,
     #607074 80%,
     #404a4c 100%
   );
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  color: #003459;
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  cursor: pointer;
+  z-index: 201;
+`;
+
+const MenuLayout = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const LogoHambur = styled.img`
+  width: 70px;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px #3782a533;
+  background: #fff;
+  padding: 0.5rem;
+  z-index: 202;
+`;
+
+const MenuLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+`;
+
+const SalirColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-width: 90px;
 `;
 
 const SalirButton = styled.button`
-  background: linear-gradient(200deg,rgba(85, 25, 25, 0.81) 0%,rgb(156, 37, 37) 40%, #ff6b6b 100%);
+  background: linear-gradient(
+    200deg,
+    rgba(85, 25, 25, 0.81) 0%,
+    rgb(156, 37, 37) 40%,
+    #ff6b6b 100%
+  );
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -116,16 +158,21 @@ const SalirButton = styled.button`
   font-weight: 700;
   padding: 0.38rem 0.95rem;
   cursor: pointer;
-  margin-top: 1.2rem;
-  margin-bottom: 0.2rem;
+  margin-top: 0.6rem; 
+  margin-bottom: 0.1rem;
   display: flex;
   align-items: center;
   box-shadow: 0 1px 4px #d32f2f22;
-  border: 1px solid #fff; /* Menos borde blanco */
+  border: 1px solid #fff; 
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
 
   &:hover {
-    background: linear-gradient(100deg, #8a1616 0%, #d32f2f 50%, #ff5252 100%);
+    background: linear-gradient(
+      100deg,
+      #8a1616 0%,
+      #d32f2f 50%,
+      #ff5252 100%
+    );
     box-shadow: 0 2px 8px #d32f2f44;
     transform: translateY(-2px) scale(1.04);
   }
@@ -148,23 +195,17 @@ const MenuOption = styled.button`
   text-align: left;
 
   &:hover {
-    background:rgba(248, 250, 250, 0.34);
+    background: rgba(248, 250, 250, 0.34);
     color: #003459;
-    padding: 0.4rem 2.2rem; 
+    padding: 0.4rem 2.2rem;
     transform: translateX(4px) scale(1.04);
     text-decoration: none;
   }
 `;
 
-const LogoHambur = styled.img`
-  position: absolute;
-  right: 2.2rem;
-  bottom: 1.2rem;
-  width: 70px;
-  height: auto;
-  border-radius: 16px;
-  box-shadow: 0 4px 18px #3782a533;
-  background: #fff;
-  padding: 0.5rem;
-  z-index: 202;
+const Backdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 44, 54, 0.25);
+  z-index: 199;
 `;
