@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { Home, TPV, Clientes } from "../index";
 import { Footer } from "../components/Footer";
 import styled from "styled-components";
@@ -11,7 +11,8 @@ export function MyRoutes({ user }) {
     <PageWrapper>
       <Content $isHome={isHome}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/tpv" element={<TPV />} />
           <Route path="/clientes" element={<Clientes user={user} />} />
           <Route path="*" element={<Home />} />
