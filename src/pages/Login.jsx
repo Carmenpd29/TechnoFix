@@ -2,9 +2,10 @@ import { useState } from "react";
 import styled from "styled-components";
 import { FiUser, FiSettings } from "react-icons/fi";
 import { Footer } from "../components/Footer";
+import { loginSupabase } from "../supabase/auth"; // importa la función
 
 export function Login({ onLogin }) {
-  const [rol, setRol] = useState("administrador");
+  const [rol, setRol] = useState("admin");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -14,17 +15,14 @@ export function Login({ onLogin }) {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      (rol === "administrador" && password === "admin1234") ||
-      (rol === "empleado1" && password === "user1234") ||
-      (rol === "empleado2" && password === "user1234")
-    ) {
-      onLogin({ rol }); 
+    const user = await loginSupabase(rol, password);
+    if (user) {
+      onLogin(user); // puedes guardar el usuario en Zustand aquí si quieres
       setError("");
     } else {
-      setError("Contraseña incorrecta");
+      setError("Contraseña incorrecta o usuario no existe");
     }
   };
 
@@ -36,8 +34,8 @@ export function Login({ onLogin }) {
           <Botonera>
             <RolButton
               type="button"
-              active={rol === "administrador"}
-              onClick={() => handleRol("administrador")}
+              active={rol === "admin"}
+              onClick={() => handleRol("admin")}
             >
               <IconWrapper>
                 <FiSettings size={38} />
@@ -46,23 +44,23 @@ export function Login({ onLogin }) {
             </RolButton>
             <RolButton
               type="button"
-              active={rol === "empleado1"}
-              onClick={() => handleRol("empleado1")}
+              active={rol === "encargado"}
+              onClick={() => handleRol("encargado")}
             >
               <IconWrapper>
                 <FiUser size={38} />
               </IconWrapper>
-              Empleado 1
+              Encargado/a
             </RolButton>
             <RolButton
               type="button"
-              active={rol === "empleado2"}
-              onClick={() => handleRol("empleado2")}
+              active={rol === "empleado"}
+              onClick={() => handleRol("empleado")}
             >
               <IconWrapper>
                 <FiUser size={38} />
               </IconWrapper>
-              Empleado 2
+              Empleado
             </RolButton>
           </Botonera>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
