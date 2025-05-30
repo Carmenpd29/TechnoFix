@@ -7,6 +7,7 @@ export * from './routers/routes';
 export * from './components/templates/HomeTemplate';
 export * from './components/menu/Sidebar';
 export * from './components/menu/MenuHambur';
+export * from './components/Footer';
 export * from './pages/Home';
 export * from './pages/Login';
 export * from './pages/Clientes';   

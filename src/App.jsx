@@ -29,7 +29,7 @@ function App() {
         <Sidebar user={user} onLogout={logout} />
       </section>
       <section className="contentMenuHambur">
-        <MenuHambur onLogout={logout} />
+        <MenuHambur user={user} onLogout={logout} />
       </section>
       <section className="contentRouters">
           <MyRoutes user={user} />

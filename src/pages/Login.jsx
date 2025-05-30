@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { FondoDegradado } from "../index";
 import { FiUser, FiSettings } from "react-icons/fi";
+import { Footer } from "../components/Footer";
 
 export function Login({ onLogin }) {
   const [rol, setRol] = useState("administrador");
@@ -29,56 +29,65 @@ export function Login({ onLogin }) {
   };
 
   return (
-    <FondoDegradado>
-      <Caja>
-        <Titulo>Iniciar sesión</Titulo>
-        <Botonera>
-          <RolButton
-            type="button"
-            active={rol === "administrador"}
-            onClick={() => handleRol("administrador")}
-          >
-            <IconWrapper>
-              <FiSettings size={38} />
-            </IconWrapper>
-            Admin
-          </RolButton>
-          <RolButton
-            type="button"
-            active={rol === "empleado1"}
-            onClick={() => handleRol("empleado1")}
-          >
-            <IconWrapper>
-              <FiUser size={38} />
-            </IconWrapper>
-            Empleado 1
-          </RolButton>
-          <RolButton
-            type="button"
-            active={rol === "empleado2"}
-            onClick={() => handleRol("empleado2")}
-          >
-            <IconWrapper>
-              <FiUser size={38} />
-            </IconWrapper>
-            Empleado 2
-          </RolButton>
-        </Botonera>
-        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-          <Input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
-          <Entrar type="submit">Entrar</Entrar>
-          {error && <ErrorMsg>{error}</ErrorMsg>}
-        </form>
-      </Caja>
-    </FondoDegradado>
+    <LoginWrapper>
+      <FondoDegradado>
+        <Caja>
+          <Titulo>Iniciar sesión</Titulo>
+          <Botonera>
+            <RolButton
+              type="button"
+              active={rol === "administrador"}
+              onClick={() => handleRol("administrador")}
+            >
+              <IconWrapper>
+                <FiSettings size={38} />
+              </IconWrapper>
+              Admin
+            </RolButton>
+            <RolButton
+              type="button"
+              active={rol === "empleado1"}
+              onClick={() => handleRol("empleado1")}
+            >
+              <IconWrapper>
+                <FiUser size={38} />
+              </IconWrapper>
+              Empleado 1
+            </RolButton>
+            <RolButton
+              type="button"
+              active={rol === "empleado2"}
+              onClick={() => handleRol("empleado2")}
+            >
+              <IconWrapper>
+                <FiUser size={38} />
+              </IconWrapper>
+              Empleado 2
+            </RolButton>
+          </Botonera>
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <Input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+            <Entrar type="submit">Entrar</Entrar>
+            {error && <ErrorMsg>{error}</ErrorMsg>}
+          </form>
+        </Caja>
+      </FondoDegradado>
+      <Footer />
+    </LoginWrapper>
   );
 }
+
+const LoginWrapper = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
 
 const Caja = styled.div`
   font-family: 'Poppins';
@@ -199,5 +208,12 @@ const ErrorMsg = styled.div`
   text-align: center;
   font-weight: 500;
   letter-spacing: 0.2px;
+`;
+
+const FondoDegradado = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 

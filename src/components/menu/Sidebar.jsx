@@ -82,8 +82,7 @@ const MenuOption = styled.button`
   background: none;
   border: none;
   color: #fff;
-  font-family: 'Poppins';
-  text-shadow: 0 0 2px rgb(83, 96, 99), 0 0 1px #404a4c;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.50rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;

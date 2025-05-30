@@ -1,17 +1,23 @@
 import styled from "styled-components";
-import { HiHome } from "react-icons/hi";
 
 export function HomeTemplate() {
   return (
     <Fondo>
       <Card>
-        <Icono>
-          <HiHome size={48} />
-        </Icono>
-        <Titulo>¡Bienvenido/a a TechnoFix!</Titulo>
+        <LogoFijo>
+          <img src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" style={{ 
+            width: 200, 
+            height: "auto" 
+          }} />
+        </LogoFijo>
+        <Titulo>¡Bienvenid@ a TechnoFix!</Titulo>
         <Texto>
-          Selecciona una opción en el menú lateral para comenzar.<br />
-          <span>TPV</span> para ventas, <span>Clientes</span> para gestión de clientes.
+          Selecciona una opción en el menú lateral para comenzar.
+          <br /><br />
+          <OptionHome>
+            <p><span>- TPV</span> para ventas y gestión de productos.</p>
+            <p><span>- Clientes</span> para gestión de clientes.</p>
+          </OptionHome>
         </Texto>
       </Card>
     </Fondo>
@@ -31,34 +37,54 @@ const Card = styled.div`
   background: #fff;
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(55,130,165,0.18), 0 1.5px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 32px rgba(55, 130, 165, 0.18),
+    0 1.5px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 320px;
-  max-width: 90vw;
+  width: 90vw;
+  max-width: 420px;
+  min-width: 0;
+
+  @media (max-width: 480px) {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    width: 94vw;
+    max-width: 98vw;
+  }
 `;
 
-const Icono = styled.div`
-  color: #3782a5;
-  margin-bottom: 1.2rem;
+const LogoFijo = styled.div`
 `;
 
 const Titulo = styled.h2`
+  font-family: "Poppins", "Montserrat";
   color: #003459;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   font-weight: 700;
   letter-spacing: 1px;
   text-align: center;
 `;
 
 const Texto = styled.p`
+  font-family: "Poppins", "Montserrat";
   color: #3782a5;
   font-size: 1.1rem;
   text-align: center;
-  margin: 0;
+  margin: 0 1.2rem 1.1rem 1.2rem;
   span {
     color: #27618a;
     font-weight: 600;
+    font-size: 1.25rem;
+  }
+`;
+
+const OptionHome = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  p {
+    margin: 0.15rem 0; 
   }
 `;
