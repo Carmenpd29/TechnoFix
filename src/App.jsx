@@ -38,7 +38,7 @@ function App() {
                 </section>
               </Container>
             ) : (
-              <Navigate to="/login" replace state={{ from: location }} />
+              <Navigate to="/TechnoFix/login" replace state={{ from: location }} />
             )
           }
         />
