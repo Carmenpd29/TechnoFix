@@ -17,9 +17,9 @@ function App() {
       <GlobalStyles />
       <Routes>
         <Route
-          path="/login"
+          path="/TechnoFix/login"
           element={
-            user ? <Navigate to="/" replace /> : <Login onLogin={login} />
+            user ? <Navigate to="/TechnoFix/" replace /> : <Login onLogin={login} />
           }
         />
         <Route
