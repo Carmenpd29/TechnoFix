@@ -89,10 +89,10 @@ const Overlay = styled.div`
   overflow: hidden;
   background: linear-gradient(
     180deg,
-    rgb(190, 227, 235) 0%,
-    #a5c4ca 30%,
-    #82999e 60%,
-    #607074 80%,
+    rgb(144, 180, 189) 0%,
+rgb(117, 156, 163) 30%,
+rgb(92, 124, 131) 60%,
+rgb(64, 94, 102) 80%,
     #404a4c 100%
   );
   display: flex;
@@ -183,7 +183,7 @@ const MenuOption = styled.button`
   border: none;
   color: #fff;
   font-family: 'Poppins';
-  text-shadow: 0 0 2px rgb(33, 41, 43), 0 0 1px #404a4c;
+  text-shadow: 0 0 2px rgb(83, 96, 99), 0 0 1px #404a4c;
   font-size: 1.50rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;

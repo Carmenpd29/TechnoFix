@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { FondoDegradado } from "../index";
+import { FiUser, FiSettings } from "react-icons/fi";
 
 export function Login({ onLogin }) {
   const [rol, setRol] = useState("administrador");
@@ -17,7 +18,8 @@ export function Login({ onLogin }) {
     e.preventDefault();
     if (
       (rol === "administrador" && password === "admin1234") ||
-      (rol === "trabajador" && password === "user1234")
+      (rol === "empleado1" && password === "user1234") ||
+      (rol === "empleado2" && password === "user1234")
     ) {
       onLogin({ rol }); 
       setError("");
@@ -36,14 +38,30 @@ export function Login({ onLogin }) {
             active={rol === "administrador"}
             onClick={() => handleRol("administrador")}
           >
+            <IconWrapper>
+              <FiSettings size={38} />
+            </IconWrapper>
             Admin
           </RolButton>
           <RolButton
             type="button"
-            active={rol === "trabajador"}
-            onClick={() => handleRol("trabajador")}
+            active={rol === "empleado1"}
+            onClick={() => handleRol("empleado1")}
           >
-            Trabajador
+            <IconWrapper>
+              <FiUser size={38} />
+            </IconWrapper>
+            Empleado 1
+          </RolButton>
+          <RolButton
+            type="button"
+            active={rol === "empleado2"}
+            onClick={() => handleRol("empleado2")}
+          >
+            <IconWrapper>
+              <FiUser size={38} />
+            </IconWrapper>
+            Empleado 2
           </RolButton>
         </Botonera>
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
@@ -84,7 +102,8 @@ const Caja = styled.div`
 
 const Titulo = styled.h2`
   color: #232728;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: 1px;
   font-family: 'Poppins';
@@ -101,9 +120,18 @@ const Botonera = styled.div`
 const RolButton = styled.button`
   font-family: 'Poppins';
   flex: 1;
-  padding: 0.7rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1; 
+  min-width: 90px;
+  max-width: 120px;
+  min-height: 90px;
+  max-height: 120px;
+  padding: 0.7rem 0.2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   background: ${({ active }) => (active ? "#607074" : "#a5c4ca")};
   color: ${({ active }) => (active ? "#caf0f8" : "#232728")};
   font-weight: 600;
@@ -116,6 +144,13 @@ const RolButton = styled.button`
     background: ${({ active }) => (active ? "#404a4c" : "#82999e")};
     color: #caf0f8;
   }
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.7rem; 
 `;
 
 const Input = styled.input`
