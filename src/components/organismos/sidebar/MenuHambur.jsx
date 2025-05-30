@@ -78,6 +78,7 @@ export function MenuHambur({ onLogout }) {
               Salir
             </SalirButton>
           </div>
+          <LogoHambur src="/assets/Logo.png" alt="TechnoFix logo" />
         </Overlay>
       )}
     </>
@@ -91,12 +92,19 @@ const Overlay = styled.div`
   right: 0;
   min-height: 120px;
   z-index: 200;
-  border-bottom-left-radius: 24px;
+  border-bottom-left-radius: 15px;
   border-bottom-right-radius: 24px;
   box-shadow: 0 4px 24px #00345944;
   padding-bottom: 1.2rem;
   overflow: hidden;
-  background: radial-gradient(circle at 60% 40%, #56c6d8 0%, #3782a5 40%, #003459 100%);
+  background: linear-gradient(
+    135deg,
+rgb(190, 227, 235) 0%,
+    #a5c4ca 30%,
+    #82999e 60%,
+    #607074 80%,
+    #404a4c 100%
+  );
 `;
 
 const SalirButton = styled.button`
@@ -146,4 +154,17 @@ const MenuOption = styled.button`
     transform: translateX(4px) scale(1.04);
     text-decoration: none;
   }
+`;
+
+const LogoHambur = styled.img`
+  position: absolute;
+  right: 2.2rem;
+  bottom: 1.2rem;
+  width: 70px;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px #3782a533;
+  background: #fff;
+  padding: 0.5rem;
+  z-index: 202;
 `;

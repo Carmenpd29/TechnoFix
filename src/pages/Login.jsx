@@ -64,16 +64,22 @@ export function Login({ onLogin }) {
 
 const Caja = styled.div`
   font-family: 'Poppins';
-  background: rgba(255,255,255,0.92); 
+  background: rgba(255,255,255,0.92);
+  width: 100%;
+  max-width: 370px;
   padding: 1.7rem 2.7rem 2.2rem 2.7rem;
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(64,74,76,0.22), 0 1.5px 8px rgba(0,0,0,0.10);
-  border: 1.5px solid #a5c4ca; /* Azul claro de tu paleta */
+  border: 1.5px solid #a5c4ca;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 340px;
   transition: box-shadow 0.2s, border 0.2s;
+
+  @media (max-width: 480px) {
+    padding: 1.2rem 0.7rem 1.5rem 0.7rem;
+    max-width: 98vw;
+  }
 `;
 
 const Titulo = styled.h2`
