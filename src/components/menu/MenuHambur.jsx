@@ -78,7 +78,7 @@ export function MenuHambur({ onLogout }) {
               Salir
             </SalirButton>
           </div>
-          <LogoHambur src="/assets/Logo.png" alt="TechnoFix logo" />
+          <LogoHambur src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
         </Overlay>
       )}
     </>
@@ -98,7 +98,7 @@ const Overlay = styled.div`
   padding-bottom: 1.2rem;
   overflow: hidden;
   background: linear-gradient(
-    135deg,
+    180deg,
 rgb(190, 227, 235) 0%,
     #a5c4ca 30%,
     #82999e 60%,

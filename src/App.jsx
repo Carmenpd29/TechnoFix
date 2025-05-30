@@ -3,7 +3,7 @@ import { GlobalStyles, MyRoutes, Sidebar } from './index';
 import { Device } from './styles/breakpoints';
 import { Login } from './pages/Login';
 import { useUserStore } from './store/userStore';
-import { MenuHambur } from "./components/organismos/sidebar/MenuHambur";
+import { MenuHambur } from "./components/menu/MenuHambur";
 
 function App() {
   const user = useUserStore(state => state.user);
