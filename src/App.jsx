@@ -8,6 +8,7 @@ import { Device } from "./styles/breakpoints";
 import { Login } from "./pages/Login";
 import { useUserStore } from "./store/userStore";
 import { MenuHambur } from "./components/menu/MenuHambur";
+import { Footer } from "./components/Footer";
 
 function App() {
   const user = useUserStore((state) => state.user);
@@ -17,7 +18,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <>
+    <AppWrapper>
       <GlobalStyles />
       <Routes>
         <Route
@@ -30,7 +31,7 @@ function App() {
           path="*"
           element={
             user ? (
-              <Container $menuOpen={menuOpen}>
+              <Container>
                 {!menuOpen && (
                   <Header>
                     <HamburguesaButton onClick={() => setMenuOpen(true)}>
@@ -52,6 +53,7 @@ function App() {
                 <section className="contentRouters">
                   <MyRoutes user={user} />
                 </section>
+                <Footer /> 
               </Container>
             ) : (
               <Navigate to="/login" replace state={{ from: location }} />
@@ -59,7 +61,7 @@ function App() {
           }
         />
       </Routes>
-    </>
+    </AppWrapper>
   );
 }
 
@@ -72,11 +74,10 @@ const Header = styled.header`
   background: linear-gradient(120deg, #a5c4ca 0%, #607074 100%);
   display: flex;
   align-items: center;
-  z-index: 210; // Mayor que el Overlay (200)
+  z-index: 210; 
   box-shadow: 0 2px 8px #404a4c22;
 
-  // Oculta el header en tablet y escritorio
-  @media ${Device.tablet} {
+  @media (min-width: 900px) {
     display: none;
   }
 `;
@@ -93,55 +94,54 @@ const HamburguesaButton = styled.button`
 
 const Container = styled.main`
   display: grid;
-  height: 100vh;
   min-height: 100vh;
-  grid-template-columns: 1fr;
+  grid-template-columns: 180px 1fr;
+  grid-template-rows: 1fr auto;
   color: #003459;
 
-  .contentSidebar,
-  .contentMenuHambur,
-  .contentRouters {
-    height: 100vh;
-    min-height: 100vh;
-    background: none; 
-  }
-
   .contentSidebar {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3; /* Ocupa ambas filas */
+    display: block;
+    height: 100%;
+  }
+  .contentMenuHambur {
     display: none;
   }
-
-  .contentMenuHambur {
-    position: absolute;
-    width: 100vw;
-    z-index: ${({ $menuOpen }) => ($menuOpen ? 10 : 0)};
-  }
-
   .contentRouters {
-    grid-column: 1;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
     width: 100%;
-    height: 100vh;
-    min-height: 100vh;
     overflow-y: auto;
-    margin-top: 60px; /* deja espacio para el header */
+    margin-top: 0;
+  }
+  footer {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
   }
 
-  @media ${Device.tablet} {
-    grid-template-columns: 180px auto;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
     .contentSidebar {
-      display: block;
-      height: 100vh;
-      min-height: 100vh;
-    }
-    .contentMenuHambur {
       display: none;
     }
+    .contentMenuHambur {
+      display: block;
+    }
     .contentRouters {
-      grid-column: 2;
-      height: 100vh;
-      min-height: 100vh;
-      margin-top: 0; 
+      grid-column: 1;
+      margin-top: 60px;
+    }
+    footer {
+      grid-column: 1;
     }
   }
+`;
+
+const AppWrapper = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 `;
 
 export default App;
