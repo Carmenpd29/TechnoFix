@@ -55,6 +55,8 @@ export function InsertCliente() {
 
   const errorNombre = submitted && !form.nombre.trim();
   const errorTelefono = submitted && !form.telefono.trim();
+  const errorNIF = submitted && !validarNIF(form.nif);
+  const errorEmail = submitted && !validarEmail(form.correo);
 
   return (
     <Wrapper style={{ position: "relative" }}>
@@ -98,7 +100,9 @@ export function InsertCliente() {
             onBlur={handleBlur}
             placeholder="NIF (opcional)"
             disabled={loading}
+            $error={errorNIF}
           />
+          {errorNIF && <Error>NIF inválido</Error>}
         </Field>
         <Field>
           <Label>Dirección</Label>
@@ -121,7 +125,9 @@ export function InsertCliente() {
             placeholder="Correo electrónico (opcional)"
             type="email"
             disabled={loading}
+            $error={errorEmail}
           />
+          {errorEmail && <Error>Correo electrónico inválido</Error>}
         </Field>
         <Boton type="submit" disabled={loading}>
           {loading ? "Guardando..." : "Guardar cliente"}
@@ -135,6 +141,22 @@ export function InsertCliente() {
   );
 }
 
+function validarNIF(nif) {
+  if (!nif) return true; // Opcional
+  const nifRegEx = /^[0-9]{8}[A-Za-z]$/;
+  return nifRegEx.test(nif);
+}
+
+function validarEmail(email) {
+  if (!email) return true; // Opcional
+  const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegEx.test(email);
+}
+
+function validarTelefono(telefono) {
+  const telRegEx = /^[0-9]{9}$/;
+  return telRegEx.test(telefono);
+}
 
 const Wrapper = styled.div`
   width: 90%;
