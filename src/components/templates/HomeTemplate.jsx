@@ -35,7 +35,7 @@ const Fondo = styled.div`
 
 const Card = styled.div`
   background: #fff;
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  padding: 2rem 2rem 2rem 2rem;
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(55, 130, 165, 0.18),
     0 1.5px 8px rgba(0, 0, 0, 0.08);
@@ -47,7 +47,7 @@ const Card = styled.div`
   min-width: 0;
 
   @media (max-width: 480px) {
-    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    padding: 1rem 0.5rem 1rem 0.5rem;
     width: 94vw;
     max-width: 98vw;
   }
@@ -80,7 +80,7 @@ const Texto = styled.p`
 
 const OptionHome = styled.div`
   height: 100%;
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   text-align: left;

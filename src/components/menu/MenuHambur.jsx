@@ -57,7 +57,7 @@ export function MenuHambur({ onLogout, open, setOpen }) {
             <div style={{ height: "2.5rem" }} />
             <SalirButton onClick={handleLogout}>
               <FiLogOut size={16} style={{ marginRight: 6 }} />
-              Cerrar sesión
+              Salir
             </SalirButton>
           </SalirColumn>
         </MenuLayout>

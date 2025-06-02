@@ -35,7 +35,7 @@ export function Sidebar({ user, onLogout }) {
         <BarraSeparadora />
         <SalirButton onClick={onLogout}>
         <FiLogOut size={16} style={{ marginRight: 6 }} />
-        Cerrar sesión
+        Salir
       </SalirButton>
       </div>
       
