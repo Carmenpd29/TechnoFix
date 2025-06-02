@@ -84,6 +84,7 @@ const Container = styled.main`
     height: 100vh;
     min-height: 100vh;
     overflow-y: auto;
+    margin-top: 60px; 
   }
 
   @media ${Device.tablet} {
@@ -100,6 +101,7 @@ const Container = styled.main`
       grid-column: 2;
       height: 100vh;
       min-height: 100vh;
+      margin-top: 0; 
     }
   }
 `;

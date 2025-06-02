@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation, Navigate } from "react-router-dom";
-import { Home, TPV, Clientes } from "../index";
+import { Home, TPV, Clientes, Caja, Productos } from "../index";
 import { Footer } from "../components/Footer";
 import styled from "styled-components";
 
@@ -15,6 +15,8 @@ export function MyRoutes({ user }) {
           <Route path="/home" element={<Home />} />
           <Route path="/tpv" element={<TPV />} />
           <Route path="/clientes" element={<Clientes user={user} />} />
+          <Route path="/caja" element={<Caja />} />
+          <Route path="/productos" element={<Productos />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </Content>
