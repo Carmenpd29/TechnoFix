@@ -19,6 +19,12 @@ export function TPV() {
           <span>Productos</span>
         </Opcion>
       </Opciones>
+      <Manual>
+        <p>
+          - Pulsa <b>Caja</b> para cobrar.<br />
+          - Pulsa <b>Productos</b> para ver productos.
+        </p>
+      </Manual>
     </TPVWrapper>
   );
 }
@@ -29,11 +35,23 @@ const TPVWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  width: 100%;
+  max-width: 600px;   
+  margin: 0 auto;     
 `;
 
 const Titulo = styled.h2`
   font-size: 2rem;
+  margin-bottom: 1rem;
+`;
+
+const Manual = styled.div`
+  color: #607074;
+  font-size: 1.05rem;
   margin-bottom: 2rem;
+  text-align: left; 
+  max-width: 370px;   
+  width: 100%;
 `;
 
 const Opciones = styled.div`

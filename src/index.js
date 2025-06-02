@@ -12,6 +12,6 @@ export * from './pages/Home';
 export * from './pages/Login';
 export * from './pages/Clientes';   
 export * from './pages/TPV';
-export * from './pages/Caja';
-export * from './pages/Productos';
+export * from './pages/TPV/Caja';
+export * from './pages/TPV/Productos';
 export * from './store/userStore';

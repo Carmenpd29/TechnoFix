@@ -1,6 +1,5 @@
-import { useState } from "react";
 import styled from "styled-components";
-import { FiMenu, FiX, FiLogOut } from "react-icons/fi";
+import { FiX, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 const menu = [
@@ -8,8 +7,7 @@ const menu = [
   { label: "Clientes", to: "/clientes" },
 ];
 
-export function MenuHambur({ onLogout }) {
-  const [open, setOpen] = useState(false);
+export function MenuHambur({ onLogout, open, setOpen }) {
   const navigate = useNavigate();
 
   const handleNavigate = (to) => {
@@ -23,62 +21,46 @@ export function MenuHambur({ onLogout }) {
     navigate("/login");
   };
 
+  if (!open) return null;
+
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          position: "absolute",
-          top: "1.5rem",
-          left: "1.5rem",
-          zIndex: 100,
-        }}
-      >
-        <FiMenu size={30} />
-      </button>
-      {open && (
-        <>
-          <Backdrop onClick={() => setOpen(false)} />
-          <Overlay>
-            <CloseButton
-              onClick={() => setOpen(false)}
-              aria-label="Cerrar menú"
-            >
-              <FiX size={30} />
-            </CloseButton>
-            <MenuLayout>
-              <LogoHambur src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
-              <MenuLinks>
-                {menu.map((item) => (
-                  <MenuOption
-                    key={item.to}
-                    onClick={() => handleNavigate(item.to)}
-                  >
-                    {item.label}
-                  </MenuOption>
-                ))}
-              </MenuLinks>
-              <SalirColumn>
-                <div style={{ height: "2.5rem" }} /> {/* Espacio para la X */}
-                <SalirButton onClick={handleLogout}>
-                  <FiLogOut size={16} style={{ marginRight: 6 }} />
-                  Salir
-                </SalirButton>
-              </SalirColumn>
-            </MenuLayout>
-          </Overlay>
-        </>
-      )}
+      <Backdrop onClick={() => setOpen(false)} />
+      <Overlay>
+        <CloseButton
+          onClick={() => setOpen(false)}
+          aria-label="Cerrar menú"
+        >
+          <FiX size={30} />
+        </CloseButton>
+        <MenuLayout>
+          <LogoHambur src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
+          <MenuLinks>
+            {menu.map((item) => (
+              <MenuOption
+                key={item.to}
+                onClick={() => handleNavigate(item.to)}
+              >
+                {item.label}
+              </MenuOption>
+            ))}
+          </MenuLinks>
+          <SalirColumn>
+            <div style={{ height: "2.5rem" }} />
+            <SalirButton onClick={handleLogout}>
+              <FiLogOut size={16} style={{ marginRight: 6 }} />
+              Cerrar sesión
+            </SalirButton>
+          </SalirColumn>
+        </MenuLayout>
+      </Overlay>
     </>
   );
 }
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0;
+  top: 0; 
   left: 0;
   right: 0;
   z-index: 200;
@@ -90,9 +72,9 @@ const Overlay = styled.div`
   background: linear-gradient(
     180deg,
     rgb(144, 180, 189) 0%,
-rgb(117, 156, 163) 30%,
-rgb(92, 124, 131) 60%,
-rgb(64, 94, 102) 80%,
+    rgb(117, 156, 163) 30%,
+    rgb(92, 124, 131) 60%,
+    rgb(64, 94, 102) 80%,
     #404a4c 100%
   );
   display: flex;
