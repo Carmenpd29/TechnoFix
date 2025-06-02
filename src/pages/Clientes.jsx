@@ -13,7 +13,7 @@ export function Clientes({ user }) {
           <FiUsers size={42} />
           <span>Ver</span>
         </Opcion>
-        <Opcion>
+        <Opcion onClick={() => navigate("/clientes/insertar")}>
           <FiUserPlus size={42} />
           <span>Insertar</span>
         </Opcion>

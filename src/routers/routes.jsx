@@ -1,6 +1,7 @@
 import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { Home, TPV, Clientes, Caja, Productos } from "../index";
 import { VerClientes } from "../pages/Clientes/VerClientes";
+import { InsertCliente } from "../pages/Clientes/InsertCliente";
 
 export function MyRoutes({ user }) {
   const location = useLocation();
@@ -13,6 +14,7 @@ export function MyRoutes({ user }) {
       <Route path="/tpv" element={<TPV />} />
       <Route path="/clientes" element={<Clientes user={user} />} />
       <Route path="/clientes/ver" element={<VerClientes />} />
+      <Route path="/clientes/insertar" element={<InsertCliente />} />
       <Route path="/caja" element={<Caja />} />
       <Route path="/productos" element={<Productos />} />
       <Route path="*" element={<Home />} />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { supabase } from "../../supabase/supabaseClient";
+import { useMediaQuery } from "react-responsive"; 
 
 export function VerClientes() {
   const [clientes, setClientes] = useState([]);
@@ -19,42 +20,61 @@ export function VerClientes() {
     fetchClientes();
   }, []);
 
+  const isMobile = window.innerWidth < 700; // O usa useMediaQuery si prefieres
+
   return (
     <Wrapper>
       <Titulo>Listado de Clientes</Titulo>
-      <TablaContainer>
-        <Tabla>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Teléfono</th>
-              <th>NIF</th>
-              <th>Dirección</th>
-              <th>Correo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clientes.length === 0 && !loading && (
+      {isMobile ? (
+        <ListaClientes>
+          {clientes.length === 0 && !loading && (
+            <SinClientes>No hay clientes registrados.</SinClientes>
+          )}
+          {clientes.map((c) => (
+            <CardCliente key={c.id}>
+              <Dato><b>Nombre:</b> {c.nombre}</Dato>
+              <Dato><b>Teléfono:</b> {c.telefono}</Dato>
+              <Dato><b>NIF:</b> {c.nif || "-"}</Dato>
+              <Dato><b>Dirección:</b> {c.direccion || "-"}</Dato>
+              <Dato><b>Correo:</b> {c.correo || "-"}</Dato>
+            </CardCliente>
+          ))}
+        </ListaClientes>
+      ) : (
+        <TablaContainer>
+          <Tabla>
+            <thead>
               <tr>
-                <td colSpan={6} style={{ textAlign: "center", color: "#607074" }}>
-                  No hay clientes registrados.
-                </td>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>NIF</th>
+                <th>Dirección</th>
+                <th>Correo</th>
               </tr>
-            )}
-            {clientes.map((c) => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.nombre}</td>
-                <td>{c.telefono}</td>
-                <td>{c.nif || "-"}</td>
-                <td>{c.direccion || "-"}</td>
-                <td>{c.correo || "-"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Tabla>
-      </TablaContainer>
+            </thead>
+            <tbody>
+              {clientes.length === 0 && !loading && (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: "center", color: "#607074" }}>
+                    No hay clientes registrados.
+                  </td>
+                </tr>
+              )}
+              {clientes.map((c) => (
+                <tr key={c.id}>
+                  <td>{c.id}</td>
+                  <td>{c.nombre}</td>
+                  <td>{c.telefono}</td>
+                  <td>{c.nif || "-"}</td>
+                  <td>{c.direccion || "-"}</td>
+                  <td>{c.correo || "-"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Tabla>
+        </TablaContainer>
+      )}
       {loading && <Cargando>Cargando...</Cargando>}
     </Wrapper>
   );
@@ -115,6 +135,35 @@ const Tabla = styled.table`
 
 const Cargando = styled.div`
   margin-top: 1.5rem;
+  text-align: center;
+  color: #607074;
+  font-size: 1.1rem;
+`;
+
+const ListaClientes = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+`;
+
+const CardCliente = styled.div`
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #404a4c22;
+  padding: 1.1rem 1rem;
+  border: 1.5px solid #a5c4ca;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+`;
+
+const Dato = styled.div`
+  font-size: 1.05rem;
+  color: #404a4c;
+`;
+
+const SinClientes = styled.div`
   text-align: center;
   color: #607074;
   font-size: 1.1rem;

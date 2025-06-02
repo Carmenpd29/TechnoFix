@@ -12,7 +12,7 @@ export function HomeTemplate() {
         </LogoFijo>
         <Titulo>¡Bienvenid@ a TechnoFix!</Titulo>
         <Texto>
-          Selecciona una opción en el menú lateral para comenzar.
+          Selecciona una opción para comenzar.
           <br /><br />
           <OptionHome>
             <p><span>- TPV</span> para ventas y gestión de productos.</p>
