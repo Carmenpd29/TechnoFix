@@ -44,37 +44,39 @@ export function VerClientes() {
         </ListaClientes>
       ) : (
         <TablaContainer>
-          <Tabla>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Teléfono</th>
-                <th>NIF</th>
-                <th>Dirección</th>
-                <th>Correo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clientes.length === 0 && !loading && (
+          <TablaScroll>
+            <Tabla>
+              <thead>
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", color: "#607074" }}>
-                    No hay clientes registrados.
-                  </td>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Teléfono</th>
+                  <th>NIF</th>
+                  <th>Dirección</th>
+                  <th>Correo</th>
                 </tr>
-              )}
-              {clientes.map((c) => (
-                <tr key={c.id}>
-                  <td>{c.id}</td>
-                  <td>{c.nombre}</td>
-                  <td>{c.telefono}</td>
-                  <td>{c.nif || "-"}</td>
-                  <td>{c.direccion || "-"}</td>
-                  <td>{c.correo || "-"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Tabla>
+              </thead>
+              <tbody>
+                {clientes.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: "center", color: "#607074" }}>
+                      No hay clientes registrados.
+                    </td>
+                  </tr>
+                )}
+                {clientes.map((c) => (
+                  <tr key={c.id}>
+                    <td>{c.id}</td>
+                    <td>{c.nombre}</td>
+                    <td>{c.telefono}</td>
+                    <td>{c.nif || "-"}</td>
+                    <td>{c.direccion || "-"}</td>
+                    <td>{c.correo || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Tabla>
+          </TablaScroll>
         </TablaContainer>
       )}
       {loading && <Cargando>Cargando...</Cargando>}
@@ -114,6 +116,15 @@ const TablaContainer = styled.div`
   width: 100%;
 `;
 
+const TablaScroll = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #404a4c22;
+  background: #fff;
+`;
+
 const Tabla = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -130,13 +141,13 @@ const Tabla = styled.table`
     background: #a5c4ca;
     color: #232728;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
   }
   tr:last-child td {
     border-bottom: none;
   }
   td {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #404a4c;
   }
 `;
