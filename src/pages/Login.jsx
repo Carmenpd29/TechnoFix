@@ -50,7 +50,7 @@ export function Login({ onLogin }) {
               <IconWrapper>
                 <FiUser size={38} />
               </IconWrapper>
-              Encargado/a
+              <span className="rol-nombre">Encargado/a</span>
             </RolButton>
             <RolButton
               type="button"
@@ -60,7 +60,7 @@ export function Login({ onLogin }) {
               <IconWrapper>
                 <FiUser size={38} />
               </IconWrapper>
-              Empleado
+              <span className="rol-nombre">Empleado</span>
             </RolButton>
           </Botonera>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
@@ -142,7 +142,7 @@ const RolButton = styled.button`
   background: ${({ active }) => (active ? "#607074" : "#a5c4ca")};
   color: ${({ active }) => (active ? "#caf0f8" : "#232728")};
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 0.8rem;
   cursor: pointer;
   box-shadow: ${({ active }) => (active ? "0 2px 8px #404a4c33" : "none")};
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
@@ -150,6 +150,14 @@ const RolButton = styled.button`
   &:hover {
     background: ${({ active }) => (active ? "#404a4c" : "#82999e")};
     color: #caf0f8;
+  }
+  .rol-nombre {
+    font-size: 0.93rem;
+    word-break: break-word;
+    text-align: center;
+    line-height: 1.1;
+    max-width: 100%;
+    display: block;
   }
 `;
 
