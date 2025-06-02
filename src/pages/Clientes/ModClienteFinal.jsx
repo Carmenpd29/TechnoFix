@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { BotonVolver, supabase } from "../../index";
 
 const initialState = {
@@ -10,56 +11,83 @@ const initialState = {
   correo: "",
 };
 
-export function InsertCliente() {
+export function ModClienteFinal() {
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [form, setForm] = useState(initialState);
-  const [touched, setTouched] = useState({});
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [error, setError] = useState("");
+
+  // Cargar datos del cliente
+  useEffect(() => {
+    async function fetchCliente() {
+      setMensaje("");
+      setError("");
+      setLoading(true);
+      let clienteData = location.state?.cliente;
+      if (!clienteData) {
+        const { data, error } = await supabase
+          .from("clientes")
+          .select("*")
+          .eq("id", id)
+          .single();
+        if (error || !data) {
+          setError("No se pudo cargar el cliente.");
+          setLoading(false);
+          return;
+        }
+        clienteData = data;
+      }
+      setForm({
+        nombre: clienteData.nombre || "",
+        telefono: clienteData.telefono || "",
+        nif: clienteData.nif || "",
+        direccion: clienteData.direccion || "",
+        correo: clienteData.correo || "",
+      });
+      setLoading(false);
+    }
+    fetchCliente();
+  }, [id, location.state]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleBlur = (e) => {
-    setTouched({ ...touched, [e.target.name]: true });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
     setMensaje("");
-    if (!form.nombre.trim() || !form.telefono.trim()) return;
-
+    setError("");
+    if (!form.nombre.trim() || !form.telefono.trim()) {
+      setError("Nombre y teléfono son obligatorios.");
+      return;
+    }
     setLoading(true);
-    const { error } = await supabase.from("clientes").insert([
-      {
+    const { error } = await supabase
+      .from("clientes")
+      .update({
         nombre: form.nombre,
         telefono: form.telefono,
         nif: form.nif || null,
         direccion: form.direccion || null,
         correo: form.correo || null,
-      },
-    ]);
+      })
+      .eq("id", id);
     setLoading(false);
-
     if (error) {
-      setMensaje("Error al insertar el cliente.");
+      setError("Error al modificar el cliente.");
     } else {
-      setMensaje("Cliente insertado correctamente.");
-      setForm(initialState);
-      setTouched({});
-      setSubmitted(false);
+      setMensaje("Cliente modificado correctamente.");
+      setTimeout(() => navigate("/clientes/ver"), 1200);
     }
   };
 
-  const errorNombre = submitted && !form.nombre.trim();
-  const errorTelefono = submitted && !form.telefono.trim();
-
   return (
-    <Wrapper style={{ position: "relative" }}>
+    <Wrapper>
       <BotonVolver to="/clientes" />
-      <Titulo>Insertar Cliente</Titulo>
+      <Titulo>Editar Cliente</Titulo>
       <Form onSubmit={handleSubmit} autoComplete="off">
         <Field>
           <Label>Nombre <span>*</span></Label>
@@ -67,13 +95,10 @@ export function InsertCliente() {
             name="nombre"
             value={form.nombre}
             onChange={handleChange}
-            onBlur={handleBlur}
             required
-            $error={errorNombre}
             placeholder="Nombre del cliente"
             disabled={loading}
           />
-          {errorNombre && <Error>El nombre es obligatorio</Error>}
         </Field>
         <Field>
           <Label>Teléfono <span>*</span></Label>
@@ -81,13 +106,10 @@ export function InsertCliente() {
             name="telefono"
             value={form.telefono}
             onChange={handleChange}
-            onBlur={handleBlur}
             required
-            $error={errorTelefono}
             placeholder="Teléfono de contacto"
             disabled={loading}
           />
-          {errorTelefono && <Error>El teléfono es obligatorio</Error>}
         </Field>
         <Field>
           <Label>NIF</Label>
@@ -95,7 +117,6 @@ export function InsertCliente() {
             name="nif"
             value={form.nif}
             onChange={handleChange}
-            onBlur={handleBlur}
             placeholder="NIF (opcional)"
             disabled={loading}
           />
@@ -106,7 +127,6 @@ export function InsertCliente() {
             name="direccion"
             value={form.direccion}
             onChange={handleChange}
-            onBlur={handleBlur}
             placeholder="Dirección (opcional)"
             disabled={loading}
           />
@@ -117,24 +137,20 @@ export function InsertCliente() {
             name="correo"
             value={form.correo}
             onChange={handleChange}
-            onBlur={handleBlur}
             placeholder="Correo electrónico (opcional)"
             type="email"
             disabled={loading}
           />
         </Field>
         <Boton type="submit" disabled={loading}>
-          {loading ? "Guardando..." : "Guardar cliente"}
+          {loading ? "Modificando..." : "Modificar"}
         </Boton>
       </Form>
       {mensaje && <Mensaje>{mensaje}</Mensaje>}
-      <Nota>
-        <span>()</span> Datos opcionales para clientes que requieran factura.
-      </Nota>
+      {error && <ErrorMsg>{error}</ErrorMsg>}
     </Wrapper>
   );
 }
-
 
 const Wrapper = styled.div`
   width: 90%;
@@ -151,11 +167,11 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   position: relative;
   padding-top: 2.5rem;
-
   @media (max-width: 700px) {
     padding-top: 4.5rem;
   }
 `;
+
 const Titulo = styled.h2`
   font-size: 1.7rem;
   margin-bottom: 1.5rem;
@@ -189,7 +205,7 @@ const Label = styled.label`
 
 const Input = styled.input`
   padding: 0.6rem 0.8rem;
-  border: 1.5px solid ${({ $error }) => ($error ? "#e74c3c" : "#a5c4ca")};
+  border: 1.5px solid #a5c4ca;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
@@ -197,12 +213,6 @@ const Input = styled.input`
   &:focus {
     border-color: #607074;
   }
-`;
-
-const Error = styled.span`
-  color: #e74c3c;
-  font-size: 0.95rem;
-  margin-top: 0.2rem;
 `;
 
 const Boton = styled.button`
@@ -221,20 +231,16 @@ const Boton = styled.button`
   }
 `;
 
-const Nota = styled.div`
-  margin-top: 1.5rem;
-  color: #607074;
-  font-size: 0.98rem;
-  text-align: center;
-  span {
-    color: #e74c3c;
-    font-weight: bold;
-  }
-`;
-
 const Mensaje = styled.div`
   margin-top: 1rem;
   color: #2e7d32;
+  font-weight: 600;
+  text-align: center;
+`;
+
+const ErrorMsg = styled.div`
+  color: #e74c3c;
+  margin-top: 1rem;
   font-weight: 600;
   text-align: center;
 `;

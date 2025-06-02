@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { BotonVolver } from "../../components/BotonVolver";
+import { BotonVolver } from "../../index";
 
 export function Productos() {
   return (

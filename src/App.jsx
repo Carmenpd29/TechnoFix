@@ -2,12 +2,15 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { FiMenu } from "react-icons/fi";
-import { GlobalStyles, MyRoutes, Sidebar } from "./index";
-import { Device } from "./styles/breakpoints";
-import { Login } from "./pages/Login";
-import { useUserStore } from "./store/userStore";
-import { MenuHambur } from "./components/menu/MenuHambur";
-import { Footer } from "./components/Footer";
+import {
+  GlobalStyles,
+  MyRoutes,
+  Sidebar,
+  Login,
+  useUserStore,
+  MenuHambur,
+  Footer
+} from "./index";
 
 function App() {
   const user = useUserStore((state) => state.user);

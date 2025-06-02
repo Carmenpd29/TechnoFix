@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { supabase } from "../../supabase/supabaseClient";
-import { useMediaQuery } from "react-responsive"; 
-import { BotonVolver } from "../../components/BotonVolver";
+import { BotonVolver, supabase } from "../../index";
 
 export function VerClientes() {
   const [clientes, setClientes] = useState([]);
@@ -21,7 +19,7 @@ export function VerClientes() {
     fetchClientes();
   }, []);
 
-  const isMobile = window.innerWidth < 700; // O usa useMediaQuery si prefieres
+  const isMobile = window.innerWidth < 700; 
 
   return (
     <Wrapper style={{ position: "relative" }}>
@@ -141,7 +139,7 @@ const Tabla = styled.table`
     background: #a5c4ca;
     color: #232728;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   tr:last-child td {
     border-bottom: none;

@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase } from '../index';
 
 export async function loginSupabase(rol, password) {
   const { data, error } = await supabase

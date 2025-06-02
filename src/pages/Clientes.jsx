@@ -4,27 +4,48 @@ import { useNavigate } from "react-router-dom";
 
 export function Clientes({ user }) {
   const navigate = useNavigate();
+  const rol = user?.rol || "empleado"; 
+
+  // Opciones con permisos por rol
+  const opciones = [
+    {
+      label: "Ver",
+      icon: <FiUsers size={42} />,
+      onClick: () => navigate("/clientes/ver"),
+      visible: true,
+    },
+    {
+      label: "Insertar",
+      icon: <FiUserPlus size={42} />,
+      onClick: () => navigate("/clientes/insertar"),
+      visible: true,
+    },
+    {
+      label: "Modificar",
+      icon: <FiEdit size={42} />,
+      onClick: () => navigate("/clientes/modificar"),
+      visible: rol === "admin" || rol === "encargado",
+    },
+    {
+      label: "Eliminar",
+      icon: <FiUserX size={42} />,
+      onClick: () => navigate("/clientes/eliminar"),
+      visible: rol === "admin",
+    },
+  ];
 
   return (
     <ClientesWrapper>
       <Titulo>Clientes</Titulo>
       <Opciones>
-        <Opcion onClick={() => navigate("/clientes/ver")}>
-          <FiUsers size={42} />
-          <span>Ver</span>
-        </Opcion>
-        <Opcion onClick={() => navigate("/clientes/insertar")}>
-          <FiUserPlus size={42} />
-          <span>Insertar</span>
-        </Opcion>
-        <Opcion>
-          <FiEdit size={42} />
-          <span>Modificar</span>
-        </Opcion>
-        <Opcion>
-          <FiUserX size={42} />
-          <span>Eliminar</span>
-        </Opcion>
+        {opciones
+          .filter(op => op.visible)
+          .map(op => (
+            <Opcion key={op.label} onClick={op.onClick}>
+              {op.icon}
+              <span>{op.label}</span>
+            </Opcion>
+          ))}
       </Opciones>
       <Manual>
         <p>Selecciona una opción para gestionar los clientes.</p>

@@ -116,7 +116,7 @@ const SalirButton = styled.button`
   font-weight: 700;
   padding: 0.38rem 0.95rem;
   cursor: pointer;
-  margin: 1.2rem auto 0.2rem auto; /* Centrado horizontal */
+  margin: 1.2rem auto 0.2rem auto;
   display: flex;
   align-items: center;
   box-shadow: 0 1px 4px #d32f2f22;

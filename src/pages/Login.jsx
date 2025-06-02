@@ -34,7 +34,7 @@ export function Login({ onLogin }) {
           <Botonera>
             <RolButton
               type="button"
-              active={rol === "admin"}
+              $active={rol === "admin"}
               onClick={() => handleRol("admin")}
             >
               <IconWrapper>
@@ -44,7 +44,7 @@ export function Login({ onLogin }) {
             </RolButton>
             <RolButton
               type="button"
-              active={rol === "encargado"}
+              $active={rol === "encargado"}
               onClick={() => handleRol("encargado")}
             >
               <IconWrapper>
@@ -54,7 +54,7 @@ export function Login({ onLogin }) {
             </RolButton>
             <RolButton
               type="button"
-              active={rol === "empleado"}
+              $active={rol === "empleado"}
               onClick={() => handleRol("empleado")}
             >
               <IconWrapper>
@@ -64,14 +64,22 @@ export function Login({ onLogin }) {
             </RolButton>
           </Botonera>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <input
+              type="text"
+              name="username"
+              autoComplete="username"
+              style={{ display: "none" }}
+              tabIndex={-1}
+            />
             <Input
               type="password"
               placeholder="Contraseña"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
+              autoComplete="new-password"
             />
-            <Entrar type="submit">Entrar</Entrar>
+            <Entrar type="submit" $active={rol === "admin"}>Entrar</Entrar>
             {error && <ErrorMsg>{error}</ErrorMsg>}
           </form>
         </Caja>
@@ -139,16 +147,16 @@ const RolButton = styled.button`
   padding: 0.7rem 0.2rem;
   border: none;
   border-radius: 12px;
-  background: ${({ active }) => (active ? "#607074" : "#a5c4ca")};
-  color: ${({ active }) => (active ? "#caf0f8" : "#232728")};
+  background: ${({ $active }) => ($active ? "#607074" : "#a5c4ca")};
+  color: ${({ $active }) => ($active ? "#caf0f8" : "#232728")};
   font-weight: 600;
   font-size: 0.8rem;
   cursor: pointer;
-  box-shadow: ${({ active }) => (active ? "0 2px 8px #404a4c33" : "none")};
+  box-shadow: ${({ $active }) => ($active ? "0 2px 8px #404a4c33" : "none")};
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  outline: ${({ active }) => (active ? "2px solid #404a4c" : "none")};
+  outline: ${({ $active }) => ($active ? "2px solid #404a4c" : "none")};
   &:hover {
-    background: ${({ active }) => (active ? "#404a4c" : "#82999e")};
+    background: ${({ $active }) => ($active ? "#404a4c" : "#82999e")};
     color: #caf0f8;
   }
   .rol-nombre {
@@ -206,6 +214,7 @@ const Entrar = styled.button`
     background: linear-gradient(90deg, #404a4c 60%, #232728 100%);
     box-shadow: 0 4px 16px #404a4c55;
   }
+  background: ${({ $active }) => ($active ? "..." : "...")}; 
 `;
 
 const ErrorMsg = styled.div`
