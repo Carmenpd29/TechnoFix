@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { supabase } from "../../supabaseClient"; // Ajusta la ruta si es necesario
+import { BotonVolver } from "../../components/BotonVolver";
 
 const initialState = {
   nombre: "",
@@ -57,7 +58,8 @@ export function InsertCliente() {
   const errorTelefono = submitted && !form.telefono.trim();
 
   return (
-    <Wrapper>
+    <Wrapper style={{ position: "relative" }}>
+      <BotonVolver to="/clientes" />
       <Titulo>Insertar Cliente</Titulo>
       <Form onSubmit={handleSubmit} autoComplete="off">
         <Field>
@@ -138,7 +140,7 @@ export function InsertCliente() {
 const Wrapper = styled.div`
   width: 90%;
   margin: 2.5rem auto;
-  padding: 1.5rem 1rem 2rem 1rem;
+  padding: 1.5rem 1rem 1.5rem 1rem;
   background: #f8fafb;
   border-radius: 22px;
   box-shadow: 0 2px 18px #404a4c22;
@@ -148,8 +150,13 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-`;
+  position: relative;
+  padding-top: 2.5rem;
 
+  @media (max-width: 700px) {
+    padding-top: 4.5rem;
+  }
+`;
 const Titulo = styled.h2`
   font-size: 1.7rem;
   margin-bottom: 1.5rem;

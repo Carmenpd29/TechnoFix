@@ -88,7 +88,7 @@ const MenuOption = styled.button`
   border: none;
   color: #fff;
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.50rem;
+  font-size: 1.40rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;
   border-radius: 6px;

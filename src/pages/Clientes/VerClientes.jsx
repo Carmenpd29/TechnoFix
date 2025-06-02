@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { supabase } from "../../supabase/supabaseClient";
 import { useMediaQuery } from "react-responsive"; 
+import { BotonVolver } from "../../components/BotonVolver";
 
 export function VerClientes() {
   const [clientes, setClientes] = useState([]);
@@ -23,7 +24,8 @@ export function VerClientes() {
   const isMobile = window.innerWidth < 700; // O usa useMediaQuery si prefieres
 
   return (
-    <Wrapper>
+    <Wrapper style={{ position: "relative" }}>
+      <BotonVolver to="/clientes" />
       <Titulo>Listado de Clientes</Titulo>
       {isMobile ? (
         <ListaClientes>
@@ -83,7 +85,7 @@ export function VerClientes() {
 const Wrapper = styled.div`
   width: 90%;
   margin: 2.5rem auto;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 1rem 1.5rem 1rem;
   background: #f8fafb;
   border-radius: 22px;
   box-shadow: 0 2px 18px #404a4c22;
@@ -93,6 +95,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  position: relative;
+  padding-top: 2.5rem;
+
+  @media (max-width: 700px) {
+    padding-top: 4.5rem;
+  }
 `;
 
 const Titulo = styled.h2`

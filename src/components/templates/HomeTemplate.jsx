@@ -42,7 +42,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 90vw;
+  width: 80vw;
   max-width: 420px;
   min-width: 0;
 
@@ -80,11 +80,15 @@ const Texto = styled.p`
 
 const OptionHome = styled.div`
   height: 100%;
-  width: 90%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   text-align: left;
   p {
-    margin: 0.15rem 0; 
+    margin: 0.05rem 0; 
+    font-size: 0.9rem;
+  }
+  span { 
+    font-size: 1rem;
   }
 `;

@@ -27,10 +27,7 @@ export function MenuHambur({ onLogout, open, setOpen }) {
     <>
       <Backdrop onClick={() => setOpen(false)} />
       <Overlay>
-        <CloseButton
-          onClick={() => setOpen(false)}
-          aria-label="Cerrar menú"
-        >
+        <CloseButton onClick={() => setOpen(false)} aria-label="Cerrar menú" >
           <FiX size={30} />
         </CloseButton>
         <MenuLayout>
@@ -45,10 +42,7 @@ export function MenuHambur({ onLogout, open, setOpen }) {
           />
           <MenuLinks>
             {menu.map((item) => (
-              <MenuOption
-                key={item.to}
-                onClick={() => handleNavigate(item.to)}
-              >
+              <MenuOption key={item.to} onClick={() => handleNavigate(item.to)} >
                 {item.label}
               </MenuOption>
             ))}
@@ -173,7 +167,7 @@ const MenuOption = styled.button`
   border: none;
   color: #fff;
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.50rem;
+  font-size: 1.40rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;
   border-radius: 6px;

@@ -2,7 +2,6 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { FiMenu } from "react-icons/fi";
-
 import { GlobalStyles, MyRoutes, Sidebar } from "./index";
 import { Device } from "./styles/breakpoints";
 import { Login } from "./pages/Login";
