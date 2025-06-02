@@ -34,7 +34,15 @@ export function MenuHambur({ onLogout, open, setOpen }) {
           <FiX size={30} />
         </CloseButton>
         <MenuLayout>
-          <LogoHambur src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
+          <LogoHambur
+            src="/TechnoFix/assets/Logo.png"
+            alt="TechnoFix logo"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setOpen(false);
+              navigate("/home");
+            }}
+          />
           <MenuLinks>
             {menu.map((item) => (
               <MenuOption

@@ -14,7 +14,12 @@ export function Sidebar({ user, onLogout }) {
   return (
     <SidebarLayout>
       <div>
-        <LogoMenu src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" />
+        <LogoMenu
+          src="/TechnoFix/assets/Logo.png"
+          alt="TechnoFix logo"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/home")}
+        />
         <BarraSeparadora />
         <MenuLinks>
           {menu
