@@ -29,6 +29,14 @@ export function Users() {
           </Opcion>
         ))}
       </Opciones>
+      <Manual>
+         Aquí puedes gestionar los usuarios de la aplicación.
+        <p>
+          - <b>Usuarios</b> para ver y editar usuarios.
+          <br />
+          - <b>Añadir</b> para crear un nuevo usuario.
+        </p>
+      </Manual>
     </Wrapper>
   );
 }
@@ -37,12 +45,16 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 2.5rem;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  max-width: 600px;   
+  margin: 0 auto; 
 `;
 
 const Titulo = styled.h2`
   font-size: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const Opciones = styled.div`
@@ -106,4 +118,13 @@ const IconWrapper = styled.div`
     max-height: 36px !important;
     flex-shrink: 0;
   }
+`;
+
+const Manual = styled.div`
+  color: #607074;
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+  text-align: left; 
+  max-width: 350px;   
+  width: 100%;
 `;

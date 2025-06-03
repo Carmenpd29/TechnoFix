@@ -25,7 +25,14 @@ export function Login({ onLogin }) {
     });
 
     if (authError) {
-      setError("Usuario o contraseña incorrectos.");
+      if (
+        authError.message?.toLowerCase().includes("email not confirmed") ||
+        authError.message?.toLowerCase().includes("correo no confirmado")
+      ) {
+        setError("Debes confirmar tu correo antes de iniciar sesión. Revisa tu bandeja de entrada.");
+      } else {
+        setError("Usuario o contraseña incorrectos.");
+      }
       return;
     }
 

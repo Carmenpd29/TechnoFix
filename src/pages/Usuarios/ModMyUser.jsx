@@ -1,29 +1,27 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { supabase, BotonVolver } from "../../index";
 
-export function ModUsers() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const usuario = location.state?.usuario;
-
-  const [form, setForm] = useState({
-    rol: usuario?.rol || "",
-  });
+export function ModMyUser() {
+  const [user, setUser] = useState(null);
+  const [form, setForm] = useState({ passwordActual: "", passwordNueva: "" });
   const [mensaje, setMensaje] = useState("");
   const [mensajeTipo, setMensajeTipo] = useState(""); // "error" o "success"
   const [loading, setLoading] = useState(false);
 
-  if (!usuario) {
-    return (
-      <Wrapper>
-        <BotonVolver to="/usuarios/lista" />
-        <Titulo>Modificar Usuario</Titulo>
-        <Mensaje $tipo="error">No se ha encontrado el usuario.</Mensaje>
-      </Wrapper>
-    );
-  }
+  useEffect(() => {
+    (async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        const { data: usuarioDB } = await supabase
+          .from("usuarios")
+          .select("nombre, email")
+          .eq("uid", authUser.id)
+          .single();
+        setUser({ ...usuarioDB, email: authUser.email });
+      }
+    })();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,58 +33,81 @@ export function ModUsers() {
     setMensajeTipo("");
     setLoading(true);
 
-    if (!form.rol) {
-      setMensaje("El rol es obligatorio.");
+    // 1. Reautenticación: comprobar contraseña actual
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: form.passwordActual,
+    });
+    if (loginError) {
+      setMensaje("La contraseña actual no es correcta.");
       setMensajeTipo("error");
       setLoading(false);
       return;
     }
 
-    const { error } = await supabase
-      .from("usuarios")
-      .update({ rol: form.rol })
-      .eq("id", usuario.id);
-
+    // 2. Cambiar la contraseña
+    const { error } = await supabase.auth.updateUser({
+      password: form.passwordNueva,
+    });
     setLoading(false);
-
     if (error) {
-      setMensaje("Error al actualizar el usuario.");
+      setMensaje("Error al cambiar la contraseña.");
       setMensajeTipo("error");
     } else {
-      setMensaje("Rol actualizado correctamente.");
+      setMensaje("Contraseña cambiada correctamente.");
       setMensajeTipo("success");
+      setForm({ passwordActual: "", passwordNueva: "" });
     }
   };
 
+  if (!user) {
+    return (
+      <Wrapper>
+        <Titulo>Mi cuenta</Titulo>
+        <Mensaje>Cargando...</Mensaje>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper style={{ position: "relative" }}>
-      <BotonVolver to="/usuarios/lista" />
-      <Titulo>Modificar Usuario</Titulo>
+      <BotonVolver to="/home" />
+      <Titulo>Mi cuenta</Titulo>
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <Field>
             <Label>Nombre</Label>
+            <Input value={user.nombre} disabled readOnly />
+          </Field>
+          <Field>
+            <Label>Email</Label>
+            <Input value={user.email} disabled readOnly />
+          </Field>
+          <Field>
+            <Label>Contraseña actual</Label>
             <Input
-              name="nombre"
-              value={usuario.nombre}
-              disabled
-              readOnly
+              name="passwordActual"
+              type="password"
+              value={form.passwordActual}
+              onChange={handleChange}
+              required
+              autoComplete="current-password"
+              placeholder="Introduce tu contraseña actual"
+              disabled={loading}
             />
           </Field>
           <Field>
-            <Label>Rol</Label>
-            <Select
-              name="rol"
-              value={form.rol}
+            <Label>Nueva contraseña</Label>
+            <Input
+              name="passwordNueva"
+              type="password"
+              value={form.passwordNueva}
               onChange={handleChange}
               required
+              autoComplete="new-password"
+              placeholder="Introduce la nueva contraseña"
               disabled={loading}
-            >
-              <option value="">Selecciona un rol</option>
-              <option value="admin">Administrador</option>
-              <option value="encargado">Encargado/a</option>
-              <option value="empleado">Empleado/a</option>
-            </Select>
+            />
           </Field>
           <Boton type="submit" disabled={loading}>
             {loading ? "Guardando..." : "Guardar cambios"}
@@ -99,7 +120,6 @@ export function ModUsers() {
     </Wrapper>
   );
 }
-
 
 const Wrapper = styled.div`
   width: 95%;
@@ -198,4 +218,17 @@ const Mensaje = styled.p`
   font-weight: 600;
   color: ${({ $tipo }) => ($tipo === "success" ? "#2e7d32" : "#d9534f")};
   text-align: center;
+`;
+
+const NombreUsuario = styled.a`
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: #007bff;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.3s;
+  &:hover {
+    color: #0056b3;
+  }
 `;

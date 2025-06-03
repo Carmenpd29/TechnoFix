@@ -171,10 +171,10 @@ const Tabla = styled.table`
     background: #a5c4ca;
     color: #232728;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   td {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #404a4c;
     vertical-align: middle;
   }
@@ -273,7 +273,7 @@ const CancelButton = styled.button`
 `;
 
 const Mensaje = styled.div`
-  margin-top: 1rem;
+  margin-top: 0.9rem;
   text-align: center;
   color: ${({ error }) => (error ? "#d32f2f" : "#4caf50")};
   font-size: 1.1rem;
@@ -334,7 +334,7 @@ const handleLogin = async (e) => {
     return;
   }
 
-  // Obtén el usuario de tu tabla por UID
+  // Obtener el usuario de la tabla por UID
   const { data: usuarioDB, error: dbError } = await supabase
     .from("usuarios")
     .select("*")

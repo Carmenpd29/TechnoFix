@@ -9,7 +9,8 @@ import {
   Login,
   useUserStore,
   MenuHambur,
-  Footer
+  Footer,
+  ModMyUser
 } from "./index";
 
 function App() {

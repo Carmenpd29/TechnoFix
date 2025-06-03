@@ -13,7 +13,8 @@ import {
   AdminUsers,
   NewUser,
   Users,
-  ModUsers
+  ModUsers,
+  ModMyUser
 } from "../index";
 
 export function MyRoutes({ user }) {
@@ -37,6 +38,7 @@ export function MyRoutes({ user }) {
       <Route path="/usuarios/lista" element={<AdminUsers />} />
       <Route path="/usuarios/nuevo" element={<NewUser />} />
       <Route path="/usuarios/editar" element={<ModUsers />} />
+      <Route path="/usuarios/editarme" element={<ModMyUser />} />
       <Route path="*" element={<Home />} />
     </Routes>
   );
