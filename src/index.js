@@ -1,4 +1,6 @@
 export { default as App } from './App';
+export * from './supabase/supabaseClient';
+export * from './store/userStore';
 export * from './styles/GlobalStyles';
 export * from './styles/breakpoints';
 export * from './styles/FondoDegradado';
@@ -20,5 +22,7 @@ export * from './pages/Clientes/InsertCliente';
 export * from './pages/Clientes/ModCliente';
 export * from './pages/Clientes/ModClienteFinal';
 export * from './pages/Clientes/DelCliente';
-export * from './supabase/supabaseClient';
-export * from './store/userStore';
+export * from './pages/Users';
+export * from './pages/Usuarios/AdminUsers';
+export * from './pages/Usuarios/NewUser';
+export * from './pages/Usuarios/ModUsers';

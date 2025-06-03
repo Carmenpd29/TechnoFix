@@ -2,13 +2,16 @@ import styled from "styled-components";
 import { FiX, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
-const menu = [
-  { label: "TPV", to: "/tpv" },
-  { label: "Clientes", to: "/clientes" },
-];
-
-export function MenuHambur({ onLogout, open, setOpen }) {
+export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
+
+  const menu = [
+    { label: "TPV", to: "/tpv" },
+    { label: "Clientes", to: "/clientes" },
+    ...(user?.rol === "admin"
+      ? [{ label: "Usuarios", to: "/usuarios" }]
+      : []),
+  ];
 
   const handleNavigate = (to) => {
     setOpen(false);
@@ -49,6 +52,7 @@ export function MenuHambur({ onLogout, open, setOpen }) {
           </MenuLinks>
           <SalirColumn>
             <div style={{ height: "2.5rem" }} />
+            {user?.nombre && <NombreUsuario>{user.nombre}</NombreUsuario>}
             <SalirButton onClick={handleLogout}>
               <FiLogOut size={16} style={{ marginRight: 6 }} />
               Salir
@@ -117,7 +121,7 @@ const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.15rem; 
 `;
 
 const SalirColumn = styled.div`
@@ -165,11 +169,11 @@ const SalirButton = styled.button`
 const MenuOption = styled.button`
   background: none;
   border: none;
-  color: #fff;
+  color:rgb(14, 41, 61);
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.40rem;
+  font-size: 1.10rem; 
   font-weight: bold;
-  padding: 0.7rem 1.2rem;
+  padding: 0.45rem 0.8rem; 
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -191,4 +195,13 @@ const Backdrop = styled.div`
   inset: 0;
   background: rgba(30, 44, 54, 0.25);
   z-index: 199;
+`;
+
+const NombreUsuario = styled.div`
+  font-size: 1.08rem;
+  color:rgb(66, 80, 83);
+  font-weight: 600;
+  text-align: center;
+  margin: 0.2rem 0 0.2rem 0; // margen pequeño arriba y abajo
+  letter-spacing: 0.5px;
 `;

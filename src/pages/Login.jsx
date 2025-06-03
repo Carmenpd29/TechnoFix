@@ -1,28 +1,90 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { FiUser, FiSettings } from "react-icons/fi";
 import { Footer } from "../components/Footer";
-import { loginSupabase } from "../supabase/auth"; // importa la función
+import { supabase } from "../index";
 
 export function Login({ onLogin }) {
-  const [rol, setRol] = useState("admin");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRol = (nuevoRol) => {
-    setRol(nuevoRol);
-    setPassword("");
-    setError("");
-  };
+  // Registro
+  const [regNombre, setRegNombre] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [regMensaje, setRegMensaje] = useState("");
 
+  // LOGIN
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const user = await loginSupabase(rol, password);
-    if (user) {
-      onLogin(user); // puedes guardar el usuario en Zustand aquí si quieres
-      setError("");
-    } else {
-      setError("Contraseña incorrecta o usuario no existe");
+    setError("");
+    // Login con Supabase Auth
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError) {
+      setError("Usuario o contraseña incorrectos.");
+      return;
+    }
+
+    // Busca el usuario en tu tabla por uid
+    const { data: usuarioDB, error: dbError } = await supabase
+      .from("usuarios")
+      .select("*")
+      .eq("uid", data.user.id)
+      .single();
+
+    if (dbError || !usuarioDB) {
+      setError("No tienes permiso para acceder.");
+      return;
+    }
+    if (!usuarioDB.rol) {
+      setError("Tu cuenta aún no ha sido validada por un administrador.");
+      return;
+    }
+    onLogin(usuarioDB);
+  };
+
+  // REGISTRO
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setRegMensaje("");
+    if (!regNombre.trim() || !regEmail.trim() || !regPassword.trim()) {
+      setRegMensaje("Rellena todos los campos.");
+      return;
+    }
+
+    // 1. Registrar en Supabase Auth
+    const { data, error } = await supabase.auth.signUp({
+      email: regEmail,
+      password: regPassword,
+    });
+
+    if (error) {
+      setRegMensaje("Error al registrar, email en uso o contraseña de menos de 6 caracteres.");
+      return;
+    }
+
+    // 2. Guardar en tu tabla usuarios
+    if (data?.user) {
+      const { error: insertError } = await supabase
+        .from("usuarios")
+        .insert([{
+          nombre: regNombre,
+          email: regEmail,
+          rol: null,
+          uid: data.user.id,
+        }]);
+      if (insertError) {
+        setRegMensaje("Error al guardar usuario: " + insertError.message);
+      } else {
+        setRegMensaje("¡Registro enviado! Espera a que el admin te valide.");
+        setRegNombre("");
+        setRegEmail("");
+        setRegPassword("");
+      }
     }
   };
 
@@ -31,45 +93,14 @@ export function Login({ onLogin }) {
       <FondoDegradado>
         <Caja>
           <Titulo>Iniciar sesión</Titulo>
-          <Botonera>
-            <RolButton
-              type="button"
-              $active={rol === "admin"}
-              onClick={() => handleRol("admin")}
-            >
-              <IconWrapper>
-                <FiSettings size={38} />
-              </IconWrapper>
-              Admin
-            </RolButton>
-            <RolButton
-              type="button"
-              $active={rol === "encargado"}
-              onClick={() => handleRol("encargado")}
-            >
-              <IconWrapper>
-                <FiUser size={38} />
-              </IconWrapper>
-              <span className="rol-nombre">Encargado/a</span>
-            </RolButton>
-            <RolButton
-              type="button"
-              $active={rol === "empleado"}
-              onClick={() => handleRol("empleado")}
-            >
-              <IconWrapper>
-                <FiUser size={38} />
-              </IconWrapper>
-              <span className="rol-nombre">Empleado</span>
-            </RolButton>
-          </Botonera>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-            <input
-              type="text"
-              name="username"
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
               autoComplete="username"
-              style={{ display: "none" }}
-              tabIndex={-1}
             />
             <Input
               type="password"
@@ -77,10 +108,40 @@ export function Login({ onLogin }) {
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
+            />
+            <Entrar type="submit">Entrar</Entrar>
+            {error && <ErrorMsg>{error}</ErrorMsg>}
+          </form>
+          <BarraSeparadora />
+          <Subtitulo>¿No tienes cuenta? Regístrate</Subtitulo>
+          <form onSubmit={handleRegister} style={{ width: "100%" }}>
+            <Input
+              type="text"
+              placeholder="Nombre"
+              value={regNombre}
+              onChange={e => setRegNombre(e.target.value)}
+              required
+              autoComplete="off"
+            />
+            <Input
+              type="email"
+              placeholder="Email"
+              value={regEmail}
+              onChange={e => setRegEmail(e.target.value)}
+              required
+              autoComplete="off"
+            />
+            <Input
+              type="password"
+              placeholder="Contraseña (6 caracteres mínimo)"
+              value={regPassword}
+              onChange={e => setRegPassword(e.target.value)}
+              required
               autoComplete="new-password"
             />
-            <Entrar type="submit" $active={rol === "admin"}>Entrar</Entrar>
-            {error && <ErrorMsg>{error}</ErrorMsg>}
+            <Entrar type="submit">Aceptar</Entrar>
+            {regMensaje && <RegMsg>{regMensaje}</RegMsg>}
           </form>
         </Caja>
       </FondoDegradado>
@@ -89,6 +150,7 @@ export function Login({ onLogin }) {
   );
 }
 
+// --- ESTILOS ---
 const LoginWrapper = styled.div`
   min-height: 100vh;
   display: flex;
@@ -108,7 +170,6 @@ const Caja = styled.div`
   flex-direction: column;
   align-items: center;
   transition: box-shadow 0.2s, border 0.2s;
-
   @media (max-width: 480px) {
     padding: 1.2rem 0.7rem 1.5rem 0.7rem;
     max-width: 98vw;
@@ -124,56 +185,12 @@ const Titulo = styled.h2`
   font-family: 'Poppins';
 `;
 
-const Botonera = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.7rem;
-  width: 100%;
-  justify-content: center;
-`;
-
-const RolButton = styled.button`
-  font-family: 'Poppins';
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1 / 1; 
-  min-width: 90px;
-  max-width: 120px;
-  min-height: 90px;
-  max-height: 120px;
-  padding: 0.7rem 0.2rem;
-  border: none;
-  border-radius: 12px;
-  background: ${({ $active }) => ($active ? "#607074" : "#a5c4ca")};
-  color: ${({ $active }) => ($active ? "#caf0f8" : "#232728")};
+const Subtitulo = styled.h3`
+  color: #232728;
+  margin: 1.2rem 0 1rem 0;
+  font-size: 1.1rem;
   font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  box-shadow: ${({ $active }) => ($active ? "0 2px 8px #404a4c33" : "none")};
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  outline: ${({ $active }) => ($active ? "2px solid #404a4c" : "none")};
-  &:hover {
-    background: ${({ $active }) => ($active ? "#404a4c" : "#82999e")};
-    color: #caf0f8;
-  }
-  .rol-nombre {
-    font-size: 0.93rem;
-    word-break: break-word;
-    text-align: center;
-    line-height: 1.1;
-    max-width: 100%;
-    display: block;
-  }
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 0.7rem; 
+  text-align: center;
 `;
 
 const Input = styled.input`
@@ -214,15 +231,29 @@ const Entrar = styled.button`
     background: linear-gradient(90deg, #404a4c 60%, #232728 100%);
     box-shadow: 0 4px 16px #404a4c55;
   }
-  background: ${({ $active }) => ($active ? "..." : "...")}; 
 `;
 
 const ErrorMsg = styled.div`
   color: #d32f2f;
   margin-top: 0.7rem;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.2px;
+`;
+
+const RegMsg = styled.div`
+  color:rgb(47, 129, 44);
+  margin-top: 0.7rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+`;
+
+const BarraSeparadora = styled.hr`
+  width: 100%;
+  border: none;
+  border-top: 1.5px solid #a5c4ca;
+  margin: 2rem 0 1.2rem 0;
 `;
 
 const FondoDegradado = styled.div`

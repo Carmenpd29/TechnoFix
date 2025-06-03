@@ -21,7 +21,7 @@ const Volver = styled.button`
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1.1rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   display: flex;
   align-items: center;

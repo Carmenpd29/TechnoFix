@@ -10,9 +10,10 @@ const menuTrabajador = [
 
 export function Sidebar({ user, onLogout }) {
   const navigate = useNavigate();
-  const menu = menuTrabajador; 
+  const rol = user?.rol;
+
   return (
-    <SidebarLayout>
+    <SidebarWrapper>
       <div>
         <LogoMenu
           src="/TechnoFix/assets/Logo.png"
@@ -20,9 +21,22 @@ export function Sidebar({ user, onLogout }) {
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/home")}
         />
+        
+        <BarraSeparadora />
+        {user?.nombre && <NombreUsuario>{user.nombre}</NombreUsuario>}
         <BarraSeparadora />
         <MenuLinks>
-          {menu
+          {/* Opción Usuarios solo para admin */}
+          {rol === "admin" && (
+            <>
+              <MenuOption onClick={() => navigate("/usuarios")}>
+                Usuarios
+              </MenuOption>
+              <BarraSeparadora />
+            </>
+          )}
+          {/* Opciones para todos los usuarios */}
+          {menuTrabajador
             .filter((item) => item.action !== "logout")
             .map((item) => (
               <MenuOption key={item.to} onClick={() => navigate(item.to)}>
@@ -34,16 +48,15 @@ export function Sidebar({ user, onLogout }) {
       <div>
         <BarraSeparadora />
         <SalirButton onClick={onLogout}>
-        <FiLogOut size={16} style={{ marginRight: 6 }} />
-        Salir
-      </SalirButton>
+          <FiLogOut size={16} style={{ marginRight: 6 }} />
+          Salir
+        </SalirButton>
       </div>
-      
-    </SidebarLayout>
+    </SidebarWrapper>
   );
 }
 
-const SidebarLayout = styled.nav`
+const SidebarWrapper = styled.nav`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -75,6 +88,15 @@ const LogoMenu = styled.img`
   margin: 0 0 1.2rem 0.6rem;
 `;
 
+const NombreUsuario = styled.div`
+  font-size: 1.08rem;
+  color:rgb(77, 93, 97);
+  font-weight: 600;
+  text-align: center;
+  margin: 0.2rem 0 0.2rem 0; // margen pequeño arriba y abajo
+  letter-spacing: 0.5px;
+`;
+
 const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
@@ -86,7 +108,7 @@ const MenuLinks = styled.div`
 const MenuOption = styled.button`
   background: none;
   border: none;
-  color: #fff;
+  color:rgb(14, 41, 61);
   font-family: 'Montserrat', sans-serif;
   font-size: 1.40rem;
   font-weight: bold;

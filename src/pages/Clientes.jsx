@@ -10,25 +10,25 @@ export function Clientes({ user }) {
   const opciones = [
     {
       label: "Ver",
-      icon: <FiUsers size={42} />,
+      icon: <FiUsers size={36} />,
       onClick: () => navigate("/clientes/ver"),
       visible: true,
     },
     {
       label: "Insertar",
-      icon: <FiUserPlus size={42} />,
+      icon: <FiUserPlus size={36} />,
       onClick: () => navigate("/clientes/insertar"),
       visible: true,
     },
     {
       label: "Modificar",
-      icon: <FiEdit size={42} />,
+      icon: <FiEdit size={36} />,
       onClick: () => navigate("/clientes/modificar"),
       visible: rol === "admin" || rol === "encargado",
     },
     {
       label: "Eliminar",
-      icon: <FiUserX size={42} />,
+      icon: <FiUserX size={36} />,
       onClick: () => navigate("/clientes/eliminar"),
       visible: rol === "admin",
     },
@@ -42,7 +42,7 @@ export function Clientes({ user }) {
           .filter(op => op.visible)
           .map(op => (
             <Opcion key={op.label} onClick={op.onClick}>
-              {op.icon}
+              <IconWrapper>{op.icon}</IconWrapper>
               <span>{op.label}</span>
             </Opcion>
           ))}
@@ -96,25 +96,62 @@ const Opcion = styled.button`
   color: #232728;
   border: none;
   border-radius: 16px;
-  padding: 2rem 2.5rem;
-  font-size: 1.2rem;
+  font-size: 1.2rem !important; 
   font-family: "Poppins";
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px #404a4c33;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  min-width: 150px;
-  min-height: 150px;
-  max-width: 180px;
-  max-height: 180px;
-  aspect-ratio: 1 / 1;
+  width: 170px !important;
+  height: 170px !important;
   margin-bottom: 1rem;
+  padding: 0;
+  box-sizing: border-box;
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
+  overflow: hidden;
+
   &:hover {
     background: #607074;
     color: #caf0f8;
   }
   span {
-    margin-top: 1rem;
-    font-size: 1.1rem;
+    margin-top: 0.7rem;
+    font-size: 1.1rem !important; 
+    font-weight: 600;
+    text-align: center;
+    white-space: normal;
+    word-break: break-word;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 700px) {
+    width: 110px;
+    height: 110px;
+    font-size: 1rem;
+    padding: 0;
+  }
+`;
+
+const IconWrapper = styled.div`
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+
+  & > svg {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    flex-shrink: 0;
   }
 `;

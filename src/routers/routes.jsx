@@ -9,7 +9,11 @@ import {
   InsertCliente,
   ModCliente,
   ModClienteFinal,
-  DelCliente
+  DelCliente,
+  AdminUsers,
+  NewUser,
+  Users,
+  ModUsers
 } from "../index";
 
 export function MyRoutes({ user }) {
@@ -29,6 +33,10 @@ export function MyRoutes({ user }) {
       <Route path="/clientes/eliminar" element={<DelCliente />} />
       <Route path="/caja" element={<Caja />} />
       <Route path="/productos" element={<Productos />} />
+      <Route path="/usuarios" element={<Users />} />
+      <Route path="/usuarios/lista" element={<AdminUsers />} />
+      <Route path="/usuarios/nuevo" element={<NewUser />} />
+      <Route path="/usuarios/editar" element={<ModUsers />} />
       <Route path="*" element={<Home />} />
     </Routes>
   );

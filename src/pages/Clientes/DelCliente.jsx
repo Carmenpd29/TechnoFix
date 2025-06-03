@@ -111,13 +111,6 @@ export function DelCliente() {
           </tbody>
         </Tabla>
       </TablaScroll>
-      <EliminarBtn
-        disabled={!seleccionado || loading}
-        onClick={() => setShowConfirm(true)}
-      >
-        <FiTrash2 style={{ marginRight: 8 }} />
-        Eliminar
-      </EliminarBtn>
       {showConfirm && (
         <ConfirmOverlay>
           <ConfirmBox>
@@ -228,43 +221,6 @@ const Fila = styled.tr`
   }
 `;
 
-const SeleccionarBtn = styled.button`
-  background: ${({ $activo }) => ($activo ? "#d32f2f" : "#a5c4ca")};
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.4rem 0.9rem;
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
-  &:hover {
-    background:rgb(119, 26, 26);
-  }
-`;
-
-const EliminarBtn = styled.button`
-  margin-top: 1.5rem;
-  background:hsl(0, 57.60%, 57.50%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.7rem 2.2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background 0.2s;
-  &:disabled {
-    background:rgb(241, 192, 192);
-    cursor: not-allowed;
-  }
-    &:hover {
-    background:rgb(119, 26, 26);
-  }
-`;
-
 const ErrorMsg = styled.div`
   color: #e74c3c;
   margin-bottom: 1rem;
@@ -317,7 +273,7 @@ const ConfirmActions = styled.div`
 `;
 
 const ConfirmButton = styled.button`
-  background:rgb(221, 114, 114);
+  background:rgb(184, 64, 64);
   color: #fff;
   border: none;
   border-radius: 8px;
