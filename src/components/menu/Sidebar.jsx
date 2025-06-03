@@ -2,6 +2,57 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FiLogOut } from "react-icons/fi";
 
+export function Sidebar({ user, onLogout }) {
+  const navigate = useNavigate();
+  const rol = user?.rol;
+
+  return (
+    <SidebarWrapper>
+      <div>
+        <LogoMenu
+          src="/TechnoFix/assets/Logo.png"
+          alt="TechnoFix logo"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/home")}
+        />
+        <BarraSeparadora />
+        {user?.nombre && (
+          <>
+            <NombreUsuario to="/usuarios/editarme">{user.nombre}</NombreUsuario>
+          </>
+        )}
+        <BarraSeparadora />
+        <MenuLinks>
+          {/* Opción Usuarios solo para admin */}
+          {rol === "admin" && (
+            <>
+              <MenuOption onClick={() => navigate("/usuarios")}>
+                Usuarios
+              </MenuOption>
+              <BarraSeparadora />
+            </>
+          )}
+          {/* Opciones para todos los usuarios */}
+          {menuTrabajador
+            .filter((item) => item.action !== "logout")
+            .map((item) => (
+              <MenuOption key={item.to} onClick={() => navigate(item.to)}>
+                {item.label}
+              </MenuOption>
+            ))}
+        </MenuLinks>
+      </div>
+      <div>
+        <BarraSeparadora />
+        <SalirButton onClick={onLogout}>
+          <FiLogOut size={16} style={{ marginRight: 6 }} />
+          Salir
+        </SalirButton>
+      </div>
+    </SidebarWrapper>
+  );
+}
+
 const menuTrabajador = [
   { label: "TPV", to: "/tpv" },
   { label: "Clientes", to: "/clientes" },
@@ -139,55 +190,4 @@ const BarraSeparadora = styled.div`
   margin: 0.2rem 0;
   border-radius: 2px;
 `;
-
-export function Sidebar({ user, onLogout }) {
-  const navigate = useNavigate();
-  const rol = user?.rol;
-
-  return (
-    <SidebarWrapper>
-      <div>
-        <LogoMenu
-          src="/TechnoFix/assets/Logo.png"
-          alt="TechnoFix logo"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/home")}
-        />
-        <BarraSeparadora />
-        {user?.nombre && (
-          <>
-            <NombreUsuario to="/usuarios/editarme">{user.nombre}</NombreUsuario>
-          </>
-        )}
-        <BarraSeparadora />
-        <MenuLinks>
-          {/* Opción Usuarios solo para admin */}
-          {rol === "admin" && (
-            <>
-              <MenuOption onClick={() => navigate("/usuarios")}>
-                Usuarios
-              </MenuOption>
-              <BarraSeparadora />
-            </>
-          )}
-          {/* Opciones para todos los usuarios */}
-          {menuTrabajador
-            .filter((item) => item.action !== "logout")
-            .map((item) => (
-              <MenuOption key={item.to} onClick={() => navigate(item.to)}>
-                {item.label}
-              </MenuOption>
-            ))}
-        </MenuLinks>
-      </div>
-      <div>
-        <BarraSeparadora />
-        <SalirButton onClick={onLogout}>
-          <FiLogOut size={16} style={{ marginRight: 6 }} />
-          Salir
-        </SalirButton>
-      </div>
-    </SidebarWrapper>
-  );
-}
 

@@ -219,16 +219,3 @@ const Mensaje = styled.p`
   color: ${({ $tipo }) => ($tipo === "success" ? "#2e7d32" : "#d9534f")};
   text-align: center;
 `;
-
-const NombreUsuario = styled.a`
-  margin-top: 2rem;
-  font-size: 1.2rem;
-  color: #007bff;
-  text-align: center;
-  cursor: pointer;
-  text-decoration: none;
-  transition: color 0.3s;
-  &:hover {
-    color: #0056b3;
-  }
-`;

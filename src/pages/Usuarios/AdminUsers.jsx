@@ -44,9 +44,7 @@ export function AdminUsers() {
     const { error } = await supabase
       .from("usuarios")
       .delete()
-      .eq("id", usuarioAEliminar.id); 
-
-    console.log("Error al eliminar:", error); 
+      .eq("id", usuarioAEliminar.id);
 
     setLoading(false);
 
@@ -279,75 +277,3 @@ const Mensaje = styled.div`
   font-size: 1.1rem;
 `;
 
-// Registro con email y contraseña
-const handleRegister = async (e) => {
-  e.preventDefault();
-  setRegMensaje("");
-  if (!regEmail.trim() || !regPassword.trim() || !regNombre.trim()) {
-    setRegMensaje("Rellena todos los campos.");
-    return;
-  }
-
-  // Registro en Supabase Auth
-  const { data, error } = await supabase.auth.signUp({
-    email: regEmail,
-    password: regPassword,
-  });
-
-  if (error) {
-    setRegMensaje("Error al registrar: " + error.message);
-    return;
-  }
-
-  // Guarda el usuario en la tabla
-  if (data?.user) {
-    const { error: insertError } = await supabase
-      .from("usuarios")
-      .insert([{
-        nombre: regNombre,
-        email: regEmail,
-        rol: null,
-        uid: data.user.id,
-      }]);
-    if (insertError) {
-      setRegMensaje("Error al guardar usuario: " + insertError.message);
-    } else {
-      setRegMensaje("¡Registro enviado! Espera a que el admin te valide.");
-      setRegNombre("");
-      setRegEmail("");
-      setRegPassword("");
-    }
-  }
-};
-
-// Login con email y contraseña
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError("");
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: loginEmail,
-    password: loginPassword,
-  });
-
-  if (error) {
-    setError("Usuario o contraseña incorrectos.");
-    return;
-  }
-
-  // Obtener el usuario de la tabla por UID
-  const { data: usuarioDB, error: dbError } = await supabase
-    .from("usuarios")
-    .select("*")
-    .eq("uid", data.user.id)
-    .single();
-
-  if (dbError || !usuarioDB) {
-    setError("No tienes permiso para acceder.");
-    return;
-  }
-  if (!usuarioDB.rol) {
-    setError("Tu cuenta aún no ha sido validada por un administrador.");
-    return;
-  }
-  onLogin(usuarioDB);
-};

@@ -104,7 +104,7 @@ const Container = styled.main`
 
   .contentSidebar {
     grid-column: 1 / 2;
-    grid-row: 1 / 3; /* Ocupa ambas filas */
+    grid-row: 1 / 3; 
     display: block;
     height: 100%;
   }

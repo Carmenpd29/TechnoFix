@@ -74,7 +74,7 @@ export function Login({ onLogin }) {
       return;
     }
 
-    // 2. Guardar en tu tabla usuarios
+    // 2. Guardar en la tabla usuarios
     if (data?.user) {
       const { error: insertError } = await supabase
         .from("usuarios")
@@ -99,7 +99,10 @@ export function Login({ onLogin }) {
     <LoginWrapper>
       <FondoDegradado>
         <Caja>
-          <Titulo>Iniciar sesión</Titulo>
+          <div style={{ display: "flex", alignItems: "center", width: "100%", marginBottom: "2rem" }}>
+            <LogoImg src="/TechnoFix/assets/Logo.png" alt="TechnoFix" />
+            <Titulo style={{ margin: 0, marginLeft: "1rem" }}>Iniciar sesión</Titulo>
+          </div>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Input
               type="email"
@@ -268,5 +271,14 @@ const FondoDegradado = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const LogoImg = styled.img`
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #a5c4ca33;
+  background: #fff;
+  object-fit: contain;
 `;
 
