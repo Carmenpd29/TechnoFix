@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { FiX, FiLogOut } from "react-icons/fi";
+import { FiX, FiLogOut, FiShoppingCart, FiUsers } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 
 export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
 
   const menu = [
-    { label: "TPV", to: "/tpv" },
-    { label: "Clientes", to: "/clientes" },
+    { label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
+    { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
     ...(user?.rol === "admin"
       ? [{ label: "Usuarios", to: "/usuarios" }]
       : []),
@@ -46,6 +46,7 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
           <MenuLinks>
             {menu.map((item) => (
               <MenuOption key={item.to} onClick={() => handleNavigate(item.to)} >
+                {item.icon}
                 {item.label}
               </MenuOption>
             ))}
@@ -124,8 +125,9 @@ const LogoHambur = styled.img`
 const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.15rem; 
+  gap: 0.6rem; 
+  align-items: stretch;
+  margin: 2.2rem 0;
 `;
 
 const SalirColumn = styled.div`
@@ -173,11 +175,11 @@ const SalirButton = styled.button`
 const MenuOption = styled.button`
   background: none;
   border: none;
-  color:rgb(14, 41, 61);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.10rem; 
+  color: rgb(14, 41, 61);
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.2rem;
   font-weight: bold;
-  padding: 0.45rem 0.8rem; 
+  padding: 0.7rem 1.2rem;
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -185,6 +187,8 @@ const MenuOption = styled.button`
     color 0.18s,
     transform 0.13s;
   text-align: left;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background: #e7f7fa;

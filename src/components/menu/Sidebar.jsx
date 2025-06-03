@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiShoppingCart, FiUsers } from "react-icons/fi";
 
 export function Sidebar({ user, onLogout }) {
   const navigate = useNavigate();
@@ -37,6 +37,7 @@ export function Sidebar({ user, onLogout }) {
             .filter((item) => item.action !== "logout")
             .map((item) => (
               <MenuOption key={item.to} onClick={() => navigate(item.to)}>
+                {item.icon}
                 {item.label}
               </MenuOption>
             ))}
@@ -54,8 +55,8 @@ export function Sidebar({ user, onLogout }) {
 }
 
 const menuTrabajador = [
-  { label: "TPV", to: "/tpv" },
-  { label: "Clientes", to: "/clientes" },
+  { label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
+  { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
   { label: "Salir", action: "logout" },
 ];
 
@@ -66,8 +67,8 @@ const SidebarWrapper = styled.nav`
   align-items: stretch;
   height: 100%;
   padding: 2.5rem 1.5rem 2rem 1.5rem;
-  min-width: 150px;
-  max-width: 220px;
+  min-width: 200px;
+  max-width: 250px;
   box-sizing: border-box;
   background: linear-gradient(
     180deg,
@@ -131,7 +132,7 @@ const MenuOption = styled.button`
   border: none;
   color: rgb(14, 41, 61);
   font-family: "Montserrat", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;
   border-radius: 6px;
@@ -189,5 +190,13 @@ const BarraSeparadora = styled.div`
   background: linear-gradient(180deg, #caf0f8 0%, #a5c4ca 100%);
   margin: 0.2rem 0;
   border-radius: 2px;
+`;
+
+const IconosUsuario = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.8rem 0;
 `;
 
