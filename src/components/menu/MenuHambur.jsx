@@ -1,16 +1,17 @@
 import styled from "styled-components";
-import { FiX, FiLogOut, FiShoppingCart, FiUsers } from "react-icons/fi";
+import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX } from "react-icons/fi";
+import { MdBuild } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 
 export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
+  const { rol } = user || {};
 
-  const menu = [
+  const menuHambur = [
+    { label: "Usuarios", to: "/usuarios", icon: <FiUser size={20} style={{ marginRight: 8 }} />, visible: rol === "admin" },
     { label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
     { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
-    ...(user?.rol === "admin"
-      ? [{ label: "Usuarios", to: "/usuarios" }]
-      : []),
+    { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
   ];
 
   const handleNavigate = (to) => {
@@ -44,12 +45,20 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
             }}
           />
           <MenuLinks>
-            {menu.map((item) => (
-              <MenuOption key={item.to} onClick={() => handleNavigate(item.to)} >
-                {item.icon}
-                {item.label}
-              </MenuOption>
-            ))}
+            {menuHambur
+              .filter(item => item.visible !== false)
+              .map(item => (
+                <MenuOption
+                  key={item.to}
+                  onClick={() => {
+                    setOpen(false);
+                    navigate(item.to);
+                  }}
+                >
+                  {item.icon}
+                  {item.label}
+                </MenuOption>
+              ))}
           </MenuLinks>
           <SalirColumn>
             <div style={{ height: "2.5rem" }} />
@@ -75,6 +84,8 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   z-index: 200;
+  margin: 0 0 0 15px;
+  width: 80%;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 24px;
   box-shadow: 0 4px 24px #00345944;
@@ -148,7 +159,7 @@ const SalirButton = styled.button`
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.98rem;
+  font-size: 0.9rem;
   font-weight: 700;
   padding: 0.38rem 0.95rem;
   cursor: pointer;
@@ -177,7 +188,7 @@ const MenuOption = styled.button`
   border: none;
   color: rgb(14, 41, 61);
   font-family: "Montserrat", sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;
   border-radius: 6px;
@@ -206,8 +217,8 @@ const Backdrop = styled.div`
 `;
 
 const NombreUsuario = styled(Link)`
-  font-size: 1.15rem;
-  color: rgb(44, 70, 90);
+  font-size: 1rem;
+  color: rgb(220, 227, 233);
   font-weight: 700;
   text-align: center;
   margin: 1.1rem 0 1.1rem 0;

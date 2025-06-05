@@ -7,10 +7,10 @@ import {
   MyRoutes,
   Sidebar,
   Login,
+  Register,
   useUserStore,
   MenuHambur,
-  Footer,
-  ModMyUser
+  Footer, 
 } from "./index";
 
 function App() {
@@ -28,6 +28,12 @@ function App() {
           path="/login"
           element={
             user ? <Navigate to="/" replace /> : <Login onLogin={login} />
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            user ? <Navigate to="/" replace /> : <Register />
           }
         />
         <Route

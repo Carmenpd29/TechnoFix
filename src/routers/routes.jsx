@@ -14,8 +14,10 @@ import {
   NewUser,
   Users,
   ModUsers,
-  ModMyUser
+  ModMyUser,
+  Register
 } from "../index";
+import { Reparaciones } from "../pages/Reparaciones";
 
 export function MyRoutes({ user }) {
   const location = useLocation();
@@ -39,6 +41,8 @@ export function MyRoutes({ user }) {
       <Route path="/usuarios/nuevo" element={<NewUser />} />
       <Route path="/usuarios/editar" element={<ModUsers />} />
       <Route path="/usuarios/editarme" element={<ModMyUser />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/reparaciones" element={<Reparaciones />} />
       <Route path="*" element={<Home />} />
     </Routes>
   );

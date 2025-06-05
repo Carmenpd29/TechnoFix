@@ -26,4 +26,5 @@ export * from './pages/Users';
 export * from './pages/Usuarios/AdminUsers';
 export * from './pages/Usuarios/NewUser';
 export * from './pages/Usuarios/ModUsers';
-export * from './pages/Usuarios/ModMyUser'
+export * from './pages/Usuarios/ModMyUser';
+export * from './pages/Register';

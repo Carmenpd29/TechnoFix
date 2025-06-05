@@ -1,101 +1,48 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { supabase, Footer } from "../index";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
-export function Login({ onLogin }) {
+export function Register() {
+  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  // Registro
-  const [regNombre, setRegNombre] = useState("");
-  const [regEmail, setRegEmail] = useState("");
-  const [regPassword, setRegPassword] = useState("");
-  const [regMensaje, setRegMensaje] = useState("");
-
+  const [mensaje, setMensaje] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
 
-  // LOGIN
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    setError("");
-    // Login con Supabase Auth
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
+    setMensaje("");
+    if (!nombre.trim() || !email.trim() || !password.trim()) {
+      setMensaje("Rellena todos los campos.");
+      return;
+    }
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
-
-    if (authError) {
-      if (
-        authError.message?.toLowerCase().includes("email not confirmed") ||
-        authError.message?.toLowerCase().includes("correo no confirmado")
-      ) {
-        setError("Debes confirmar tu correo antes de iniciar sesión. Revisa tu bandeja de entrada.");
-      } else {
-        setError("Usuario o contraseña incorrectos.");
-      }
-      return;
-    }
-
-    // Busca el usuario en tu tabla por uid
-    const { data: usuarioDB, error: dbError } = await supabase
-      .from("usuarios")
-      .select("*")
-      .eq("uid", data.user.id)
-      .single();
-
-    if (dbError || !usuarioDB) {
-      setError("No tienes permiso para acceder.");
-      return;
-    }
-    if (!usuarioDB.rol) {
-      setError("Tu cuenta aún no ha sido validada por un administrador.");
-      return;
-    }
-    onLogin(usuarioDB);
-  };
-
-  // REGISTRO
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setRegMensaje("");
-    if (!regNombre.trim() || !regEmail.trim() || !regPassword.trim()) {
-      setRegMensaje("Rellena todos los campos.");
-      return;
-    }
-
-    // 1. Registrar en Supabase Auth
-    const { data, error } = await supabase.auth.signUp({
-      email: regEmail,
-      password: regPassword,
-    });
-
     if (error) {
-      setRegMensaje("Error al registrar, email en uso o contraseña de menos de 6 caracteres.");
+      setMensaje("Error al registrar, email en uso o contraseña de menos de 6 caracteres.");
       return;
     }
-
-    // 2. Guardar en la tabla usuarios
     if (data?.user) {
       const { error: insertError } = await supabase
         .from("usuarios")
         .insert([{
-          nombre: regNombre,
-          email: regEmail,
+          nombre,
+          email,
           rol: null,
           uid: data.user.id,
         }]);
       if (insertError) {
-        setRegMensaje("Error al guardar usuario: " + insertError.message);
+        setMensaje("Error al guardar usuario: " + insertError.message);
       } else {
-        setRegMensaje("¡Registro enviado! Espera a que el admin te valide.");
-        setRegNombre("");
-        setRegEmail("");
-        setRegPassword("");
+        setMensaje("¡Registro enviado! Espera a que el admin te valide.");
+        setNombre("");
+        setEmail("");
+        setPassword("");
       }
     }
   };
@@ -104,29 +51,32 @@ export function Login({ onLogin }) {
     <LoginWrapper>
       <FondoDegradado>
         <Caja>
-          <div style={{ display: "flex", alignItems: "center", width: "100%", marginBottom: "2rem" }}>
-            <LogoImg src="/TechnoFix/assets/Logo.png" alt="TechnoFix" />
-            <Titulo style={{ margin: 0, marginLeft: "1rem" }}>Iniciar sesión</Titulo>
-          </div>
-          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <Titulo>Registro de nuevo usuario</Titulo>
+          <form onSubmit={handleRegister} style={{ width: "100%" }}>
+            <Input
+              type="text"
+              placeholder="Nombre"
+              value={nombre}
+              onChange={e => setNombre(e.target.value)}
+              required
+              autoComplete="off"
+            />
             <Input
               type="email"
-              name="email" 
               placeholder="Email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              autoComplete="username"
+              autoComplete="off"
             />
             <PasswordWrapper>
               <Input
                 type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Contraseña"
+                placeholder="Contraseña (6 caracteres mínimo)"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
+                autoComplete="new-password"
                 style={{ marginBottom: 0 }}
               />
               <EyeButton
@@ -138,13 +88,12 @@ export function Login({ onLogin }) {
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </EyeButton>
             </PasswordWrapper>
-            <Entrar type="submit">Entrar</Entrar>
-            {error && <ErrorMsg>{error}</ErrorMsg>}
+            <Entrar type="submit">Aceptar</Entrar>
+            {mensaje && <RegMsg>{mensaje}</RegMsg>}
           </form>
-          <BarraSeparadora />
-          <Subtitulo>¿No tienes cuenta?</Subtitulo>
-          <Entrar type="button" onClick={() => navigate("/register")}>
-            Regístrate
+          <br />
+          <Entrar type="button" onClick={() => navigate("/login")}>
+            Volver
           </Entrar>
         </Caja>
       </FondoDegradado>
@@ -185,15 +134,9 @@ const Titulo = styled.h2`
   font-weight: 700;
   letter-spacing: 1px;
   font-family: 'Poppins';
-`;
-
-const Subtitulo = styled.h3`
-  color: #232728;
-  margin: 1.2rem 0 1rem 0;
-  font-size: 1.1rem;
-  font-weight: 600;
   text-align: center;
 `;
+
 
 const Input = styled.input`
   font-family: 'Poppins';
@@ -212,25 +155,6 @@ const Input = styled.input`
     outline: none;
     background: #fff;
   }
-`;
-
-const PasswordWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 1.2rem;
-`;
-
-const EyeButton = styled.button`
-  position: absolute;
-  right: 1rem;
-  top: 55%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #607074;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0;
 `;
 
 const Entrar = styled.button`
@@ -270,13 +194,6 @@ const RegMsg = styled.div`
   letter-spacing: 0.2px;
 `;
 
-const BarraSeparadora = styled.hr`
-  width: 100%;
-  border: none;
-  border-top: 1.5px solid #a5c4ca;
-  margin: 2rem 0 1.2rem 0;
-`;
-
 const FondoDegradado = styled.div`
   flex: 1;
   display: flex;
@@ -284,12 +201,21 @@ const FondoDegradado = styled.div`
   justify-content: center;
 `;
 
-const LogoImg = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #a5c4ca33;
-  background: #fff;
-  object-fit: contain;
+const PasswordWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.2rem;
+`;
+const EyeButton = styled.button`
+  position: absolute;
+  right: 1rem;
+  top: 55%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #607074;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
 `;
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { BotonVolver, supabase  } from "../../index";
-import { FiSearch, FiTrash2 } from "react-icons/fi";
+import { FiSearch} from "react-icons/fi";
 
 export function DelCliente() {
   const [busqueda, setBusqueda] = useState("");

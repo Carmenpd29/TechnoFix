@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { FiLogOut, FiShoppingCart, FiUsers } from "react-icons/fi";
+import { FiLogOut, FiShoppingCart, FiUsers, FiUser } from "react-icons/fi";
+import { MdBuild } from "react-icons/md";
 
 export function Sidebar({ user, onLogout }) {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ export function Sidebar({ user, onLogout }) {
           {rol === "admin" && (
             <>
               <MenuOption onClick={() => navigate("/usuarios")}>
+                <FiUser size={20} style={{ marginRight: 8 }} />
                 Usuarios
               </MenuOption>
               <BarraSeparadora />
@@ -57,7 +59,8 @@ export function Sidebar({ user, onLogout }) {
 const menuTrabajador = [
   { label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
   { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
-  { label: "Salir", action: "logout" },
+  { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
+  { label: "Salir", action: "logout" }
 ];
 
 const SidebarWrapper = styled.nav`
@@ -67,8 +70,8 @@ const SidebarWrapper = styled.nav`
   align-items: stretch;
   height: 100%;
   padding: 2.5rem 1.5rem 2rem 1.5rem;
-  min-width: 200px;
-  max-width: 250px;
+  min-width: 250px;
+  max-width: 270px;
   box-sizing: border-box;
   background: linear-gradient(
     180deg,
@@ -83,19 +86,19 @@ const SidebarWrapper = styled.nav`
 `;
 
 const LogoMenu = styled.img`
-  width: 90px;
+  width: 150px;
   height: auto;
   border-radius: 16px;
   box-shadow: 0 4px 18px #3782a533;
   background: #fff;
   padding: 0.5rem;
-  margin: 0 0 1.2rem 0.6rem;
+  margin: 0 0 1.2rem 1rem;
 `;
 
 const NombreUsuario = styled(Link)`
   display: block;
   font-size: 1.15rem;
-  color: rgb(44, 70, 90);
+  color: rgb(220, 227, 233);
   font-weight: 700;
   text-align: center;
   margin: 1.1rem 0 1.1rem 0;
@@ -125,6 +128,7 @@ const MenuLinks = styled.div`
   gap: 1.5rem;
   align-items: stretch;
   margin: 2.2rem 0;
+  width: 100%;
 `;
 
 const MenuOption = styled.button`
@@ -132,7 +136,7 @@ const MenuOption = styled.button`
   border: none;
   color: rgb(14, 41, 61);
   font-family: "Montserrat", sans-serif;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
   padding: 0.7rem 1.2rem;
   border-radius: 6px;
@@ -142,6 +146,9 @@ const MenuOption = styled.button`
     color 0.18s,
     transform 0.13s;
   text-align: left;
+  display: flex;
+  align-items: center;
+  width: 90%;
 
   &:hover {
     background: #e7f7fa;
@@ -192,11 +199,4 @@ const BarraSeparadora = styled.div`
   border-radius: 2px;
 `;
 
-const IconosUsuario = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.8rem;
-  margin: 0.8rem 0;
-`;
 
