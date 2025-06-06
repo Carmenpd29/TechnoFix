@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { NombreUsuario } from "../NombreUsuario"; // o desde "../components" si usas el barrel
 
 export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
@@ -13,11 +14,6 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
     { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
     { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
   ];
-
-  const handleNavigate = (to) => {
-    setOpen(false);
-    navigate(to);
-  };
 
   const handleLogout = () => {
     setOpen(false);
@@ -35,16 +31,26 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
           <FiX size={30} />
         </CloseButton>
         <MenuLayout>
-          <LogoHambur
-            src="/TechnoFix/assets/Logo.png"
-            alt="TechnoFix logo"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              setOpen(false);
-              navigate("/home");
-            }}
-          />
-          
+          <ColLogo>
+            <LogoHambur
+              src="/TechnoFix/assets/Logo.png"
+              alt="TechnoFix logo"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setOpen(false);
+                navigate("/home");
+              }}
+            />
+            {user?.nombre && (
+              <NombreUsuario to="/usuarios/editarme" onClick={() => setOpen(false)}>
+                {user.nombre}
+              </NombreUsuario>
+            )}
+            <SalirButton onClick={handleLogout}>
+              <FiLogOut size={16} style={{ marginRight: 6 }} />
+              Salir
+            </SalirButton>
+          </ColLogo>
           <MenuLinks>
             {menuHambur
               .filter(item => item.visible !== false)
@@ -61,18 +67,6 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
                 </MenuOption>
               ))}
           </MenuLinks>
-          <SalirColumn>
-            <div style={{ height: "2.5rem" }} />
-            {user?.nombre && (
-              <NombreUsuario to="/usuarios/editarme" onClick={() => setOpen(false)}>
-                {user.nombre}
-              </NombreUsuario>
-            )}
-            <SalirButton onClick={handleLogout}>
-              <FiLogOut size={16} style={{ marginRight: 6 }} />
-              Salir
-            </SalirButton>
-          </SalirColumn>
         </MenuLayout>
       </Overlay>
     </>
@@ -87,8 +81,6 @@ const Overlay = styled.div`
   z-index: 200;
   margin: 0 0 0 15px;
   width: 70%;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 24px;
   box-shadow: 0 4px 24px #00345944;
   padding: 1.2rem 2.2rem 1.2rem 2.2rem;
   overflow: hidden;
@@ -103,6 +95,14 @@ const Overlay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+
+  @media (max-width: 1024px) {
+    width: 98vw;
+    min-width: 0;
+    margin: 0;
+    padding: 2rem 0.5rem 1rem 2.5rem; 
+    max-width: 98vw;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -111,17 +111,38 @@ const CloseButton = styled.button`
   color: #003459;
   position: absolute;
   top: 1.2rem;
-  right: 2rem;
+  right: 3rem;
   cursor: pointer;
   z-index: 201;
 `;
 
 const MenuLayout = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(70px, 100px) 1fr;
+  gap: 1.2rem;
+  align-items: start; 
   width: 100%;
+`;
+
+const ColLogo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 70px;
+
+  & > a, & > button {
+    margin-top: 0.7rem;
+  }
+
+  @media (max-width: 1024px) {
+    margin-left: 0.5rem;
+    margin-bottom: 0.7rem;
+    text-align: center;
+    align-items: center;
+    & > a, & > button {
+      margin-top: 0.5rem;
+    }
+  }
 `;
 
 const LogoHambur = styled.img`
@@ -138,16 +159,16 @@ const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.6rem; 
-  align-items: stretch;
-  margin: 2.2rem 0;
-`;
+  align-items: flex-start;
+  padding-left: 1.5rem;
 
-const SalirColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-start;
-  min-width: 90px;
+  @media (max-width: 1024px) {
+    margin: 0;
+    padding-left: 1.5rem; 
+    gap: 1rem;
+    width: 100%;
+    align-items: flex-start;
+  }
 `;
 
 const SalirButton = styled.button`
@@ -163,9 +184,8 @@ const SalirButton = styled.button`
   font-size: 0.9rem;
   font-weight: 700;
   padding: 0.38rem 0.95rem;
-  cursor: pointer;
-  margin-top: 0.6rem; 
-  margin-bottom: 0.1rem;
+  cursor: pointer; 
+  margin-bottom: 0rem;
   display: flex;
   align-items: center;
   box-shadow: 0 1px 4px #d32f2f22;
@@ -191,7 +211,7 @@ const MenuOption = styled.button`
   font-family: "Montserrat", sans-serif;
   font-size: 1.1rem;
   font-weight: bold;
-  padding: 0.7rem 1.2rem;
+  padding: 0.4rem 1.2rem;
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -215,30 +235,4 @@ const Backdrop = styled.div`
   inset: 0;
   background: rgba(30, 44, 54, 0.25);
   z-index: 199;
-`;
-
-const NombreUsuario = styled(Link)`
-  font-size: 1rem;
-  color: rgb(220, 227, 233);
-  font-weight: 700;
-  text-align: center;
-  margin: 1.1rem 0 1.1rem 0;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 0.4rem 0.7rem;
-  transition:
-    background 0.18s,
-    color 0.18s,
-    box-shadow 0.18s,
-    transform 0.13s;
-
-  &:hover {
-    background: linear-gradient(90deg, #caf0f8 0%, #a5c4ca 100%);
-    color: rgb(113, 160, 161);
-    box-shadow: 0 2px 8px #a5c4ca55;
-    transform: scale(1.04);
-    text-decoration: none;
-  }
 `;

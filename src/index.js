@@ -11,6 +11,10 @@ export * from './components/menu/Sidebar';
 export * from './components/menu/MenuHambur';
 export * from './components/Footer';
 export * from './components/BotonVolver';
+export * from "./components/BotonMenu";
+export * from "./components/templates/WrapperPage";
+export * from "./components/Opciones";
+export * from "./components/NombreUsuario";
 export * from './pages/Home';
 export * from './pages/Login';
 export * from './pages/Clientes';   
@@ -28,3 +32,4 @@ export * from './pages/Usuarios/NewUser';
 export * from './pages/Usuarios/ModUsers';
 export * from './pages/Usuarios/ModMyUser';
 export * from './pages/Register';
+

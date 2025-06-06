@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
+import { NombreUsuario } from "../NombreUsuario"; // o desde "../components" si usas el barrel
 
 export function Sidebar({ user, onLogout }) {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ export function Sidebar({ user, onLogout }) {
 
   return (
     <SidebarWrapper>
-      <div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <LogoMenu
           src="/TechnoFix/assets/Logo.png"
           alt="TechnoFix logo"
@@ -67,7 +68,6 @@ const SidebarWrapper = styled.nav`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: stretch;
   height: 100%;
   padding: 2.5rem 1.5rem 2rem 1.5rem;
   min-width: 250px;
@@ -93,33 +93,6 @@ const LogoMenu = styled.img`
   background: #fff;
   padding: 0.5rem;
   margin: 0 0 1.2rem 1rem;
-`;
-
-const NombreUsuario = styled(Link)`
-  display: block;
-  font-size: 1.15rem;
-  color: rgb(220, 227, 233);
-  font-weight: 700;
-  text-align: center;
-  margin: 1.1rem 0 1.1rem 0;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 0.4rem 0.7rem;
-  transition:
-    background 0.18s,
-    color 0.18s,
-    box-shadow 0.18s,
-    transform 0.13s;
-
-  &:hover {
-    background: linear-gradient(90deg, #caf0f8 0%, #a5c4ca 100%);
-    color:rgb(113, 160, 161);
-    text-decoration: none;
-    box-shadow: 0 2px 8px #a5c4ca55;
-    transform: scale(1.04);
-  }
 `;
 
 const MenuLinks = styled.div`
