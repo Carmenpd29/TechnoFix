@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { supabase, Footer } from "../index";
+import { supabase, Footer, TituloPage } from "../index";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export function Login({ onLogin }) {
@@ -106,7 +106,7 @@ export function Login({ onLogin }) {
         <Caja>
           <div style={{ display: "flex", alignItems: "center", width: "100%", marginBottom: "2rem" }}>
             <LogoImg src="/TechnoFix/assets/Logo.png" alt="TechnoFix" />
-            <Titulo style={{ margin: 0, marginLeft: "1rem" }}>Iniciar sesión</Titulo>
+            <TituloPage >Iniciar sesión</TituloPage>
           </div>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Input
@@ -162,8 +162,8 @@ const LoginWrapper = styled.div`
 const Caja = styled.div`
   font-family: 'Poppins';
   background: rgba(255,255,255,0.92);
-  width: 100%;
-  max-width: 370px;
+  width: 90%;
+  max-width: 350px;
   padding: 1.7rem 2.7rem 2.2rem 2.7rem;
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(64,74,76,0.22), 0 1.5px 8px rgba(0,0,0,0.10);
@@ -174,17 +174,8 @@ const Caja = styled.div`
   transition: box-shadow 0.2s, border 0.2s;
   @media (max-width: 480px) {
     padding: 1.2rem 0.7rem 1.5rem 0.7rem;
-    max-width: 98vw;
+    max-width: 80vw;
   }
-`;
-
-const Titulo = styled.h2`
-  color: #232728;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  font-family: 'Poppins';
 `;
 
 const Subtitulo = styled.h3`
@@ -203,7 +194,7 @@ const Input = styled.input`
   margin-bottom: 1.2rem;
   border-radius: 8px;
   border: 1.5px solid #82999e;
-  font-size: 1.07rem;
+  font-size: 0.9rem;
   background: #f8fafc;
   color: #232728;
   transition: border 0.2s;
@@ -242,7 +233,7 @@ const Entrar = styled.button`
   color: #caf0f8;
   border: none;
   border-radius: 8px;
-  font-size: 1.07rem;
+  font-size: 0.9rem;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 0 2px 8px #404a4c33;
@@ -256,14 +247,6 @@ const Entrar = styled.button`
 
 const ErrorMsg = styled.div`
   color: #d32f2f;
-  margin-top: 0.7rem;
-  text-align: center;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-`;
-
-const RegMsg = styled.div`
-  color:rgb(47, 129, 44);
   margin-top: 0.7rem;
   text-align: center;
   font-weight: 600;
@@ -285,11 +268,17 @@ const FondoDegradado = styled.div`
 `;
 
 const LogoImg = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 12px;
   box-shadow: 0 2px 8px #a5c4ca33;
   background: #fff;
   object-fit: contain;
+  margin-left: 1rem;
+  @media (max-width: 480px) {
+    width: 80px;
+    height: 80px;
+  }
+
 `;
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiUsers, FiUserPlus } from "react-icons/fi";
-import { Opciones, WrapperPage, BotonMenu, ManualPage } from "../index";
+import { Opciones, WrapperPage, BotonMenu, ManualPage, TituloPage } from "../index";
 
 export function Users() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export function Users() {
 
   return (
     <WrapperPage>
-      <Titulo>Gestión de Usuarios</Titulo>
+      <TituloPage>Gestión de Usuarios</TituloPage>
       <Opciones>
         {opciones.map((op) => (
           <BotonMenu key={op.label} icon={op.icon} onClick={op.onClick}>
@@ -40,8 +40,3 @@ export function Users() {
     </WrapperPage>
   );
 }
-
-const Titulo = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 1rem;
-`;

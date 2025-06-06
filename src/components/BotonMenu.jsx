@@ -25,10 +25,10 @@ const StyledBoton = styled.button`
   cursor: pointer;
   box-shadow: 0 2px 8px #404a4c22;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  min-width: 170px;
-  min-height: 170px;
-  max-width: 200px;
-  max-height: 200px;
+  min-width: 120px;
+  min-height: 120px;
+  max-width: 120px;
+  max-height: 120px;
   aspect-ratio: 1 / 1;
   &:hover {
     background: #607074;
@@ -60,7 +60,7 @@ const StyledBoton = styled.button`
     border: 1px solid #a5c4ca;   
     span {
       margin-top: 0;
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
     svg {
       font-size: 0.9rem !important; 

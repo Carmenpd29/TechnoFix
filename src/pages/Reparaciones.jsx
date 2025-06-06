@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiPlusCircle, FiList } from "react-icons/fi";
-import { Opciones, WrapperPage, BotonMenu, ManualPage } from "../index";
+import { Opciones, WrapperPage, BotonMenu, ManualPage, TituloPage } from "../index";
 
 export function Reparaciones() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export function Reparaciones() {
 
   return (
     <WrapperPage>
-      <Titulo>Reparaciones</Titulo>
+      <TituloPage>Reparaciones</TituloPage>
       <Opciones>
         {opciones.map((op) => (
           <BotonMenu key={op.label} icon={op.icon} onClick={op.onClick}>
@@ -35,9 +35,4 @@ export function Reparaciones() {
     </WrapperPage>
   );
 }
-
-const Titulo = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 1rem;
-`;
 

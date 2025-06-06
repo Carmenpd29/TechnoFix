@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { supabase, Footer } from "../index";
+import { supabase, Footer, TituloPage } from "../index";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export function Register() {
@@ -51,7 +51,7 @@ export function Register() {
     <LoginWrapper>
       <FondoDegradado>
         <Caja>
-          <Titulo>Registro de nuevo usuario</Titulo>
+          <TituloPage>Registro de nuevo usuario</TituloPage>
           <form onSubmit={handleRegister} style={{ width: "100%" }}>
             <Input
               type="text"
@@ -126,17 +126,6 @@ const Caja = styled.div`
     max-width: 98vw;
   }
 `;
-
-const Titulo = styled.h2`
-  color: #232728;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  font-family: 'Poppins';
-  text-align: center;
-`;
-
 
 const Input = styled.input`
   font-family: 'Poppins';

@@ -12,11 +12,12 @@ const Wrapper = styled.div`
   background: #f8fafb;
   border-radius: 22px;
   box-shadow: 0 2px 18px #404a4c22;
-  min-height: 70vh;
+  min-height: unset;
+  height: auto;
   border: 2px solid #a5c4ca;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; 
   box-sizing: border-box;
   position: relative;
   padding-top: 2.5rem;

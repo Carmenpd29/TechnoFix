@@ -10,4 +10,7 @@ const Manual = styled.div`
   margin-bottom: 2rem;
   max-width: 600px;
   width: 100%;
+  @media (max-width: 900px) {
+    font-size: 0.9rem;
+  }
 `;

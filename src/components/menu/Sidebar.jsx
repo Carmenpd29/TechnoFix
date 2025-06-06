@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
-import { NombreUsuario } from "../NombreUsuario"; // o desde "../components" si usas el barrel
+import { NombreUsuario } from "../NombreUsuario"; 
 
 export function Sidebar({ user, onLogout }) {
   const navigate = useNavigate();

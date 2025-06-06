@@ -16,8 +16,10 @@ import {
   ModUsers,
   ModMyUser,
   Register,
+  Reparaciones,
   AddReparacion,
   VerReparaciones,
+  ModReparaciones,
 } from "../index";
 
 export function MyRoutes({ user }) {
@@ -43,9 +45,11 @@ export function MyRoutes({ user }) {
       <Route path="/usuarios/editar" element={<ModUsers />} />
       <Route path="/usuarios/editarme" element={<ModMyUser />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/reparaciones" element={<Reparaciones />} />
       <Route path="/reparaciones/add" element={<AddReparacion />} />
       <Route path="/reparaciones/ver" element={<VerReparaciones />} />
       <Route path="*" element={<Home />} />
+      <Route path="/reparaciones/mod/:id" element={<ModReparaciones />} />
     </Routes>
   );
 }
