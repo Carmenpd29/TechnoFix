@@ -242,7 +242,11 @@ const Error = styled.span`
 `;
 
 const Boton = styled.button`
+  width: 50%;  
+  text-align: center;
   margin-top: 1.2rem;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0.7rem 0;
   background: linear-gradient(90deg, #607074 0%, #a5c4ca 100%);
   color: #fff;

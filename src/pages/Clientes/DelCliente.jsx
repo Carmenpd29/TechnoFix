@@ -1,41 +1,13 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
-import { BotonVolver, supabase  } from "../../index";
-import { FiSearch} from "react-icons/fi";
+import { useState } from "react";
+import { BotonVolver, supabase, BuscadorClientes } from "../../index";
 
 export function DelCliente() {
-  const [busqueda, setBusqueda] = useState("");
-  const [clientes, setClientes] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [seleccionado, setSeleccionado] = useState(null);
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
-
-  useEffect(() => {
-    if (busqueda.trim().length === 0) {
-      setClientes([]);
-      return;
-    }
-    setLoading(true);
-    setError("");
-    supabase
-      .from("clientes")
-      .select("*")
-      .or(`nombre.ilike.%${busqueda}%,nif.ilike.%${busqueda}%`)
-      .order("nombre", { ascending: true })
-      .then(({ data, error }) => {
-        setLoading(false);
-        if (error) setError("Error al buscar clientes");
-        else setClientes(data || []);
-      });
-  }, [busqueda]);
-
-  const handleSeleccionar = (cliente) => {
-    setSeleccionado(cliente);
-    setMensaje("");
-    setError("");
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleEliminar = async () => {
     setShowConfirm(false);
@@ -52,7 +24,6 @@ export function DelCliente() {
       setError("Error al eliminar el cliente.");
     } else {
       setMensaje("Cliente eliminado correctamente.");
-      setClientes(clientes.filter(c => c.id !== seleccionado.id));
       setSeleccionado(null);
     }
   };
@@ -61,56 +32,13 @@ export function DelCliente() {
     <Wrapper>
       <BotonVolver to="/clientes" />
       <Titulo>Eliminar Cliente</Titulo>
-      <Buscador>
-        <FiSearch size={22} />
-        <input
-          type="text"
-          placeholder="Buscar por nombre o NIF..."
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-        />
-      </Buscador>
+      <BuscadorClientes onSeleccionar={cliente => {
+        setSeleccionado(cliente);
+        setShowConfirm(true);
+        setMensaje("");
+        setError("");
+      }} />
       {error && <ErrorMsg>{error}</ErrorMsg>}
-      <TablaScroll>
-        <Tabla>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Teléfono</th>
-              <th>NIF</th>
-              <th>Dirección</th>
-              <th>Correo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading && (
-              <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>Buscando...</td>
-              </tr>
-            )}
-            {!loading && clientes.length === 0 && busqueda && (
-              <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>No hay resultados.</td>
-              </tr>
-            )}
-            {clientes.map(cliente => (
-              <Fila
-                key={cliente.id}
-                onClick={() => {
-                  setSeleccionado(cliente);
-                  setShowConfirm(true);
-                }}
-              >
-                <td>{cliente.nombre}</td>
-                <td>{cliente.telefono}</td>
-                <td>{cliente.nif || "-"}</td>
-                <td>{cliente.direccion || "-"}</td>
-                <td>{cliente.correo || "-"}</td>
-              </Fila>
-            ))}
-          </tbody>
-        </Tabla>
-      </TablaScroll>
       {showConfirm && (
         <ConfirmOverlay>
           <ConfirmBox>

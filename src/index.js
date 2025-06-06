@@ -15,6 +15,7 @@ export * from "./components/BotonMenu";
 export * from "./components/templates/WrapperPage";
 export * from "./components/Opciones";
 export * from "./components/NombreUsuario";
+export * from "./components/clientes/BuscadorClientes";
 export * from './pages/Home';
 export * from './pages/Login';
 export * from './pages/Clientes';   

@@ -92,7 +92,7 @@ const LogoMenu = styled.img`
   box-shadow: 0 4px 18px #3782a533;
   background: #fff;
   padding: 0.5rem;
-  margin: 0 0 1.2rem 1rem;
+  margin: 0 0 1.2rem 0;
 `;
 
 const MenuLinks = styled.div`
