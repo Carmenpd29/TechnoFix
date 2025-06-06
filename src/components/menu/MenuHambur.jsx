@@ -44,6 +44,7 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
               navigate("/home");
             }}
           />
+          
           <MenuLinks>
             {menuHambur
               .filter(item => item.visible !== false)
@@ -85,7 +86,7 @@ const Overlay = styled.div`
   right: 0;
   z-index: 200;
   margin: 0 0 0 15px;
-  width: 80%;
+  width: 70%;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 24px;
   box-shadow: 0 4px 24px #00345944;

@@ -1,6 +1,17 @@
 import styled from "styled-components";
 import { BotonVolver, supabase } from "../index";
 import { useEffect, useState } from "react";
+import { FiSearch } from "react-icons/fi";
+
+// Hook para debounce
+function useDebounce(value, delay = 400) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debounced;
+}
 
 export function Reparaciones() {
   const [busqueda, setBusqueda] = useState("");
@@ -22,6 +33,9 @@ export function Reparaciones() {
   const [loadingClientes, setLoadingClientes] = useState(false);
   const [tecnicos, setTecnicos] = useState([]);
 
+  // Debounce para la búsqueda
+  const debouncedBusqueda = useDebounce(busqueda);
+
   useEffect(() => {
     // Carga los técnicos desde la tabla usuarios
     supabase
@@ -31,28 +45,31 @@ export function Reparaciones() {
       .then(({ data }) => setTecnicos(data || []));
   }, []);
 
-  const handleBuscar = async () => {
-    setLoadingClientes(true);
-    const { data, error } = await supabase
-      .from("clientes")
-      .select("*")
-      .or(`dni.ilike.%${busqueda}%,nombre.ilike.%${busqueda}%`)
-      .order("nombre", { ascending: true });
-    setLoadingClientes(false);
-
-    if (error) {
+  // Búsqueda automática de clientes
+  useEffect(() => {
+    console.log("Buscando:", debouncedBusqueda); 
+    if (!debouncedBusqueda) {
       setClientes([]);
       setCliente({ nombre: "", apellidos: "", telefono: "" });
       return;
     }
-    if (data && data.length > 0) {
-      setClientes(data);
-      setCliente(data[0]);
-    } else {
-      setClientes([]);
-      setCliente({ nombre: "", apellidos: "", telefono: "" });
-    }
-  };
+    setLoadingClientes(true);
+    supabase
+      .from("clientes")
+      .select("*")
+      .ilike("nombre", `%${debouncedBusqueda}%`)
+      .order("nombre", { ascending: true })
+      .then(({ data, error }) => {
+        setLoadingClientes(false);
+        if (error || !data) {
+          setClientes([]);
+          setCliente({ nombre: "", apellidos: "", telefono: "" });
+          return;
+        }
+        setClientes(data);
+        if (data.length === 1) setCliente(data[0]);
+      });
+  }, [debouncedBusqueda]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,7 +108,7 @@ export function Reparaciones() {
 
   return (
     <CajaWrapper>
-      <BotonVolver to="/tpv" />
+      <BotonVolver to="/home" />
       <h2>Reparaciones</h2>
       <FormReparacion onSubmit={handleSubmit}>
         <ZonaCliente>
@@ -101,21 +118,31 @@ export function Reparaciones() {
               placeholder="Buscar cliente por DNI o nombre"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              style={{ marginRight: 8 }}
             />
-            <button
-              type="button"
-              onClick={handleBuscar}
-              disabled={loadingClientes}
-            >
-              {loadingClientes ? "Buscando..." : "Buscar"}
-            </button>
+            <span className="icono-lupa">
+              <FiSearch size={22} color="#607074" />
+            </span>
           </Buscador>
 
-          {/* Si hay más de un cliente, muestra el select */}
-          {clientes.length > 1 && (
-            <div style={{ margin: "0.5rem 0" }}>
-              <label style={{ color: "#607074", fontSize: "0.95rem" }}>
+          {clientes.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+                maxWidth: 340,
+                margin: "0.5rem auto"
+              }}
+            >
+              <label
+                style={{
+                  color: "#607074",
+                  fontSize: "0.95rem",
+                  marginBottom: "0.4rem",
+                  alignSelf: "flex-start"
+                }}
+              >
                 Selecciona cliente:
               </label>
               <select
@@ -129,7 +156,7 @@ export function Reparaciones() {
                   );
                 }}
                 style={{
-                  marginLeft: 8,
+                  width: "100%",
                   padding: "0.5rem",
                   borderRadius: 6,
                   border: "1.5px solid #a5c4ca",
@@ -200,7 +227,7 @@ export function Reparaciones() {
           <Fechas>
             <div>
               <label>Fecha:</label>
-              <input
+              <input className="datos" required
                 type="date"
                 value={fecha}
                 onChange={(e) => setFecha(e.target.value)}
@@ -208,7 +235,7 @@ export function Reparaciones() {
             </div>
             <div>
               <label>Fecha entrega:</label>
-              <input
+              <input className="datos" 
                 type="date"
                 value={fechaEntrega}
                 onChange={(e) => setFechaEntrega(e.target.value)}
@@ -217,6 +244,7 @@ export function Reparaciones() {
           </Fechas>
           <Datos>
             <input
+              className="datos"
               type="text"
               placeholder="Artículo"
               value={articulo}
@@ -224,6 +252,7 @@ export function Reparaciones() {
               required
             />
             <input
+              className="datos"
               type="text"
               placeholder="Descripción"
               value={descripcion}
@@ -244,10 +273,9 @@ export function Reparaciones() {
   );
 }
 
-// --- ESTILOS ---
 
 const CajaWrapper = styled.div`
-  width: 100%;
+  width: 90%;
   max-width: 540px;
   margin: 1.5rem auto;
   padding: 2.5rem 1.5rem 2rem 1.5rem;
@@ -290,26 +318,20 @@ const Buscador = styled.div`
   width: 100%;
   max-width: 340px;
   margin: 0 auto 0.5rem auto;
+  position: relative;
   input {
     flex: 1;
-    padding: 0.6rem;
+    padding: 0.6rem 2.2rem 0.6rem 0.8rem;
     border-radius: 6px;
     border: 1.5px solid #a5c4ca;
     font-size: 0.9rem;
-    margin-right: 0.5rem;
   }
-  button {
-    padding: 0.6rem 1.1rem;
-    border-radius: 6px;
-    border: none;
-    background: #607074;
-    color: #caf0f8;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.18s;
-    &:hover {
-      background: #404a4c;
-    }
+  .icono-lupa {
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
   }
 `;
 
@@ -319,7 +341,6 @@ const CamposCliente = styled.div`
   gap: 0.5rem;
   align-items: center;
   width: 100%;
-  
 
   .nombre-apellidos {
     display: flex;
@@ -373,11 +394,13 @@ const CamposCliente = styled.div`
 
 const ZonaReparacion = styled.div`
   display: flex;
+  font-family: inherit;
   flex-direction: column;
   gap: 1rem;
   width: 100%;
 
   .tecnico {
+    font-family: inherit;
     flex: 1;
     padding: 0.6rem;
     border-radius: 6px;
@@ -387,6 +410,7 @@ const ZonaReparacion = styled.div`
   }
 
   .fila-tecnico-precio {
+    font-family: inherit;
     display: flex;
     gap: 1.2rem;
     align-items: flex-end;
@@ -396,12 +420,19 @@ const ZonaReparacion = styled.div`
   }
 
   select {
+    font-family: inherit;
     flex: 1 1 180px;
     min-width: 120px;
     max-width: 220px;
+    height: 40px;
+  }
+
+  .datos{
+    font-family: inherit;
   }
 
   .precio {
+    font-family: inherit;
     flex: 0 1 110px;
     max-width: 110px;
     min-width: 80px;
@@ -411,6 +442,10 @@ const ZonaReparacion = styled.div`
     background: #fff;
     color: #232728;
     height: 35px;
+  }
+
+  textarea {
+    font-family: inherit;
   }
 
   @media (max-width: 700px) {
@@ -449,7 +484,7 @@ const Fechas = styled.div`
     min-width: 120px;
     max-width: 160px;
     label {
-      font-size: 0.90rem;
+      font-size: 0.9rem;
       color: #607074;
       margin-bottom: 0.2rem;
     }

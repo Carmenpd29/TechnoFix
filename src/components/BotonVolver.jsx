@@ -15,7 +15,7 @@ export function BotonVolver({ to = "/", children }) {
 const Volver = styled.button`
   position: absolute;
   top: 1.5rem;
-  right: 2rem;
+  left: 2rem;
   background: #a5c4ca;
   color: #232728;
   border: none;

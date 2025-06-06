@@ -104,7 +104,7 @@ const HamburguesaButton = styled.button`
 const Container = styled.main`
   display: grid;
   min-height: 100vh;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 260px 1fr; 
   grid-template-rows: 1fr auto;
   color: #003459;
 
@@ -112,7 +112,11 @@ const Container = styled.main`
     grid-column: 1 / 2;
     grid-row: 1 / 3; 
     display: block;
-    height: 100%;
+    height: 100vh;
+    min-width: 200px;
+    background: #f8fafc;
+    border-right: 2px solid #a5c4ca44;
+    overflow-y: auto;
   }
   .contentMenuHambur {
     display: none;
@@ -121,8 +125,12 @@ const Container = styled.main`
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     width: 100%;
+    height: calc(95vh - 60px);
+    min-width: 0;
     overflow-y: auto;
     margin-top: 0;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
   }
   footer {
     grid-column: 2 / 3;
@@ -140,6 +148,7 @@ const Container = styled.main`
     .contentRouters {
       grid-column: 1;
       margin-top: 60px;
+      padding: 0 0.2rem;
     }
     footer {
       grid-column: 1;

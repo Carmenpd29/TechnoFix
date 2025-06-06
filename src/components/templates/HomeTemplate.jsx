@@ -65,7 +65,7 @@ const Titulo = styled.h2`
   text-align: center;
 `;
 
-const Texto = styled.p`
+const Texto = styled.div`
   font-family: "Poppins", "Montserrat";
   color: #3782a5;
   font-size: 1.1rem;

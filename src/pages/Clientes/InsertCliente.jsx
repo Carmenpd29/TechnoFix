@@ -4,6 +4,7 @@ import { BotonVolver, supabase } from "../../index";
 
 const initialState = {
   nombre: "",
+  apellidos: "", 
   telefono: "",
   nif: "",
   direccion: "",
@@ -35,6 +36,7 @@ export function InsertCliente() {
     const { error } = await supabase.from("clientes").insert([
       {
         nombre: form.nombre,
+        apellidos: form.apellidos, 
         telefono: form.telefono,
         nif: form.nif || null,
         direccion: form.direccion || null,
@@ -76,6 +78,17 @@ export function InsertCliente() {
             disabled={loading}
           />
           {errorNombre && <Error>El nombre es obligatorio</Error>}
+        </Field>
+        <Field>
+          <Label>Apellidos</Label>
+          <Input
+            name="apellidos"
+            value={form.apellidos}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder="Apellidos del cliente"
+            disabled={loading}
+          />
         </Field>
         <Field>
           <Label>Teléfono <span>*</span></Label>
@@ -129,6 +142,7 @@ export function InsertCliente() {
           />
           {errorEmail && <Error>Correo electrónico inválido</Error>}
         </Field>
+        
         <Boton type="submit" disabled={loading}>
           {loading ? "Guardando..." : "Guardar cliente"}
         </Boton>
@@ -260,3 +274,4 @@ const Mensaje = styled.div`
   font-weight: 600;
   text-align: center;
 `;
+
