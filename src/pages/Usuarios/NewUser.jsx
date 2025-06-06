@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { supabase, BotonVolver } from "../../index";
+import { supabase, BotonVolver, TituloPage } from "../../index";
 
 export function NewUser() {
   const [form, setForm] = useState({ nombre: "", email: "", rol: "", password: "" });
@@ -77,7 +77,7 @@ export function NewUser() {
   return (
     <Wrapper style={{ position: "relative" }}>
       <BotonVolver to="/usuarios" />
-      <Titulo>Nuevo Usuario</Titulo>
+      <TituloPage>Nuevo Usuario</TituloPage>
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <Field>
@@ -160,12 +160,6 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const Titulo = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #232728;
-  text-align: center;
-`;
 
 const FormContainer = styled.div`
   width: 100%;

@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { BotonVolver } from "../../index";
+import { BotonVolver, TituloPage } from "../../index";
 
 export function Caja() {
   return (
     <CajaWrapper>
       <BotonVolver to="/tpv" />
-      <h2>Caja</h2>
+      <TituloPage>Caja</TituloPage>
       <p>Aquí irá la gestión de la caja.</p>
     </CajaWrapper>
   );

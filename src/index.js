@@ -16,6 +16,8 @@ export * from "./components/templates/WrapperPage";
 export * from "./components/Opciones";
 export * from "./components/NombreUsuario";
 export * from "./components/clientes/BuscadorClientes";
+export * from "./components/TituloPage";
+export * from "./components/ManualPage";
 export * from './pages/Home';
 export * from './pages/Login';
 export * from './pages/Clientes';   
@@ -32,5 +34,7 @@ export * from './pages/Usuarios/AdminUsers';
 export * from './pages/Usuarios/NewUser';
 export * from './pages/Usuarios/ModUsers';
 export * from './pages/Usuarios/ModMyUser';
+export * from './pages/Reparaciones/VerReparaciones';
+export * from './pages/Reparaciones/AddReparacion';
 export * from './pages/Register';
 

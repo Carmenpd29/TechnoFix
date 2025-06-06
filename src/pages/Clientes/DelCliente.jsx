@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { BotonVolver, supabase, BuscadorClientes } from "../../index";
+import { BotonVolver, supabase, BuscadorClientes, TituloPage, WrapperPage } from "../../index";
 
 export function DelCliente() {
   const [seleccionado, setSeleccionado] = useState(null);
@@ -29,9 +29,9 @@ export function DelCliente() {
   };
 
   return (
-    <Wrapper>
+    <WrapperPage>
       <BotonVolver to="/clientes" />
-      <Titulo>Eliminar Cliente</Titulo>
+      <TituloPage>Eliminar Cliente</TituloPage>
       <BuscadorClientes onSeleccionar={cliente => {
         setSeleccionado(cliente);
         setShowConfirm(true);
@@ -58,96 +58,9 @@ export function DelCliente() {
         </ConfirmOverlay>
       )}
       {mensaje && <Mensaje>{mensaje}</Mensaje>}
-    </Wrapper>
+    </WrapperPage>
   );
 }
-
-const Wrapper = styled.div`
-  width: 90%;
-  margin: 2.5rem auto;
-  padding: 1.5rem 1rem 1.5rem 1rem;
-  background: #f8fafb;
-  border-radius: 22px;
-  box-shadow: 0 2px 18px #404a4c22;
-  min-height: 70vh;
-  border: 2px solid #a5c4ca;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  position: relative;
-  padding-top: 2.5rem;
-  @media (max-width: 700px) {
-    padding-top: 4.5rem;
-  }
-`;
-
-const Titulo = styled.h2`
-  font-size: 1.7rem;
-  margin-bottom: 1.5rem;
-  color: #232728;
-  text-align: center;
-`;
-
-const Buscador = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  background: #fff;
-  border: 1.5px solid #a5c4ca;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  margin-bottom: 1.2rem;
-  width: 90%;
-  max-width: 420px;
-
-  @media (max-width: 700px) {
-    max-width: 100%;
-    padding: 0.5rem 0.5rem;
-  }
-
-  input {
-    border: none;
-    outline: none;
-    font-size: 0.9rem;
-    width: 100%;
-    background: transparent;
-    color: #232728;
-  }
-`;
-
-const TablaScroll = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 1.2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #404a4c22;
-  background: #fff;
-`;
-
-const Tabla = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  th, td {
-    padding: 0.7rem 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-    font-size: 0.9rem;
-  }
-  th {
-    background: #e7f7fa;
-    color: #003459;
-    font-weight: 700;
-  }
-`;
-
-const Fila = styled.tr`
-  background: ${({ $seleccionado }) => ($seleccionado ? "#ffd6d6" : "transparent")};
-  cursor: pointer;
-  &:hover {
-    background:rgb(243, 171, 171);
-  }
-`;
 
 const ErrorMsg = styled.div`
   color: #e74c3c;

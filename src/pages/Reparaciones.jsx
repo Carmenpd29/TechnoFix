@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiPlusCircle, FiList } from "react-icons/fi";
-import { Opciones, WrapperPage, BotonMenu } from "../index";
+import { Opciones, WrapperPage, BotonMenu, ManualPage } from "../index";
 
 export function Reparaciones() {
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ export function Reparaciones() {
           </BotonMenu>
         ))}
       </Opciones>
-      <Manual>
+      <ManualPage>
         <p>Selecciona una opción para gestionar las reparaciones.</p>
-      </Manual>
+      </ManualPage>
     </WrapperPage>
   );
 }
@@ -41,11 +41,3 @@ const Titulo = styled.h2`
   margin-bottom: 1rem;
 `;
 
-const Manual = styled.div`
-  color: #607074;
-  font-size: 1.05rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  max-width: 600px;
-  width: 100%;
-`;

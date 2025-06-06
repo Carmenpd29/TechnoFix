@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { BotonVolver, supabase } from "../../index";
+import { BotonVolver, supabase, TituloPage, WrapperPage } from "../../index";
 
 const initialState = {
   nombre: "",
@@ -61,9 +61,9 @@ export function InsertCliente() {
   const errorEmail = submitted && !validarEmail(form.correo);
 
   return (
-    <Wrapper style={{ position: "relative" }}>
+    <WrapperPage style={{ position: "relative" }}>
       <BotonVolver to="/clientes" />
-      <Titulo>Insertar Cliente</Titulo>
+      <TituloPage>Insertar Cliente</TituloPage>
       <Form onSubmit={handleSubmit} autoComplete="off">
         <Field>
           <Label>Nombre <span>*</span></Label>
@@ -151,7 +151,7 @@ export function InsertCliente() {
       <Nota>
         <span>()</span> Datos opcionales para clientes que requieran factura.
       </Nota>
-    </Wrapper>
+    </WrapperPage>
   );
 }
 
@@ -172,32 +172,6 @@ function validarTelefono(telefono) {
   return telRegEx.test(telefono);
 }
 
-const Wrapper = styled.div`
-  width: 90%;
-  margin: 2.5rem auto;
-  padding: 1.5rem 1rem 1.5rem 1rem;
-  background: #f8fafb;
-  border-radius: 22px;
-  box-shadow: 0 2px 18px #404a4c22;
-  min-height: 70vh;
-  border: 2px solid #a5c4ca;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  position: relative;
-  padding-top: 2.5rem;
-
-  @media (max-width: 700px) {
-    padding-top: 4.5rem;
-  }
-`;
-const Titulo = styled.h2`
-  font-size: 1.7rem;
-  margin-bottom: 1.5rem;
-  color: #232728;
-  text-align: center;
-`;
 
 const Form = styled.form`
   width: 100%;

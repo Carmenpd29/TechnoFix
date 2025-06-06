@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { supabase, BotonVolver } from "../../index";
+import { supabase, BotonVolver, TituloPage } from "../../index";
 
 export function ModMyUser() {
   const [user, setUser] = useState(null);
@@ -63,7 +63,7 @@ export function ModMyUser() {
   if (!user) {
     return (
       <Wrapper>
-        <Titulo>Mi cuenta</Titulo>
+        <TituloPage>Mi cuenta</TituloPage>
         <Mensaje>Cargando...</Mensaje>
       </Wrapper>
     );
@@ -72,7 +72,7 @@ export function ModMyUser() {
   return (
     <Wrapper style={{ position: "relative" }}>
       <BotonVolver to="/home" />
-      <Titulo>Mi cuenta</Titulo>
+      <TituloPage>Mi cuenta</TituloPage>
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <Field>
@@ -137,13 +137,6 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const Titulo = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #232728;
-  text-align: center;
-`;
-
 const FormContainer = styled.div`
   width: 100%;
   display: flex;
@@ -174,20 +167,6 @@ const Input = styled.input`
   border: 2px solid #a5c4ca;
   border-radius: 10px;
   width: 100%;
-  box-sizing: border-box;
-  box-shadow: inset 0 2px 8px #404a4c10;
-  &:disabled {
-    background: #e9ecef;
-  }
-`;
-
-const Select = styled.select`
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: 2px solid #a5c4ca;
-  border-radius: 10px;
-  width: 100%;
-  background: white;
   box-sizing: border-box;
   box-shadow: inset 0 2px 8px #404a4c10;
   &:disabled {

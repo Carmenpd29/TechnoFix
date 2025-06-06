@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BotonVolver, supabase } from "../../index";
+import { BotonVolver, supabase, TituloPage, WrapperPage } from "../../index";
 
 const initialState = {
   nombre: "",
@@ -85,9 +85,9 @@ export function ModClienteFinal() {
   };
 
   return (
-    <Wrapper>
+    <WrapperPage>
       <BotonVolver to="/clientes" />
-      <Titulo>Editar Cliente</Titulo>
+      <TituloPage>Editar Cliente</TituloPage>
       <Form onSubmit={handleSubmit} autoComplete="off">
         <Field>
           <Label>Nombre <span>*</span></Label>
@@ -148,36 +148,10 @@ export function ModClienteFinal() {
       </Form>
       {mensaje && <Mensaje>{mensaje}</Mensaje>}
       {error && <ErrorMsg>{error}</ErrorMsg>}
-    </Wrapper>
+    </WrapperPage>
   );
 }
 
-const Wrapper = styled.div`
-  width: 90%;
-  margin: 2.5rem auto;
-  padding: 1.5rem 1rem 1.5rem 1rem;
-  background: #f8fafb;
-  border-radius: 22px;
-  box-shadow: 0 2px 18px #404a4c22;
-  min-height: 70vh;
-  border: 2px solid #a5c4ca;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  position: relative;
-  padding-top: 2.5rem;
-  @media (max-width: 700px) {
-    padding-top: 4.5rem;
-  }
-`;
-
-const Titulo = styled.h2`
-  font-size: 1.7rem;
-  margin-bottom: 1.5rem;
-  color: #232728;
-  text-align: center;
-`;
 
 const Form = styled.form`
   width: 100%;

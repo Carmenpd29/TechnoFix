@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import { BotonVolver, supabase } from "../../index";
+import { BotonVolver, supabase, TituloPage } from "../../index";
 import { useNavigate } from "react-router-dom";
 
 export function AdminUsers() {
@@ -60,7 +60,7 @@ export function AdminUsers() {
   return (
     <Wrapper style={{ position: "relative" }}>
       <BotonVolver to="/usuarios" />
-      <Titulo>Usuarios</Titulo>
+      <TituloPage>Usuarios</TituloPage>
       <TablaContainer>
         <Tabla>
           <thead>
@@ -139,13 +139,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-`;
-
-const Titulo = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #232728;
-  text-align: center;
 `;
 
 const TablaContainer = styled.div`

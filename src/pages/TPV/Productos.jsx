@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { BotonVolver } from "../../index";
+import { BotonVolver, TituloPage } from "../../index";
 
 export function Productos() {
   return (
     <ProductosWrapper>
       <BotonVolver to="/tpv" />
-      <h2>Productos</h2>
+      <TituloPage>Productos</TituloPage>
       <p>Aquí irá la gestión de productos.</p>
     </ProductosWrapper>
   );

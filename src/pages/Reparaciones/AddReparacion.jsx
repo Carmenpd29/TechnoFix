@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { BotonVolver, supabase } from "../index";
+import { BotonVolver, supabase, TituloPage, WrapperPage } from "../../index";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
@@ -139,9 +139,9 @@ export function AddReparacion() {
   };
 
   return (
-    <CajaWrapper>
+    <WrapperPage>
       <BotonVolver to="/home" />
-      <h2>Reparaciones</h2>
+      <TituloPage>Reparaciones</TituloPage>
       <FormReparacion onSubmit={handleSubmit}>
         <ZonaCliente>
           <Buscador>
@@ -310,33 +310,9 @@ export function AddReparacion() {
         </ZonaReparacion>
         <GuardarButton type="submit">Guardar</GuardarButton>
       </FormReparacion>
-    </CajaWrapper>
+    </WrapperPage>
   );
 }
-
-
-const CajaWrapper = styled.div`
-  width: 90%;
-  max-width: 540px;
-  margin: 1.5rem auto;
-  padding: 2.5rem 1.5rem 2rem 1.5rem;
-  background: #f8fafc;
-  border-radius: 22px;
-  box-shadow: 0 2px 18px #404a4c22;
-  min-height: 70vh;
-  border: 2px solid #a5c4ca;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  position: relative;
-
-  @media (max-width: 700px) {
-    padding-top: 4.5rem;
-    max-width: 98vw;
-    margin: 1.2rem auto;
-  }
-`;
 
 const FormReparacion = styled.form`
   width: 100%;

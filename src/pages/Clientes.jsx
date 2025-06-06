@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FiUsers, FiUserPlus, FiEdit, FiUserX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { Opciones, WrapperPage, BotonMenu } from "../index";
+import { Opciones, WrapperPage, BotonMenu, ManualPage } from "../index";
 
 export function Clientes({ user }) {
   const navigate = useNavigate();
@@ -47,9 +47,9 @@ export function Clientes({ user }) {
             </BotonMenu>
           ))}
       </Opciones>
-      <Manual>
+      <ManualPage>
         <p>Selecciona una opción para gestionar los clientes.</p>
-      </Manual>
+      </ManualPage>
     </WrapperPage>
   );
 }
@@ -59,15 +59,3 @@ const Titulo = styled.h2`
   margin-bottom: 1rem;
 `;
 
-const Manual = styled.div`
-  color: #607074;
-  font-size: 1.05rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  max-width: 600px;
-  width: 100%;
-
-  @media (max-width: 700px) {
-    
-  }
-`;

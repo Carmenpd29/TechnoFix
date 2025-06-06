@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
-import { supabase, BotonVolver } from "../../index";
+import { supabase, BotonVolver,TituloPage } from "../../index";
 
 export function ModUsers() {
   const location = useLocation();
@@ -19,7 +19,7 @@ export function ModUsers() {
     return (
       <Wrapper>
         <BotonVolver to="/usuarios/lista" />
-        <Titulo>Modificar Usuario</Titulo>
+        <TituloPage>Modificar Usuario</TituloPage>
         <Mensaje $tipo="error">No se ha encontrado el usuario.</Mensaje>
       </Wrapper>
     );
@@ -61,7 +61,7 @@ export function ModUsers() {
   return (
     <Wrapper style={{ position: "relative" }}>
       <BotonVolver to="/usuarios/lista" />
-      <Titulo>Modificar Usuario</Titulo>
+      <TituloPage>Modificar Usuario</TituloPage>
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <Field>
@@ -115,13 +115,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   position: relative;
-`;
-
-const Titulo = styled.h2`
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #232728;
-  text-align: center;
 `;
 
 const FormContainer = styled.div`
