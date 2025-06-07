@@ -2,22 +2,23 @@ import styled from "styled-components";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { NombreUsuario } from "../NombreUsuario"; // o desde "../components" si usas el barrel
+import { useUserStore, NombreUsuario, } from "../../index";
 
 export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
   const { rol } = user || {};
+  const logout = useUserStore((state) => state.logout);
 
   const menuHambur = [
     { label: "Usuarios", to: "/usuarios", icon: <FiUser size={20} style={{ marginRight: 8 }} />, visible: rol === "admin" },
-    { label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
+    //{ label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
     { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
     { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setOpen(false);
-    onLogout();
+    await logout();
     navigate("/login");
   };
 

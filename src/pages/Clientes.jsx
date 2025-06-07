@@ -1,13 +1,11 @@
 import styled from "styled-components";
-import { FiUsers, FiUserPlus, FiEdit, FiUserX } from "react-icons/fi";
+import { FiUsers, FiUserPlus, } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { Opciones, WrapperPage, BotonMenu, ManualPage } from "../index";
 
 export function Clientes({ user }) {
   const navigate = useNavigate();
-  const rol = user?.rol || "empleado"; 
 
-  // Opciones con permisos por rol
   const opciones = [
     {
       label: "Ver",

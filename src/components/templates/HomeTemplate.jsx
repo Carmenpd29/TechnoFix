@@ -5,18 +5,32 @@ export function HomeTemplate() {
     <Fondo>
       <Card>
         <LogoFijo>
-          <img src="/TechnoFix/assets/Logo.png" alt="TechnoFix logo" style={{ 
-            width: 200, 
-            height: "auto" 
-          }} />
+          <img
+            src="/TechnoFix/assets/Logo.png"
+            alt="TechnoFix logo"
+            style={{
+              width: 200,
+              height: "auto",
+            }}
+          />
         </LogoFijo>
         <Titulo>¡Bienvenid@ a TechnoFix!</Titulo>
         <Texto>
           Selecciona una opción para comenzar.
-          <br /><br />
+          <br />
+          <br />
           <OptionHome>
-            <p><span>- TPV</span> para ventas y gestión de productos.</p>
-            <p><span>- Clientes</span> para gestión de clientes.</p>
+            {/* 
+            <p>
+              <span>- TPV</span> para ventas y gestión de productos.
+            </p>
+            */}
+            <p>
+              <span>- Clientes</span> para gestión de clientes.
+            </p>
+            <p>
+              <span>- Reparaciones</span> para gestión de reparaciones.
+            </p>
           </OptionHome>
         </Texto>
       </Card>
@@ -53,8 +67,7 @@ const Card = styled.div`
   }
 `;
 
-const LogoFijo = styled.div`
-`;
+const LogoFijo = styled.div``;
 
 const Titulo = styled.h2`
   font-family: "Poppins", "Montserrat";
@@ -85,10 +98,10 @@ const OptionHome = styled.div`
   flex-direction: column;
   text-align: left;
   p {
-    margin: 0.05rem 0; 
+    margin: 0.05rem 0;
     font-size: 0.9rem;
   }
-  span { 
+  span {
     font-size: 1rem;
   }
 `;

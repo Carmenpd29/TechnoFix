@@ -1,6 +1,16 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { BotonVolver, supabase, TituloPage, WrapperPage, ManualPage, useUserStore } from "../../index";
+import {
+  BotonVolver,
+  supabase,
+  TituloPage,
+  WrapperPage,
+  ManualPage,
+  useUserStore,
+  Tabla,
+  TablaContainer,
+  IconBtn
+} from "../../index";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
@@ -50,8 +60,13 @@ export function VerReparaciones() {
   const handleEliminar = async () => {
     if (!selected) return;
     setEliminando(true);
-    await supabase.from("reparaciones").delete().eq("idreparacion", selected.idreparacion);
-    setReparaciones(reparaciones.filter((r) => r.idreparacion !== selected.idreparacion));
+    await supabase
+      .from("reparaciones")
+      .delete()
+      .eq("idreparacion", selected.idreparacion);
+    setReparaciones(
+      reparaciones.filter((r) => r.idreparacion !== selected.idreparacion)
+    );
     setSelected(null);
     setEliminando(false);
   };
@@ -68,11 +83,9 @@ export function VerReparaciones() {
           onChange={(e) => setBusqueda(e.target.value)}
         />
       </BusquedaContainer>
-      <ManualPage style={{ marginBottom: 0 , textAlign: "center" }}>
-              <p>
-                Selecciona una reparación para Editar o Modificar.
-              </p>
-            </ManualPage>
+      <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
+        <p>Selecciona una reparación para Editar o Modificar.</p>
+      </ManualPage>
       <TablaContainer>
         <Tabla>
           <thead>
@@ -160,43 +173,9 @@ export function VerReparaciones() {
   );
 }
 
-const TablaContainer = styled.div`
-  width: 100%;
-  overflow-x: auto;
-`;
-
-const Tabla = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  th,
-  td {
-    padding: 0.8rem 0.5rem;
-    border-bottom: 1px solid #e0e6ea;
-    text-align: center;
-    font-size: 0.98rem;
-  }
-  th {
-    background: #a5c4ca;
-    color: #232728;
-    font-weight: 600;
-    font-size: 1rem;
-  }
-  tr:last-child td {
-    border-bottom: none;
-  }
-  @media (max-width: 900px) {
-    td {
-      font-size: 0.9rem;
-    }
-  }
-`;
-
 const BusquedaContainer = styled.div`
   width: 95%;
-  max-width: 800px; 
+  max-width: 800px;
   margin: 0 auto 0.5rem 0;
   padding: 0 1rem;
   box-sizing: border-box;
@@ -219,37 +198,6 @@ const BusquedaContainer = styled.div`
     input {
       font-size: 0.9rem;
     }
-  }
-`;
-
-const IconBtn = styled.button`
-  background: ${({ eliminar }) =>
-    eliminar
-      ? "linear-gradient(90deg, #b91c1c 0%, #f87171 100%)"
-      : "linear-gradient(90deg, #607074 0%, #a5c4ca 100%)"};
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  box-shadow: 0 2px 8px #404a4c22;
-  transition: background 0.2s, color 0.2s;
-  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
-  &:hover {
-    background: ${({ eliminar }) =>
-      eliminar
-        ? "linear-gradient(90deg, #f87171 0%, #b91c1c 100%)"
-        : "linear-gradient(90deg, #a5c4ca 0%, #607074 100%)"};
-    color: #fff;
-  }
-  span {
-    margin-left: 0.5rem;
-    font-size: 0.9rem;
   }
 `;
 

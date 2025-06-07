@@ -2,11 +2,17 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
-import { NombreUsuario } from "../NombreUsuario"; 
+import { useUserStore, NombreUsuario, } from "../../index";
 
-export function Sidebar({ user, onLogout }) {
+export function Sidebar({ user }) {
   const navigate = useNavigate();
   const rol = user?.rol;
+  const logout = useUserStore((state) => state.logout);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <SidebarWrapper>
@@ -48,7 +54,7 @@ export function Sidebar({ user, onLogout }) {
       </div>
       <div>
         <BarraSeparadora />
-        <SalirButton onClick={onLogout}>
+        <SalirButton onClick={handleLogout}>
           <FiLogOut size={16} style={{ marginRight: 6 }} />
           Salir
         </SalirButton>
@@ -58,10 +64,9 @@ export function Sidebar({ user, onLogout }) {
 }
 
 const menuTrabajador = [
-  { label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
+  //{ label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
   { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
   { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
-  { label: "Salir", action: "logout" }
 ];
 
 const SidebarWrapper = styled.nav`
