@@ -19,6 +19,9 @@ export function AddReparacion() {
     nombre: "",
     apellidos: "",
     telefono: "",
+    nif: "",
+    direccion: "",
+    correo: "",
   });
   const [fecha, setFecha] = useState(() =>
     new Date().toISOString().slice(0, 10)
@@ -32,7 +35,7 @@ export function AddReparacion() {
   const [clientes, setClientes] = useState([]);
   const [loadingClientes, setLoadingClientes] = useState(false);
   const [tecnicos, setTecnicos] = useState([]);
-  const [mensaje, setMensaje] = useState({ texto: "", tipo: "" }); 
+  const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
 
   // Debounce para la búsqueda
   const debouncedBusqueda = useDebounce(busqueda);
@@ -46,11 +49,19 @@ export function AddReparacion() {
       .then(({ data }) => setTecnicos(data || []));
   }, []);
 
-  // Búsqueda automática de clientes por nombre, apellidos o dni
+  // Búsqueda automática de clientes por nombre, apellidos o nif
   useEffect(() => {
     if (!debouncedBusqueda) {
       setClientes([]);
-      setCliente({ id: "", nombre: "", apellidos: "", telefono: "" });
+      setCliente({
+        id: "",
+        nombre: "",
+        apellidos: "",
+        telefono: "",
+        nif: "",
+        direccion: "",
+        correo: "",
+      });
       return;
     }
     setLoadingClientes(true);
@@ -61,29 +72,46 @@ export function AddReparacion() {
         .from("clientes")
         .select("*")
         .eq("id", debouncedBusqueda)
-        .order("nombre", { ascending: true })
         .then(({ data, error }) => {
           setLoadingClientes(false);
-          if (error || !data) {
+          if (error || !data || data.length === 0) {
             setClientes([]);
-            setCliente({ id: "", nombre: "", apellidos: "", telefono: "" });
+            setCliente({
+              id: "",
+              nombre: "",
+              apellidos: "",
+              telefono: "",
+              nif: "",
+              direccion: "",
+              correo: "",
+            });
             return;
           }
           setClientes(data);
-          if (data.length === 1) setCliente(data[0]);
+          setCliente(data[0]);
         });
     } else {
-      // Solo busca por nombre
+      // Busca por nombre, apellidos o nif
       supabase
         .from("clientes")
         .select("*")
-        .ilike("nombre", `%${debouncedBusqueda}%`)
+        .or(
+          `nombre.ilike.%${debouncedBusqueda}%,apellidos.ilike.%${debouncedBusqueda}%,nif.ilike.%${debouncedBusqueda}%`
+        )
         .order("nombre", { ascending: true })
         .then(({ data, error }) => {
           setLoadingClientes(false);
-          if (error || !data) {
+          if (error || !data || data.length === 0) {
             setClientes([]);
-            setCliente({ id: "", nombre: "", apellidos: "", telefono: "" });
+            setCliente({
+              id: "",
+              nombre: "",
+              apellidos: "",
+              telefono: "",
+              nif: "",
+              direccion: "",
+              correo: "",
+            });
             return;
           }
           setClientes(data);
@@ -95,25 +123,15 @@ export function AddReparacion() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const datos = {
-      idcliente: Number(cliente.id),
-      idtecnico: Number(tecnico),
-      fecha,
-      fechaentrega: fechaEntrega || null,
-      articulo: articulo.trim(),
-      descripcion: descripcion.trim(),
-      observaciones: observaciones || "",
-      precio: precio === "" ? null : parseFloat(precio),
-    };
-
+    // Validación de campos obligatorios y FK
     if (
-      !datos.idcliente ||
-      !datos.idtecnico ||
-      !datos.fecha ||
-      !datos.articulo ||
-      !datos.descripcion ||
-      datos.precio === null ||
-      isNaN(datos.precio)
+      !cliente.id ||
+      !tecnico ||
+      !fecha ||
+      !articulo.trim() ||
+      !descripcion.trim() ||
+      precio === "" ||
+      isNaN(Number(precio))
     ) {
       setMensaje({
         texto: "Rellena todos los campos obligatorios",
@@ -122,12 +140,54 @@ export function AddReparacion() {
       return;
     }
 
+    const { data: clienteExiste } = await supabase
+      .from("clientes")
+      .select("id")
+      .eq("id", cliente.id)
+      .single();
+
+    const { data: tecnicoExiste } = await supabase
+      .from("usuarios")
+      .select("id")
+      .eq("id", tecnico)
+      .single();
+
+    if (!clienteExiste) {
+      setMensaje({ texto: "El cliente seleccionado no existe.", tipo: "error" });
+      return;
+    }
+    if (!tecnicoExiste) {
+      setMensaje({ texto: "El técnico seleccionado no existe.", tipo: "error" });
+      return;
+    }
+
+    const datos = {
+      idcliente: Number(cliente.id),
+      idtecnico: Number(tecnico),
+      fecha,
+      fechaentrega: fechaEntrega || null,
+      articulo: articulo.trim(),
+      descripcion: descripcion.trim(),
+      observaciones: observaciones || "",
+      precio: parseFloat(precio),
+    };
+
+    console.log("Insertando reparación:", datos);
+
     const { error } = await supabase.from("reparaciones").insert([datos]);
     if (error) {
-      setMensaje({ texto: "Error al guardar la reparación", tipo: "error" });
+      setMensaje({ texto: `Error al guardar la reparación: ${error.message}`, tipo: "error" });
     } else {
       setMensaje({ texto: "Reparación guardada correctamente", tipo: "ok" });
-      setCliente({ id: "", nombre: "", apellidos: "", telefono: "" });
+      setCliente({
+        id: "",
+        nombre: "",
+        apellidos: "",
+        telefono: "",
+        nif: "",
+        direccion: "",
+        correo: "",
+      });
       setBusqueda("");
       setClientes([]);
       setFecha(new Date().toISOString().slice(0, 10));
@@ -178,25 +238,3 @@ export function AddReparacion() {
   );
 }
 
-const Buscador = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 340px;
-  margin: 0 auto 0.5rem auto;
-  position: relative;
-  input {
-    flex: 1;
-    padding: 0.6rem 2.2rem 0.6rem 0.8rem;
-    border-radius: 6px;
-    border: 1.5px solid #a5c4ca;
-    font-size: 0.9rem;
-  }
-  .icono-lupa {
-    position: absolute;
-    right: 0.7rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-`;

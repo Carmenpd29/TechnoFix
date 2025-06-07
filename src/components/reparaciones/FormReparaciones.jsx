@@ -25,29 +25,26 @@ export function FormReparaciones({
 }) {
   return (
     <form onSubmit={onSubmit} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-      <CamposCliente>
-        <div className="nombre-apellidos">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={cliente.nombre || ""}
-            readOnly
-          />
-          <input
-            type="text"
-            placeholder="Apellidos"
-            value={cliente.apellidos || ""}
-            readOnly
-          />
-        </div>
+      <Datos>
         <input
           type="text"
-          className="telefono"
+          placeholder="Nombre"
+          value={cliente.nombre || ""}
+          readOnly
+        />
+        <input
+          type="text"
+          placeholder="Apellidos"
+          value={cliente.apellidos || ""}
+          readOnly
+        />
+        <input
+          type="text"
           placeholder="Teléfono"
           value={cliente.telefono || ""}
           readOnly
         />
-      </CamposCliente>
+      </Datos>
       <ZonaReparaciones>
         <div className="fila-tecnico-precio">
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
@@ -219,69 +216,6 @@ export function FormReparaciones({
   );
 }
 
-const CamposCliente = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
-  width: 100%;
-  
-  
-  .nombre-apellidos {
-    display: flex;
-    gap: 1.2rem;
-    width: 100%;
-    max-width: 340px;
-  }
-
-  .nombre-apellidos input {
-    flex: 1 1 0;
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1.5px solid #a5c4ca;
-    font-size: 1rem;
-    background: #e9ecef;
-    color: #232728;
-    min-width: 0;
-    font-family: inherit;
-    height: 20px;
-  }
-
-  .telefono {
-    width: 100%;
-    max-width: 340px;
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1.5px solid #a5c4ca;
-    font-size: 1rem;
-    background: #e9ecef;
-    color: #232728;
-    margin-top: 0.1rem;
-    align-self: center;
-    font-family: inherit;
-    box-sizing: border-box;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 0.9rem;
-    input {
-      font-size: 0.9rem;
-    }
-    input::placeholder,
-    textarea::placeholder {
-      font-size: 0.9rem;
-    }
-    .telefono {
-      max-width: 100%;
-      padding-left: 0.6rem;
-      padding-right: 0.6rem;
-    }
-    .nombre-apellidos {
-      max-width: 100%;
-    }
-  }
-`;
-
 const Fechas = styled.div`
   display: flex;
   gap: 1.5rem;
@@ -343,6 +277,11 @@ const Datos = styled.div`
     background: #fff;
     color: #232728;
     resize: vertical;
+  }
+  input[readonly] {
+    background: #e9ecef;
+    color: #607074;
+    cursor: not-allowed;
   }
   textarea {
     min-height: 60px;

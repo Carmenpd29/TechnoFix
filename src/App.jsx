@@ -1,8 +1,9 @@
 import styled, { createGlobalStyle } from "styled-components";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiMenu } from "react-icons/fi";
 import {
+  supabase,
   GlobalStyles,
   MyRoutes,
   Sidebar,
@@ -19,6 +20,38 @@ function App() {
   const logout = useUserStore((state) => state.logout);
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user: supaUser } } = await supabase.auth.getUser();
+      if (supaUser) {
+        const { data: usuarioDB } = await supabase
+          .from("usuarios")
+          .select("*")
+          .eq("uid", supaUser.id)
+          .single();
+        console.log("Usuario Supabase:", supaUser);
+        console.log("Usuario DB:", usuarioDB);
+        if (usuarioDB && usuarioDB.rol) {
+          login(usuarioDB);
+        } else if (supaUser) {
+          login({
+            uid: supaUser.id,
+            email: supaUser.email,
+            rol: "empleado"
+          });
+        } else {
+          logout();
+        }
+      } else {
+        logout();
+      }
+      setLoading(false);
+    })();
+  }, [login, logout]);
+
+  if (loading) return <div>Cargando...</div>;
 
   return (
     <AppWrapper>

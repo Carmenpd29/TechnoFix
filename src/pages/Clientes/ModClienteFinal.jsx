@@ -5,6 +5,7 @@ import { BotonVolver, supabase, TituloPage, WrapperPage } from "../../index";
 
 const initialState = {
   nombre: "",
+  apellidos: "",
   telefono: "",
   nif: "",
   direccion: "",
@@ -42,6 +43,7 @@ export function ModClienteFinal() {
       }
       setForm({
         nombre: clienteData.nombre || "",
+        apellidos: clienteData.apellidos || "",
         telefono: clienteData.telefono || "",
         nif: clienteData.nif || "",
         direccion: clienteData.direccion || "",
@@ -69,6 +71,7 @@ export function ModClienteFinal() {
       .from("clientes")
       .update({
         nombre: form.nombre,
+        apellidos: form.apellidos, // <-- sigue enviando apellidos aunque sea opcional
         telefono: form.telefono,
         nif: form.nif || null,
         direccion: form.direccion || null,
@@ -97,6 +100,16 @@ export function ModClienteFinal() {
             onChange={handleChange}
             required
             placeholder="Nombre del cliente"
+            disabled={loading}
+          />
+        </Field>
+        <Field>
+          <Label>Apellidos</Label>
+          <Input
+            name="apellidos"
+            value={form.apellidos}
+            onChange={handleChange}
+            placeholder="Apellidos del cliente"
             disabled={loading}
           />
         </Field>
@@ -142,10 +155,14 @@ export function ModClienteFinal() {
             disabled={loading}
           />
         </Field>
+        <ObligatorioMsg>
+        <span>*</span> Campos obligatorios
+      </ObligatorioMsg>
         <Boton type="submit" disabled={loading}>
           {loading ? "Modificando..." : "Modificar"}
         </Boton>
       </Form>
+      
       {mensaje && <Mensaje>{mensaje}</Mensaje>}
       {error && <ErrorMsg>{error}</ErrorMsg>}
     </WrapperPage>
@@ -217,4 +234,17 @@ const ErrorMsg = styled.div`
   margin-top: 1rem;
   font-weight: 600;
   text-align: center;
+`;
+
+const ObligatorioMsg = styled.div`
+  margin-top: 0.5rem;
+  color: #607074;
+  font-size: 0.97rem;
+  text-align: left;
+  span {
+    color: #e74c3c;
+    font-size: 1.1em;
+    margin-right: 4px;
+    font-weight: bold;
+  }
 `;
