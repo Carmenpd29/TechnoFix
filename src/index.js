@@ -9,6 +9,7 @@ export * from './styles/FondoDegradado';
 export * from './styles/FondoDegradadoMenu';
 export * from "./styles/TablaStyles";
 export * from "./styles/AdminStyles";
+export * from './styles/AppStyles';
 
 export * from './routers/routes';
 
