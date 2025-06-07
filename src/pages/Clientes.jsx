@@ -21,18 +21,6 @@ export function Clientes({ user }) {
       onClick: () => navigate("/clientes/insertar"),
       visible: true,
     },
-    {
-      label: "Modificar",
-      icon: <FiEdit size={36} />,
-      onClick: () => navigate("/clientes/modificar"),
-      visible: rol === "admin" || rol === "encargado",
-    },
-    {
-      label: "Eliminar",
-      icon: <FiUserX size={36} />,
-      onClick: () => navigate("/clientes/eliminar"),
-      visible: rol === "admin",
-    },
   ];
 
   return (
@@ -48,7 +36,11 @@ export function Clientes({ user }) {
           ))}
       </Opciones>
       <ManualPage>
-        <p>Selecciona una opción para gestionar los clientes.</p>
+        <p>
+          Selecciona una opción para gestionar los clientes.
+          <br />- <b>Ver</b>: Para ver, editar y eliminar clientes.
+          <br />- <b>Añadir</b>: Para añadir un nuevo cliente.
+        </p>
       </ManualPage>
     </WrapperPage>
   );

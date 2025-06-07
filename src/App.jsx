@@ -134,13 +134,20 @@ const HamburguesaButton = styled.button`
   z-index: 21;
 `;
 
+const AppWrapper = styled.div`
+  min-height: 100dvh;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+`;
+
 const Container = styled.main`
   display: grid;
   min-height: 100vh;
+  background: #f8fafc;
   grid-template-columns: 260px 1fr; 
   grid-template-rows: 1fr auto;
   color: #003459;
-  background: #f8fafc;
 
   .contentSidebar {
     grid-column: 1 / 2;
@@ -159,12 +166,12 @@ const Container = styled.main`
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     width: 100%;
-    height: calc(95vh - 60px);
+    height: 100%;
     min-width: 0;
     overflow-y: auto;
     margin-top: 0;
-    padding: 0 0.5rem;
     box-sizing: border-box;
+    background: linear-gradient(120deg,rgb(204, 228, 233) 0%,rgb(186, 203, 207) 100%);
   }
   footer {
     grid-column: 2 / 3;
@@ -188,12 +195,6 @@ const Container = styled.main`
       grid-column: 1;
     }
   }
-`;
-
-const AppWrapper = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 `;
 
 export default App;

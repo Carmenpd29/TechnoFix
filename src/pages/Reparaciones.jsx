@@ -1,7 +1,13 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiPlusCircle, FiList } from "react-icons/fi";
-import { Opciones, WrapperPage, BotonMenu, ManualPage, TituloPage } from "../index";
+import {
+  Opciones,
+  WrapperPage,
+  BotonMenu,
+  ManualPage,
+  TituloPage,
+} from "../index";
 
 export function Reparaciones() {
   const navigate = useNavigate();
@@ -30,9 +36,12 @@ export function Reparaciones() {
         ))}
       </Opciones>
       <ManualPage>
-        <p>Selecciona una opción para gestionar las reparaciones.</p>
+        <p>
+          Selecciona una opción para gestionar las reparaciones.
+          <br />- <b>Ver</b>: Para ver, editar y elminar reparaciones existentes.
+          <br />- <b>Añadir</b>: Para añadir una nueva reparación.
+        </p>
       </ManualPage>
     </WrapperPage>
   );
 }
-

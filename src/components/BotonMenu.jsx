@@ -18,8 +18,8 @@ const StyledBoton = styled.button`
   color: #232728;
   border: none;
   border-radius: 16px;
-  padding: 2rem 2rem;
-  font-size: 1.2rem;
+  padding: 2rem 2.5rem;
+  font-size: 1rem;
   font-family: 'Poppins';
   font-weight: 600;
   cursor: pointer;
@@ -44,7 +44,7 @@ const StyledBoton = styled.button`
     justify-content: flex-start;
     align-items: center;
     text-align: center;
-    padding: 0.7rem 1rem;
+    padding: 1rem 1.5rem;
     width: 100%;
     max-width: 180px;
     min-width: 0;

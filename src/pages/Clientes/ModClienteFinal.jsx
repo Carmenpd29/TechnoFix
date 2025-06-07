@@ -14,6 +14,7 @@ const initialState = {
 
 export function ModClienteFinal() {
   const { id } = useParams();
+  console.log("ID recibido en ModClienteFinal:", id);
   const location = useLocation();
   const navigate = useNavigate();
   const [form, setForm] = useState(initialState);
@@ -71,7 +72,7 @@ export function ModClienteFinal() {
       .from("clientes")
       .update({
         nombre: form.nombre,
-        apellidos: form.apellidos, // <-- sigue enviando apellidos aunque sea opcional
+        apellidos: form.apellidos,
         telefono: form.telefono,
         nif: form.nif || null,
         direccion: form.direccion || null,
@@ -109,7 +110,7 @@ export function ModClienteFinal() {
             name="apellidos"
             value={form.apellidos}
             onChange={handleChange}
-            placeholder="Apellidos del cliente"
+            placeholder="Apellidos del cliente (opcional)"
             disabled={loading}
           />
         </Field>
@@ -198,22 +199,29 @@ const Input = styled.input`
   padding: 0.6rem 0.8rem;
   border: 1.5px solid #a5c4ca;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   outline: none;
   transition: border 0.2s;
+  &::placeholder {
+    font-size: 0.9rem;
+    color: #b0b8ba;
+    opacity: 1;
+  }
   &:focus {
     border-color: #607074;
   }
 `;
 
 const Boton = styled.button`
-  margin-top: 1.2rem;
+  width: 40%;
+  margin: 1.2rem auto 0 auto; 
+  display: block;             
   padding: 0.7rem 0;
   background: linear-gradient(90deg, #607074 0%, #a5c4ca 100%);
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
@@ -223,7 +231,7 @@ const Boton = styled.button`
 `;
 
 const Mensaje = styled.div`
-  margin-top: 1rem;
+  margin-top: 0.9rem;
   color: #2e7d32;
   font-weight: 600;
   text-align: center;
@@ -239,7 +247,7 @@ const ErrorMsg = styled.div`
 const ObligatorioMsg = styled.div`
   margin-top: 0.5rem;
   color: #607074;
-  font-size: 0.97rem;
+  font-size: 0.9rem;
   text-align: left;
   span {
     color: #e74c3c;

@@ -4,10 +4,11 @@ import { FiSearch } from "react-icons/fi";
 import { supabase } from "../../index";
 
 export function BuscadorClientes({
-  onSeleccionar, // función para seleccionar cliente (opcional)
+  onSeleccionar,
   placeholder = "Buscar por nombre o NIF...",
-  renderAcciones, // función para renderizar acciones extra por fila (opcional)
-  soloFiltrar = false // si es true, busca todos los clientes y filtra en frontend
+  renderAcciones,
+  soloFiltrar = false,
+  soloInput = false 
 }) {
   const [busqueda, setBusqueda] = useState("");
   const [clientes, setClientes] = useState([]);
@@ -68,51 +69,53 @@ export function BuscadorClientes({
         />
       </Buscador>
       {error && <ErrorMsg>{error}</ErrorMsg>}
-      <TablaScroll>
-        <Tabla>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Teléfono</th>
-              <th>NIF</th>
-              <th>Dirección</th>
-              <th>Correo</th>
-              {renderAcciones && <th>Acciones</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {loading && (
+      {!soloInput && (
+        <TablaScroll>
+          <Tabla>
+            <thead>
               <tr>
-                <td colSpan={renderAcciones ? 6 : 5} style={{ textAlign: "center" }}>Buscando...</td>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>NIF</th>
+                <th>Dirección</th>
+                <th>Correo</th>
+                {renderAcciones && <th>Acciones</th>}
               </tr>
-            )}
-            {!loading && clientesFiltrados.length === 0 && busqueda && (
-              <tr>
-                <td colSpan={renderAcciones ? 6 : 5} style={{ textAlign: "center" }}>No hay resultados.</td>
-              </tr>
-            )}
-            {clientesFiltrados.map(cliente => (
-              <tr
-                key={cliente.id}
-                onClick={() => onSeleccionar && onSeleccionar(cliente)}
-                style={{ cursor: onSeleccionar ? "pointer" : "default" }}
-              >
-                <td>{cliente.nombre}</td>
-                <td>{cliente.telefono}</td>
-                <td>{cliente.nif || "-"}</td>
-                <td>{cliente.direccion || "-"}</td>
-                <td>{cliente.correo || "-"}</td>
-                {renderAcciones && <td>{renderAcciones(cliente)}</td>}
-              </tr>
-            ))}
-          </tbody>
-        </Tabla>
-      </TablaScroll>
+            </thead>
+            <tbody>
+              {loading && (
+                <tr>
+                  <td colSpan={renderAcciones ? 6 : 5} style={{ textAlign: "center" }}>Buscando...</td>
+                </tr>
+              )}
+              {!loading && clientesFiltrados.length === 0 && busqueda && (
+                <tr>
+                  <td colSpan={renderAcciones ? 6 : 5} style={{ textAlign: "center" }}>No hay resultados.</td>
+                </tr>
+              )}
+              {clientesFiltrados.map(cliente => (
+                <tr
+                  key={cliente.id}
+                  onClick={() => onSeleccionar && onSeleccionar(cliente)}
+                  style={{ cursor: onSeleccionar ? "pointer" : "default" }}
+                >
+                  <td>{cliente.nombre}</td>
+                  <td>{cliente.telefono}</td>
+                  <td>{cliente.nif || "-"}</td>
+                  <td>{cliente.direccion || "-"}</td>
+                  <td>{cliente.correo || "-"}</td>
+                  {renderAcciones && <td>{renderAcciones(cliente)}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </Tabla>
+        </TablaScroll>
+      )}
     </>
   );
 }
 
-// Puedes reutilizar los styled-components de tus páginas actuales
+
 const Buscador = styled.div`
   display: flex;
   align-items: center;
