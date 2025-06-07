@@ -325,4 +325,3 @@ const GuardarButton = styled.button`
     font-size: 0.85rem;
   }
 `;
-
