@@ -140,6 +140,7 @@ const Container = styled.main`
   grid-template-columns: 260px 1fr; 
   grid-template-rows: 1fr auto;
   color: #003459;
+  background: #f8fafc;
 
   .contentSidebar {
     grid-column: 1 / 2;
