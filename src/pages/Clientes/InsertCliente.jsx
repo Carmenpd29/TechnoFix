@@ -4,7 +4,7 @@ import { BotonVolver, supabase, TituloPage, WrapperPage } from "../../index";
 
 const initialState = {
   nombre: "",
-  apellidos: "", 
+  apellidos: "",
   telefono: "",
   nif: "",
   direccion: "",
@@ -36,7 +36,7 @@ export function InsertCliente() {
     const { error } = await supabase.from("clientes").insert([
       {
         nombre: form.nombre,
-        apellidos: form.apellidos, 
+        apellidos: form.apellidos,
         telefono: form.telefono,
         nif: form.nif || null,
         direccion: form.direccion || null,
@@ -56,7 +56,7 @@ export function InsertCliente() {
   };
 
   const errorNombre = submitted && !form.nombre.trim();
-  const errorTelefono = submitted && !form.telefono.trim();
+  const errorTelefono = submitted && (!form.telefono.trim() || !validarTelefono(form.telefono));
   const errorNIF = submitted && !validarNIF(form.nif);
   const errorEmail = submitted && !validarEmail(form.correo);
 
@@ -66,7 +66,9 @@ export function InsertCliente() {
       <TituloPage>Insertar Cliente</TituloPage>
       <Form onSubmit={handleSubmit} autoComplete="off">
         <Field>
-          <Label>Nombre <span>*</span></Label>
+          <Label>
+            Nombre <span>*</span>
+          </Label>
           <Input
             name="nombre"
             value={form.nombre}
@@ -91,7 +93,9 @@ export function InsertCliente() {
           />
         </Field>
         <Field>
-          <Label>Teléfono <span>*</span></Label>
+          <Label>
+            Teléfono <span>*</span>
+          </Label>
           <Input
             name="telefono"
             value={form.telefono}
@@ -102,7 +106,7 @@ export function InsertCliente() {
             placeholder="Teléfono de contacto"
             disabled={loading}
           />
-          {errorTelefono && <Error>El teléfono es obligatorio</Error>}
+          {errorTelefono && <Error>Introduce un teléfono válido de 9 dígitos</Error>}
         </Field>
         <Field>
           <Label>NIF</Label>
@@ -142,7 +146,7 @@ export function InsertCliente() {
           />
           {errorEmail && <Error>Correo electrónico inválido</Error>}
         </Field>
-        
+
         <Boton type="submit" disabled={loading}>
           {loading ? "Guardando..." : "Guardar cliente"}
         </Boton>
@@ -172,7 +176,6 @@ function validarTelefono(telefono) {
   return telRegEx.test(telefono);
 }
 
-
 const Form = styled.form`
   width: 100%;
   max-width: 420px;
@@ -192,8 +195,11 @@ const Label = styled.label`
   color: #003459;
   span {
     color: #e74c3c;
-    font-size: 1.1em;
+    font-size: 0.9rem;
     margin-left: 2px;
+  }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -207,6 +213,9 @@ const Input = styled.input`
   &:focus {
     border-color: #607074;
   }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Error = styled.span`
@@ -216,7 +225,7 @@ const Error = styled.span`
 `;
 
 const Boton = styled.button`
-  width: 50%;  
+  width: 50%;
   text-align: center;
   margin-top: 1.2rem;
   margin-left: auto;
@@ -233,6 +242,10 @@ const Boton = styled.button`
   &:hover {
     background: linear-gradient(90deg, #a5c4ca 0%, #607074 100%);
   }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
+    width: 30%;
+  }
 `;
 
 const Nota = styled.div`
@@ -244,6 +257,9 @@ const Nota = styled.div`
     color: #e74c3c;
     font-weight: bold;
   }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Mensaje = styled.div`
@@ -252,4 +268,3 @@ const Mensaje = styled.div`
   font-weight: 600;
   text-align: center;
 `;
-

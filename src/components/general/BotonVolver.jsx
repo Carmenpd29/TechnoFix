@@ -34,4 +34,9 @@ const Volver = styled.button`
     background: #607074;
     color: #fff;
   }
+
+  @media (max-width: 1120px) {
+    padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  }
 `;

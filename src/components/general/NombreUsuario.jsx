@@ -12,12 +12,8 @@ export const NombreUsuario = styled(Link)`
   cursor: pointer;
   border-radius: 8px;
   padding: 0.4rem 0.7rem;
-  align-self: center; 
-  transition:
-    background 0.18s,
-    color 0.18s,
-    box-shadow 0.18s,
-    transform 0.13s;
+  align-self: center;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
 
   &:hover {
     background: linear-gradient(90deg, #caf0f8 0%, #a5c4ca 100%);
@@ -25,5 +21,8 @@ export const NombreUsuario = styled(Link)`
     box-shadow: 0 2px 8px #a5c4ca55;
     transform: scale(1.04);
     text-decoration: none;
+  }
+  @media (max-width: 1120px) {
+    font-size: 0.9rem;
   }
 `;

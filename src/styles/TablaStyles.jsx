@@ -27,9 +27,12 @@ export const Tabla = styled.table`
   tr:last-child td {
     border-bottom: none;
   }
-  @media (max-width: 900px) {
-    td {
+  @media (max-width: 1120px) {
+    th {
       font-size: 0.9rem;
+    }
+    td {
+      font-size: 0.8rem;
     }
   }
 `;

@@ -60,10 +60,11 @@ const Card = styled.div`
   max-width: 420px;
   min-width: 0;
 
-  @media (max-width: 480px) {
+  @media (max-width: 1120px) {
     padding: 1rem 0.5rem 1rem 0.5rem;
-    width: 94vw;
+    width: 70vw;
     max-width: 98vw;
+    font-size: 0.8rem;
   }
 `;
 
@@ -76,6 +77,10 @@ const Titulo = styled.h2`
   font-weight: 700;
   letter-spacing: 1px;
   text-align: center;
+  
+@media (max-width: 1120px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Texto = styled.div`
@@ -87,7 +92,10 @@ const Texto = styled.div`
   span {
     color: #27618a;
     font-weight: 600;
-    font-size: 1.25rem;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -103,5 +111,13 @@ const OptionHome = styled.div`
   }
   span {
     font-size: 1rem;
+  }
+  @media (max-width: 1120px) {
+    p {
+      font-size: 0.8rem;
+    }
+    span {
+      font-size: 0.8rem;
+    }
   }
 `;

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useUserStore, NombreUsuario, } from "../../index";
+import { useUserStore, NombreUsuario } from "../../index";
 
 export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
@@ -10,10 +10,23 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
   const logout = useUserStore((state) => state.logout);
 
   const menuHambur = [
-    { label: "Usuarios", to: "/usuarios", icon: <FiUser size={20} style={{ marginRight: 8 }} />, visible: rol === "admin" },
+    {
+      label: "Usuarios",
+      to: "/usuarios",
+      icon: <FiUser size={20} style={{ marginRight: 8 }} />,
+      visible: rol === "admin",
+    },
     //{ label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
-    { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
-    { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
+    {
+      label: "Clientes",
+      to: "/clientes",
+      icon: <FiUsers size={20} style={{ marginRight: 8 }} />,
+    },
+    {
+      label: "Reparaciones",
+      to: "/reparaciones",
+      icon: <MdBuild size={20} style={{ marginRight: 8 }} />,
+    },
   ];
 
   const handleLogout = async () => {
@@ -28,7 +41,7 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
     <>
       <Backdrop onClick={() => setOpen(false)} />
       <Overlay>
-        <CloseButton onClick={() => setOpen(false)} aria-label="Cerrar menú" >
+        <CloseButton onClick={() => setOpen(false)} aria-label="Cerrar menú">
           <FiX size={30} />
         </CloseButton>
         <MenuLayout>
@@ -43,7 +56,10 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
               }}
             />
             {user?.nombre && (
-              <NombreUsuario to="/usuarios/editarme" onClick={() => setOpen(false)}>
+              <NombreUsuario
+                to="/usuarios/editarme"
+                onClick={() => setOpen(false)}
+              >
                 {user.nombre}
               </NombreUsuario>
             )}
@@ -54,8 +70,8 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
           </ColLogo>
           <MenuLinks>
             {menuHambur
-              .filter(item => item.visible !== false)
-              .map(item => (
+              .filter((item) => item.visible !== false)
+              .map((item) => (
                 <MenuOption
                   key={item.to}
                   onClick={() => {
@@ -76,7 +92,7 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0; 
+  top: 0;
   left: 0;
   right: 0;
   z-index: 200;
@@ -97,12 +113,13 @@ const Overlay = styled.div`
   flex-direction: column;
   align-items: stretch;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1120px) {
     width: 98vw;
     min-width: 0;
     margin: 0;
-    padding: 2rem 0.5rem 1rem 2.5rem; 
+    padding: 2rem 0.5rem 1rem 2.5rem;
     max-width: 98vw;
+    font-size: 0.9rem;
   }
 `;
 
@@ -121,7 +138,7 @@ const MenuLayout = styled.div`
   display: grid;
   grid-template-columns: minmax(70px, 100px) 1fr;
   gap: 1.2rem;
-  align-items: start; 
+  align-items: start;
   width: 100%;
 `;
 
@@ -131,18 +148,21 @@ const ColLogo = styled.div`
   align-items: flex-start;
   min-width: 70px;
 
-  & > a, & > button {
+  & > a,
+  & > button {
     margin-top: 0.7rem;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1120px) {
     margin-left: 0.5rem;
     margin-bottom: 0.7rem;
     text-align: center;
     align-items: center;
-    & > a, & > button {
+    & > a,
+    & > button {
       margin-top: 0.5rem;
     }
+    font-size: 0.9rem;
   }
 `;
 
@@ -159,16 +179,17 @@ const LogoHambur = styled.img`
 const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.6rem; 
+  gap: 0.6rem;
   align-items: flex-start;
   padding-left: 1.5rem;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1120px) {
     margin: 0;
-    padding-left: 1.5rem; 
+    padding-left: 1.5rem;
     gap: 1rem;
     width: 100%;
     align-items: flex-start;
+    font-size: 0.9rem;
   }
 `;
 
@@ -185,23 +206,21 @@ const SalirButton = styled.button`
   font-size: 0.9rem;
   font-weight: 700;
   padding: 0.38rem 0.95rem;
-  cursor: pointer; 
+  cursor: pointer;
   margin-bottom: 0rem;
   display: flex;
   align-items: center;
   box-shadow: 0 1px 4px #d32f2f22;
-  border: 1px solid #fff; 
+  border: 1px solid #fff;
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
 
   &:hover {
-    background: linear-gradient(
-      100deg,
-      #8a1616 0%,
-      #d32f2f 50%,
-      #ff5252 100%
-    );
+    background: linear-gradient(100deg, #8a1616 0%, #d32f2f 50%, #ff5252 100%);
     box-shadow: 0 2px 8px #d32f2f44;
     transform: translateY(-2px) scale(1.04);
+  }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -215,10 +234,7 @@ const MenuOption = styled.button`
   padding: 0.4rem 1.2rem;
   border-radius: 6px;
   cursor: pointer;
-  transition:
-    background 0.18s,
-    color 0.18s,
-    transform 0.13s;
+  transition: background 0.18s, color 0.18s, transform 0.13s;
   text-align: left;
   display: flex;
   align-items: center;
@@ -228,6 +244,9 @@ const MenuOption = styled.button`
     color: rgb(123, 168, 189);
     transform: translateX(4px) scale(1.04);
     text-decoration: none;
+  }
+  @media (max-width: 1120px) {
+    font-size: 0.9rem;
   }
 `;
 

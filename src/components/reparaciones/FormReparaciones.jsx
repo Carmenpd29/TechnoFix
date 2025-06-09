@@ -21,10 +21,19 @@ export function FormReparaciones({
   mensaje,
   onSubmit,
   loading,
-  modoEdicion = false // true para editar, false para alta
+  modoEdicion = false, // true para editar, false para alta
 }) {
   return (
-    <form onSubmit={onSubmit} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+    <form
+      onSubmit={onSubmit}
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "1rem",
+      }}
+    >
       <Datos>
         <input
           type="text"
@@ -60,7 +69,7 @@ export function FormReparaciones({
             <select
               className="tecnico"
               value={tecnico}
-              onChange={e => setTecnico(e.target.value)}
+              onChange={(e) => setTecnico(e.target.value)}
               required
               disabled={loading}
             >
@@ -86,7 +95,7 @@ export function FormReparaciones({
               type="number"
               placeholder="Precio (€)"
               value={precio}
-              onChange={e => setPrecio(e.target.value)}
+              onChange={(e) => setPrecio(e.target.value)}
               min="0"
               step="0.01"
               required
@@ -103,7 +112,7 @@ export function FormReparaciones({
               required
               type="date"
               value={fecha}
-              onChange={e => setFecha(e.target.value)}
+              onChange={(e) => setFecha(e.target.value)}
               disabled={loading}
             />
           </div>
@@ -113,7 +122,7 @@ export function FormReparaciones({
               className="datos"
               type="date"
               value={fechaEntrega}
-              onChange={e => setFechaEntrega(e.target.value)}
+              onChange={(e) => setFechaEntrega(e.target.value)}
               disabled={loading}
             />
           </div>
@@ -140,7 +149,7 @@ export function FormReparaciones({
               type="text"
               placeholder="Artículo"
               value={articulo}
-              onChange={e => setArticulo(e.target.value)}
+              onChange={(e) => setArticulo(e.target.value)}
               required
               disabled={loading}
             />
@@ -166,7 +175,7 @@ export function FormReparaciones({
               type="text"
               placeholder="Descripción"
               value={descripcion}
-              onChange={e => setDescripcion(e.target.value)}
+              onChange={(e) => setDescripcion(e.target.value)}
               required
               disabled={loading}
             />
@@ -190,7 +199,7 @@ export function FormReparaciones({
             <textarea
               placeholder="Observaciones"
               value={observaciones}
-              onChange={e => setObservaciones(e.target.value)}
+              onChange={(e) => setObservaciones(e.target.value)}
               rows={3}
               disabled={loading}
             />
@@ -251,12 +260,12 @@ const Fechas = styled.div`
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1120px) {
     input[type="date"] {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
     input[type="date"]::placeholder {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
   }
 `;
@@ -288,10 +297,10 @@ const Datos = styled.div`
     max-height: 180px;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1120px) {
     input::placeholder,
     textarea::placeholder {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
   }
 `;
@@ -321,7 +330,7 @@ const GuardarButton = styled.button`
     box-shadow: none;
   }
 
-  @media (max-width: 900px) {
-    font-size: 0.85rem;
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
   }
 `;

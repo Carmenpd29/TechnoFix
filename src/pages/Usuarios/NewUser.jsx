@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { supabase, BotonVolver, TituloPage } from "../../index";
 
 export function NewUser() {
-  const [form, setForm] = useState({ nombre: "", email: "", rol: "", password: "" });
+  const [form, setForm] = useState({
+    nombre: "",
+    email: "",
+    rol: "",
+    password: "",
+  });
   const [mensaje, setMensaje] = useState("");
   const [mensajeTipo, setMensajeTipo] = useState(""); // "error" o "success"
   const [loading, setLoading] = useState(false);
@@ -18,7 +23,12 @@ export function NewUser() {
     setMensajeTipo("");
     setLoading(true);
 
-    if (!form.nombre.trim() || !form.email.trim() || !form.rol || !form.password) {
+    if (
+      !form.nombre.trim() ||
+      !form.email.trim() ||
+      !form.rol ||
+      !form.password
+    ) {
       setMensaje("Todos los campos son obligatorios.");
       setMensajeTipo("error");
       setLoading(false);
@@ -135,9 +145,7 @@ export function NewUser() {
           <Boton type="submit" disabled={loading}>
             {loading ? "Guardando..." : "Crear usuario"}
           </Boton>
-          {mensaje && (
-            <Mensaje $tipo={mensajeTipo}>{mensaje}</Mensaje>
-          )}
+          {mensaje && <Mensaje $tipo={mensajeTipo}>{mensaje}</Mensaje>}
         </Form>
       </FormContainer>
     </Wrapper>
@@ -159,7 +167,6 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   position: relative;
 `;
-
 
 const FormContainer = styled.div`
   width: 100%;
@@ -183,6 +190,9 @@ const Field = styled.div`
 const Label = styled.label`
   font-weight: 600;
   margin-bottom: 0.4rem;
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Input = styled.input`
@@ -196,6 +206,9 @@ const Input = styled.input`
   &:disabled {
     background: #e9ecef;
     cursor: not-allowed;
+  }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -228,6 +241,12 @@ const Boton = styled.button`
     background: #007bff70;
     cursor: not-allowed;
   }
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
+    width: 40%;
+    text-align: center;
+    margin: 0 auto; 
+  }
 `;
 
 const Mensaje = styled.p`
@@ -236,4 +255,7 @@ const Mensaje = styled.p`
   font-weight: 600;
   color: ${({ $tipo }) => ($tipo === "success" ? "#2e7d32" : "#d9534f")};
   text-align: center;
+  @media (max-width: 1120px) {
+    font-size: 0.8rem;
+  }
 `;

@@ -52,7 +52,11 @@ export const ZonaReparaciones = styled.div`
     color: #232728;
     font-family: inherit;
   }
-  @media (max-width: 700px) {
+  @media (max-width: 1120px) {
+  label{
+  font-size: 0.8rem;
+  }
+  
     .fila-tecnico-precio {
       flex-direction: row;
       gap: 1rem;

@@ -11,7 +11,7 @@ import {
   TablaContainer,
   IconBtn
 } from "../../index";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 export function VerReparaciones() {
@@ -76,6 +76,7 @@ export function VerReparaciones() {
       <BotonVolver to="/reparaciones" />
       <TituloPage>Listado de Reparaciones</TituloPage>
       <BusquedaContainer>
+        <FiSearch className="icono-lupa" />
         <input
           type="text"
           placeholder="Buscar por nombre de cliente"
@@ -84,7 +85,7 @@ export function VerReparaciones() {
         />
       </BusquedaContainer>
       <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
-        <p>Selecciona una reparación para Editar o Modificar.</p>
+        <p>Selecciona una reparación para Editar o Eliminar.</p>
       </ManualPage>
       <TablaContainer>
         <Tabla>
@@ -179,9 +180,18 @@ const BusquedaContainer = styled.div`
   margin: 0 auto 0.5rem 0;
   padding: 0 1rem;
   box-sizing: border-box;
+  position: relative;
+  .icono-lupa {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #607074;
+    font-size: 1.2rem;
+  }
   input {
-    width: 100%;
-    padding: 0.7rem;
+    width: 95%;
+    padding: 0.7rem 0.7rem 0.7rem 2.5rem;
     border: 1.5px solid #a5c4ca;
     border-radius: 12px;
     font-size: 1rem;

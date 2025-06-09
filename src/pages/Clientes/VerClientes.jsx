@@ -70,7 +70,7 @@ export function VerClientes() {
         setBusqueda={setBusqueda}
       />
       <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
-        <p>Selecciona un cliente para Editar o Modificar.</p>
+        <p>Selecciona un cliente para Editar o Eliminar.</p>
       </ManualPage>
       <TablaContainer>
         <Tabla>
