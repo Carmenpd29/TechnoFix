@@ -30,7 +30,17 @@ export function InsertCliente() {
     e.preventDefault();
     setSubmitted(true);
     setMensaje("");
-    if (!form.nombre.trim() || !form.telefono.trim()) return;
+
+    // Validaciones antes de guardar
+    if (
+      !form.nombre.trim() ||
+      !form.telefono.trim() ||
+      !validarTelefono(form.telefono) ||
+      !validarNIF(form.nif) ||
+      !validarEmail(form.correo)
+    ) {
+      return; // No guardar si hay errores
+    }
 
     setLoading(true);
     const { error } = await supabase.from("clientes").insert([
