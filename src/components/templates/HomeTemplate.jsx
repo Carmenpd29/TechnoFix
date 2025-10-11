@@ -21,7 +21,7 @@ export function HomeTemplate() {
           <br />
           <OptionHome>
             <p>
-              <span>- Usuario</span> gestiona tu usuario haciendo clic en tu nombre.
+              <span>- Usuario</span> gestionar tu usuario.
             </p>
             <p>
               <span>- Clientes</span> para gestión de clientes.
