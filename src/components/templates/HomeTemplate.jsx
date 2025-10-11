@@ -20,11 +20,9 @@ export function HomeTemplate() {
           <br />
           <br />
           <OptionHome>
-            {/* 
             <p>
-              <span>- TPV</span> para ventas y gestión de productos.
+              <span>- Usuario</span> gestiona tu usuario haciendo clic en tu nombre.
             </p>
-            */}
             <p>
               <span>- Clientes</span> para gestión de clientes.
             </p>
