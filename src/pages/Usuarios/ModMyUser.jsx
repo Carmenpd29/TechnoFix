@@ -77,11 +77,11 @@ export function ModMyUser() {
         <Form onSubmit={handleSubmit}>
           <Field>
             <Label>Nombre</Label>
-            <Input value={user.nombre} disabled readOnly />
+            <Input value={user.nombre} disabled readOnly autoComplete="name" />
           </Field>
           <Field>
             <Label>Email</Label>
-            <Input value={user.email} disabled readOnly />
+            <Input value={user.email} disabled readOnly autoComplete="username" />
           </Field>
           <Field>
             <Label>Contraseña actual</Label>

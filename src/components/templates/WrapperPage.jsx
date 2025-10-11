@@ -21,6 +21,12 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   position: relative;
   padding-top: 2.5rem;
+  
+  @media (max-width: 1200px) and (min-width: 701px) {
+    width: 60%;
+    margin: 2rem auto;
+  }
+  
   @media (max-width: 700px) {
     padding-top: 4.5rem;
   }

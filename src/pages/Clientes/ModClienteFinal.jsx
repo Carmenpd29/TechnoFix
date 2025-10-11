@@ -102,6 +102,7 @@ export function ModClienteFinal() {
             required
             placeholder="Nombre del cliente"
             disabled={loading}
+            autoComplete="given-name"
           />
         </Field>
         <Field>
@@ -123,6 +124,7 @@ export function ModClienteFinal() {
             required
             placeholder="Teléfono de contacto"
             disabled={loading}
+            autoComplete="tel"
           />
         </Field>
         <Field>
@@ -154,6 +156,7 @@ export function ModClienteFinal() {
             placeholder="Correo electrónico (opcional)"
             type="email"
             disabled={loading}
+            autoComplete="email"
           />
         </Field>
         <ObligatorioMsg>

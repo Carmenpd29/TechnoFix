@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function ClienteCard({ cliente }) {
+export function ClienteCard({ cliente }) {
   if (!cliente) return null;
   return (
     <Card>

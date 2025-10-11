@@ -50,7 +50,6 @@ export const Container = styled.main`
     min-width: 200px;
     background: #f8fafc;
     border-right: 2px solid #a5c4ca44;
-    /* Quita height: 100vh y overflow-y: auto */
     height: 100%;
   }
   .contentMenuHambur {

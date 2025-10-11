@@ -88,6 +88,7 @@ export function InsertCliente() {
             $error={errorNombre}
             placeholder="Nombre del cliente"
             disabled={loading}
+            autoComplete="given-name"
           />
           {errorNombre && <Error>El nombre es obligatorio</Error>}
         </Field>
@@ -115,6 +116,7 @@ export function InsertCliente() {
             $error={errorTelefono}
             placeholder="Teléfono de contacto"
             disabled={loading}
+            autoComplete="tel"
           />
           {errorTelefono && <Error>Introduce un teléfono válido de 9 dígitos</Error>}
         </Field>
@@ -152,6 +154,7 @@ export function InsertCliente() {
             placeholder="Correo electrónico (opcional)"
             type="email"
             disabled={loading}
+            autoComplete="email"
             $error={errorEmail}
           />
           {errorEmail && <Error>Correo electrónico inválido</Error>}

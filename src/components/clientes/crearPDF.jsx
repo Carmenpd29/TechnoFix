@@ -62,9 +62,9 @@ export async function crearPDF(cliente, reparaciones) {
     ]),
     styles: {
       fontSize: 8,
-      cellPadding: { top: 3, right: 6, bottom: 3, left: 6 }, // margen interno
+      cellPadding: { top: 3, right: 6, bottom: 3, left: 6 }, 
       lineWidth: 0.5,
-      lineColor: [255, 255, 255], // blanco para líneas entre columnas
+      lineColor: [255, 255, 255], 
       overflow: "linebreak",
       valign: "middle"
     },

@@ -99,6 +99,7 @@ export function NewUser() {
               required
               placeholder="Nombre del usuario"
               disabled={loading}
+              autoComplete="name"
             />
           </Field>
           <Field>
