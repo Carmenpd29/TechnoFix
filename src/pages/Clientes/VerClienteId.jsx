@@ -19,9 +19,15 @@ export function VerClienteId() {
       <TituloPage>Ficha del Cliente</TituloPage>
       
       <div style={{
-        height: 'calc(100vh - 200px)',
+        position: 'relative',
+        width: '100%',
+        height: '65vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'transparent',
+        padding: 0,
         overflowY: 'auto',
-        padding: '0 1rem'
+        marginTop: '0.5rem'
       }}>
         {cliente && <ClienteCard cliente={cliente} />}
 
@@ -33,7 +39,7 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
       </div>
 
-      <TablaContainer>
+      <TablaContainer style={{ overflow: 'visible' }}>
         <Tabla id="tabla-reparaciones">
           <thead>
             <tr>
@@ -73,7 +79,7 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Historial de Ventas TPV</h3>
       </div>
 
-      <TablaContainer>
+      <TablaContainer style={{ overflow: 'visible' }}>
         <Tabla id="tabla-ventas">
           <thead>
             <tr>
