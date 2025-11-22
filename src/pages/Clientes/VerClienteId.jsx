@@ -25,11 +25,12 @@ export function VerClienteId() {
       }}>
         {cliente && <ClienteCard cliente={cliente} />}
 
+      <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+        <BotonPDFImprimir onClick={handlePDF}>Descargar PDF</BotonPDFImprimir>
+      </div>
+
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem" }}>
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
-        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-          <BotonPDFImprimir onClick={handlePDF}>Descargar PDF</BotonPDFImprimir>
-        </div>
       </div>
 
       <TablaContainer>
