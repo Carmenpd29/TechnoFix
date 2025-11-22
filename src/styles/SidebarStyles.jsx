@@ -67,7 +67,7 @@ export const MenuOption = styled.button`
   }
 
   &.hide-on-mobile {
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
       display: none;
     }
   }
