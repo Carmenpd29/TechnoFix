@@ -24,17 +24,27 @@ export * from './routers/routes';
 export * from './styles/AdminStyles';
 export * from './styles/AppStyles';
 export * from './styles/BotonMenuStyles';
+export * from './styles/BotonPDFImprimirStyles';
+export * from './styles/BotonVolverStyles';
 export * from './styles/breakpoints';
+export * from './styles/BuscadorClientesStyles';
+export * from './styles/ClienteCardStyles';
 export * from './styles/FondoDegradado';
 export * from './styles/FondoDegradadoMenu';
 export * from './styles/FooterStyles';
+export * from './styles/FormReparacionesStyles';
 export * from './styles/GlobalStyles';
 export * from './styles/HomeTemplateStyles';
 export * from './styles/LoginStyles';
+export * from './styles/ManualPageStyles';
 export * from './styles/MenuHamburStyles';
 export * from './styles/RegistroStyles';
 export * from './styles/SidebarStyles';
+export * from './styles/TablaAdminStyles';
 export * from './styles/TablaStyles';
+export * from './styles/TituloPageStyles';
+export * from './styles/ZonaClienteStyles';
+export * from './styles/ZonaReparacionesStyles';
 
 // =====================================
 // COMPONENTS
@@ -64,9 +74,9 @@ export * from './components/menu/MenuHambur';
 export * from './components/menu/Sidebar';
 
 // Components - Reparaciones
+export * from './components/reparaciones/BotonPDFImprimir';
 export * from './components/reparaciones/FormReparaciones';
 export * from './components/reparaciones/ZonaCliente';
-export * from './components/reparaciones/ZonaReparaciones';
 
 // Components - Templates
 export * from './components/templates/HomeTemplate';

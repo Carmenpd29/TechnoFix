@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
-import { WrapperPage, TituloPage, Cargando, BotonVolver, ClienteCard } from "../../index";
+import { WrapperPage, TituloPage, Cargando, BotonVolver, ClienteCard, BotonPDFImprimir } from "../../index";
 import { Tabla } from "../../styles/TablaStyles";
-import BotonPDFImprimir from "../../components/reparaciones/BotonPDFImprimir";
 import { crearPDF } from "../../components/clientes/crearPDF";
 import { formatearFecha } from "../../utils/fecha";
 
