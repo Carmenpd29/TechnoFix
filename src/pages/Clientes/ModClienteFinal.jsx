@@ -90,7 +90,7 @@ export function ModClienteFinal() {
 
   return (
     <WrapperPage>
-      <BotonVolver to="/clientes" />
+      <BotonVolver to="/clientes/ver" />
       <TituloPage>Editar Cliente</TituloPage>
       <Form onSubmit={handleSubmit} autoComplete="off">
         <Field>
