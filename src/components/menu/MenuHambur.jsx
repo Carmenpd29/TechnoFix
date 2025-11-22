@@ -16,7 +16,6 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
       icon: <FiUser size={20} style={{ marginRight: 8 }} />,
       visible: rol === "admin",
     },
-    //{ label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
     {
       label: "Clientes",
       to: "/clientes",

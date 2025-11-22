@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import {
   BotonVolver,
-  supabase,
   TituloPage,
   TablaAdmin,
   ConfirmOverlay,
@@ -12,6 +11,7 @@ import {
   ConfirmButton
 } from "../../index";
 import { useNavigate } from "react-router-dom";
+import { useUsuarios } from "../../hooks/useUsuarios";
 import {
   Wrapper,
   CancelButton,
@@ -19,11 +19,9 @@ import {
 } from "../../styles/AdminStyles";
 
 export function AdminUsers() {
-  const [usuarios, setUsuarios] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { usuarios, loading, mensaje, eliminarUsuario } = useUsuarios();
   const [showConfirm, setShowConfirm] = useState(false);
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
-  const [mensaje, setMensaje] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,31 +42,20 @@ export function AdminUsers() {
   };
 
   const handleEliminar = (usuario) => {
+    if (usuario.rol === "admin") {
+      alert("No se puede eliminar un usuario administrador.");
+      return;
+    }
     setUsuarioAEliminar(usuario);
     setShowConfirm(true);
-    setMensaje("");
   };
 
   const confirmarEliminar = async () => {
-    setShowConfirm(false);
-    if (!usuarioAEliminar) return;
-    setLoading(true);
-    setMensaje("");
-
-    const { error } = await supabase
-      .from("usuarios")
-      .delete()
-      .eq("id", usuarioAEliminar.id);
-
-    setLoading(false);
-
-    if (error) {
-      setMensaje(`Error al eliminar el usuario: ${error.message}`);
-    } else {
-      setMensaje("Usuario eliminado correctamente.");
-      setUsuarios(usuarios.filter((u) => u.id !== usuarioAEliminar.id));
+    if (usuarioAEliminar) {
+      await eliminarUsuario(usuarioAEliminar.id);
+      setShowConfirm(false);
+      setUsuarioAEliminar(null);
     }
-    setUsuarioAEliminar(null);
   };
 
   const columns = [

@@ -22,12 +22,22 @@ const Wrapper = styled.div`
   position: relative;
   padding-top: 2.5rem;
   
-  @media (max-width: 1200px) and (min-width: 701px) {
-    width: 60%;
+  @media (max-width: 1400px) and (min-width: 1201px) {
+    width: 85%;
+  }
+  
+  @media (max-width: 1200px) and (min-width: 901px) {
+    width: 80%;
+    margin: 2rem auto;
+  }
+  
+  @media (max-width: 900px) and (min-width: 701px) {
+    width: 75%;
     margin: 2rem auto;
   }
   
   @media (max-width: 700px) {
     padding-top: 4.5rem;
+    width: 95%;
   }
 `;

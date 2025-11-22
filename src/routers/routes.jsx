@@ -5,6 +5,7 @@ import {
   Clientes,
   Caja,
   Productos,
+  Facturacion,
   VerClientes,
   InsertCliente,
   ModCliente,
@@ -52,9 +53,10 @@ export function MyRoutes({ user }) {
       <Route path="/reparaciones/ver" element={<VerReparaciones />} />
       
       {/* Rutas de TPV */}
-      <Route path="/caja" element={<Caja />} />
-      <Route path="/productos" element={<Productos />} />
       <Route path="/tpv" element={<TPV />} />
+      <Route path="/tpv/caja" element={<Caja />} />
+      <Route path="/tpv/productos" element={<Productos />} />
+      <Route path="/tpv/facturacion" element={<Facturacion />} />
       
       {/* Rutas de Usuarios */}
       <Route path="/usuarios" element={<Users />} />

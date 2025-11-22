@@ -1,0 +1,683 @@
+import styled from "styled-components";
+import { primaryColor, secondaryColor, accentColor, backgroundColor } from "../utils/breakpoints";
+
+export const CajaContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  padding: 0;
+  overflow-y: auto;
+  margin-top: 0.5rem;
+
+  @media (max-width: 1200px) {
+    height: 70vh;
+    overflow-y: auto;
+  }
+
+  @media (max-width: 700px) {
+    height: 58vh;
+    overflow-y: auto;
+  }
+  
+  /* Estilo personalizado del scroll */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #a5c4ca;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #607074;
+  }
+`;
+
+export const CajaMain = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 0.5rem;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+`;
+
+export const ProductosSection = styled.div`
+  background: white;
+  border-radius: 6px;
+  padding: 0.4rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+`;
+
+export const SectionTitle = styled.h3`
+  color: ${primaryColor};
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+  border-bottom: 1px solid ${accentColor};
+  padding-bottom: 0.15rem;
+  flex-shrink: 0;
+`;
+
+export const ProductosLista = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 0.3rem;
+  min-height: 100px;
+  max-height: calc(65vh - 200px);
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 0.2rem;
+
+  @media (max-width: 1200px) {
+    max-height: calc(70vh - 180px);
+    min-height: 120px;
+  }
+
+  @media (max-width: 700px) {
+    max-height: calc(58vh - 150px);
+    min-height: 80px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${primaryColor};
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${secondaryColor};
+  }
+
+  /* Mostrar siempre el scroll en Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: ${primaryColor} #f8f9fa;
+`;
+
+export const ProductoItem = styled.div`
+  display: grid;
+  grid-template-columns: 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
+  gap: 0.15rem;
+  padding: 0.3rem;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 0.2rem;
+  font-size: 0.8rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  align-items: center;
+
+  /* Cuando tiene input-group (para agregar producto) */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .input-header {
+    background: #a5c4ca;
+    color: #232728;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 2fr 1fr 80px;
+    gap: 0.3rem;
+    
+    .precio, .iva, .descuento {
+      display: none;
+    }
+    
+    .input-header {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.3rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    
+    .input-group {
+      align-items: stretch;
+    }
+    
+    .input-header {
+      text-align: left;
+    }
+  }
+`;
+
+export const ProductoInput = styled.input`
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.15rem 0.2rem;
+  font-size: 0.75rem;
+  width: 100%;
+  min-height: 26px;
+  box-sizing: border-box;
+  text-align: center;
+
+  &:focus {
+    outline: none;
+    border-color: ${primaryColor};
+  }
+`;
+
+export const ProductoNombre = styled.div`
+  font-weight: 500;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.1rem 0.15rem;
+  font-size: 0.6rem;
+  width: 100%;
+  min-height: 22px;
+  box-sizing: border-box;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const EliminarBtn = styled.button`
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 0.15rem 0.2rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  width: 100%;
+  min-height: 26px;
+
+  &:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+export const AgregarProductoForm = styled.form`
+  display: grid;
+  grid-template-columns: 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
+  gap: 0.15rem;
+  padding: 0.4rem;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  margin-bottom: 0.4rem;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .input-header {
+    background: #a5c4ca;
+    color: #232728;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    padding: 0.4rem;
+    
+    .input-header {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.3rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    
+    .input-group {
+      align-items: stretch;
+    }
+    
+    .input-header {
+      text-align: left;
+    }
+  }
+`;
+
+export const AgregarBtn = styled.button`
+  background: ${primaryColor};
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 0.15rem 0.2rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  width: 100%;
+  height: auto;
+  min-height: 26px;
+
+  &:hover {
+    background: ${secondaryColor};
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
+export const CalculadoraSection = styled.div`
+  background: white;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  overflow: hidden;
+`;
+
+export const TotalSection = styled.div`
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 4px;
+  padding: 0.4rem;
+  border-left: 2px solid ${primaryColor};
+  box-shadow: 0 1px 3px rgba(0, 52, 89, 0.1);
+  flex-shrink: 0;
+`;
+
+export const CalculadoraToggle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: all 0.2s;
+
+  &:hover {
+    color: ${primaryColor};
+  }
+`;
+
+export const CalculadoraIcon = styled.div`
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 52, 89, 0.3);
+  transition: all 0.3s;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 52, 89, 0.4);
+  }
+
+  svg {
+    color: white;
+    font-size: 24px;
+  }
+
+  /* Mostrar en todas las resoluciones excepto desktop grande */
+  @media (min-width: 1201px) {
+    display: none;
+  }
+`;
+
+export const CalculadoraMini = styled.div`
+  position: fixed;
+  bottom: 6rem;
+  right: 2rem;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  width: 300px;
+  transform: ${props => props.open ? 'scale(1) translateY(0)' : 'scale(0.8) translateY(20px)'};
+  opacity: ${props => props.open ? '1' : '0'};
+  visibility: ${props => props.open ? 'visible' : 'hidden'};
+  transition: all 0.3s;
+
+  @media (min-width: 1201px) {
+    display: none;
+  }
+`;
+
+export const TotalLinea = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+
+  &.total-final {
+    font-size: 1rem;
+    font-weight: bold;
+    color: ${primaryColor};
+    border-top: 1px solid ${primaryColor};
+    padding-top: 0.2rem;
+    margin-top: 0.2rem;
+  }
+`;
+
+export const DescuentoInput = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-bottom: 0.3rem;
+
+  label {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.75rem;
+  }
+
+  input {
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 0.1rem 0.3rem;
+    width: 60px;
+    text-align: right;
+    font-size: 0.75rem;
+
+    &:focus {
+      outline: none;
+      border-color: ${primaryColor};
+    }
+  }
+`;
+
+export const CalculadoraGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+`;
+
+export const CalculadoraDisplay = styled.div`
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #ecf0f1;
+  padding: 0.6rem;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: right;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid ${accentColor};
+`;
+
+export const CalculadoraBtn = styled.button`
+  background: ${props => {
+    if (props.operator) return `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+    if (props.equals) return `linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)`;
+    if (props.clear) return `linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)`;
+    return `linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%)`;
+  }};
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    filter: brightness(1.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const AccionesSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-shrink: 0;
+`;
+
+export const AccionBtn = styled.button`
+  background: ${props => {
+    if (props.cobrar) return '#28a745';
+    if (props.limpiar) return '#dc3545';
+    return primaryColor;
+  }};
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
+export const VentaModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const VentaModalContent = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+
+  h3 {
+    color: ${primaryColor};
+    margin-bottom: 1rem;
+  }
+
+  .total {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+    margin: 1rem 0;
+  }
+
+  .acciones {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+`;
+
+export const MetodoPagoSection = styled.div`
+  margin: 1rem 0;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: ${primaryColor};
+    }
+  }
+`;
+
+export const TablaHeaders = styled.div`
+  display: grid;
+  grid-template-columns: 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
+  gap: 0.15rem;
+  padding: 0.3rem;
+  background: #a5c4ca;
+  color: #232728;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+  flex-shrink: 0;
+  border: 1px solid #9bb8bf;
+
+  &.agregar-headers {
+    background: #a5c4ca;
+    color: #232728;
+    border-radius: 4px;
+    margin-bottom: 0.1rem;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 2fr 1fr 80px;
+    
+    .precio-header, .iva-header, .descuento-header {
+      display: none;
+    }
+  }
+`;
+
+export const HeaderItem = styled.div`
+  text-align: center;
+  
+  &.nombre-header {
+    text-align: left;
+  }
+`;
+
+export const IvaCheckbox = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: ${primaryColor};
+`;
+
+export const IvaCheckboxLabel = styled.label`
+  font-size: 0.7rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  cursor: pointer;
+  
+  .checkbox-text {
+    white-space: nowrap;
+  }
+`;

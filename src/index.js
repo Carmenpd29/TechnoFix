@@ -27,6 +27,7 @@ export * from './styles/BotonMenuStyles';
 export * from './styles/BotonPDFImprimirStyles';
 export * from './styles/BotonVolverStyles';
 export * from './styles/BuscadorClientesStyles';
+export * from './styles/CajaStyles';
 export * from './styles/ClienteCardStyles';
 export * from './styles/DelClienteStyles';
 export * from './styles/FondoDegradado';
@@ -43,6 +44,7 @@ export * from './styles/ModClienteFinalStyles';
 export * from './styles/ModClienteStyles';
 export * from './styles/NombreUsuarioStyles';
 export * from './styles/OpcionesStyles';
+export * from './styles/ProductosStyles';
 export * from './styles/RegistroStyles';
 export * from './styles/SidebarStyles';
 export * from './styles/TablaAdminStyles';
@@ -57,6 +59,20 @@ export * from './styles/ZonaReparacionesStyles';
 // UTILS
 // =====================================
 export * from './utils/breakpoints';
+export * from './utils/tpvUtils';
+export * from './utils/validaciones';
+
+// =====================================
+// HOOKS
+// =====================================
+export * from './hooks/useCalculadora';
+export * from './hooks/useProductos';
+export * from './hooks/useProductosTPV';
+export * from './hooks/useVentas';
+export * from './hooks/useFormularioCliente';
+export * from './hooks/useUsuarios';
+export * from './hooks/useClienteDetalle';
+export * from './hooks/useFacturacion';
 
 // =====================================
 // COMPONENTS
@@ -120,6 +136,7 @@ export * from './pages/Reparaciones/VerReparaciones';
 
 // Pages - TPV
 export * from './pages/TPV/Caja';
+export * from './pages/TPV/Facturacion';
 export * from './pages/TPV/Productos';
 
 // Pages - Usuarios

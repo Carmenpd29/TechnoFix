@@ -65,6 +65,12 @@ export const MenuOption = styled.button`
     transform: translateX(4px) scale(1.04);
     text-decoration: none;
   }
+
+  &.hide-on-mobile {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
 `;
 
 export const SalirButton = styled.button`

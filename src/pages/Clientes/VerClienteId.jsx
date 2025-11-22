@@ -1,37 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../../supabase/supabaseClient";
+import React from "react";
 import { WrapperPage, TituloPage, Cargando, BotonVolver, ClienteCard, BotonPDFImprimir, Tabla, TablaContainer } from "../../index";
+import { useClienteDetalle } from "../../hooks/useClienteDetalle";
 import { crearPDF } from "../../components/clientes/crearPDF";
 import { formatearFecha } from "../../utils/fecha";
 
 export function VerClienteId() {
-  const { id } = useParams();
-  const [cliente, setCliente] = useState(null);
-  const [reparaciones, setReparaciones] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      // Cliente
-      const { data: clienteData } = await supabase
-        .from("clientes")
-        .select("*")
-        .eq("id", id)
-        .single();
-      setCliente(clienteData);
-
-      // Reparaciones del cliente
-      const { data: reparacionesData } = await supabase
-        .from("reparaciones")
-        .select("*")
-        .eq("idcliente", id);
-      setReparaciones(reparacionesData || []);
-      setLoading(false);
-    }
-    fetchData();
-  }, [id]);
+  const { cliente, reparaciones, loading } = useClienteDetalle();
 
   const handlePDF = () => {
     crearPDF(cliente, reparaciones);

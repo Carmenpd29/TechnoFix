@@ -45,7 +45,11 @@ export function Sidebar({ user }) {
           {menuTrabajador
             .filter((item) => item.action !== "logout")
             .map((item) => (
-              <MenuOption key={item.to} onClick={() => navigate(item.to)}>
+              <MenuOption 
+                key={item.to} 
+                onClick={() => navigate(item.to)}
+                className={item.hideOnMobile ? 'hide-on-mobile' : ''}
+              >
                 {item.icon}
                 {item.label}
               </MenuOption>
@@ -64,9 +68,22 @@ export function Sidebar({ user }) {
 }
 
 const menuTrabajador = [
-  //{ label: "TPV", to: "/tpv", icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} /> },
-  { label: "Clientes", to: "/clientes", icon: <FiUsers size={20} style={{ marginRight: 8 }} /> },
-  { label: "Reparaciones", to: "/reparaciones", icon: <MdBuild size={20} style={{ marginRight: 8 }} /> }, 
+  { 
+    label: "TPV", 
+    to: "/tpv", 
+    icon: <FiShoppingCart size={20} style={{ marginRight: 8 }} />,
+    hideOnMobile: true 
+  },
+  { 
+    label: "Clientes", 
+    to: "/clientes", 
+    icon: <FiUsers size={20} style={{ marginRight: 8 }} /> 
+  },
+  { 
+    label: "Reparaciones", 
+    to: "/reparaciones", 
+    icon: <MdBuild size={20} style={{ marginRight: 8 }} /> 
+  }, 
 ];
 
 
