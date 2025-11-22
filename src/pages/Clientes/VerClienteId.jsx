@@ -43,7 +43,7 @@ export function VerClienteId() {
 
   return (
     <WrapperPage>
-      <BotonVolver />
+      <BotonVolver to="/clientes/ver" />
       <TituloPage>Ficha del Cliente</TituloPage>
       {cliente && <ClienteCard cliente={cliente} />}
 
