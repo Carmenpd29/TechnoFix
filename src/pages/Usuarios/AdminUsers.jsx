@@ -4,16 +4,16 @@ import {
   BotonVolver,
   supabase,
   TituloPage,
-  TablaAdmin
-} from "../../index";
-import { useNavigate } from "react-router-dom";
-import {
-  Wrapper,
+  TablaAdmin,
   ConfirmOverlay,
   ConfirmBox,
   ConfirmText,
   ConfirmActions,
-  ConfirmButton,
+  ConfirmButton
+} from "../../index";
+import { useNavigate } from "react-router-dom";
+import {
+  Wrapper,
   CancelButton,
   Mensaje,
 } from "../../styles/AdminStyles";

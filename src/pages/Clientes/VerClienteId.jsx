@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase/supabaseClient";
-import { WrapperPage, TituloPage, Cargando, BotonVolver, ClienteCard, BotonPDFImprimir } from "../../index";
-import { Tabla } from "../../styles/TablaStyles";
+import { WrapperPage, TituloPage, Cargando, BotonVolver, ClienteCard, BotonPDFImprimir, Tabla, TablaContainer } from "../../index";
 import { crearPDF } from "../../components/clientes/crearPDF";
 import { formatearFecha } from "../../utils/fecha";
 
@@ -58,7 +57,7 @@ export function VerClienteId() {
       {reparaciones.length === 0 ? (
         <p>No hay reparaciones para este cliente.</p>
       ) : (
-        <div>
+        <TablaContainer>
           <Tabla id="tabla-reparaciones" className="tabla-pdf">
             <thead>
               <tr>
@@ -83,7 +82,7 @@ export function VerClienteId() {
               ))}
             </tbody>
           </Tabla>
-        </div>
+        </TablaContainer>
       )}
     </WrapperPage>
   );

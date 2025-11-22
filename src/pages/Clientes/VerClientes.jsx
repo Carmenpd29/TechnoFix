@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import {
   BotonVolver,
   supabase,
@@ -12,6 +11,7 @@ import {
   TablaContainer,
   IconBtn,
   Cargando,
+  BotonesContainer,
 } from "../../index";
 import { FiEdit, FiTrash2, FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -137,16 +137,4 @@ export function VerClientes() {
     </WrapperPage>
   );
 }
-
-const BotonesContainer = styled.div`
-  margin: 1.5rem auto 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.2rem;
-  background: transparent;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  color: #003459;
-`;
 
