@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../../assets/logo.png";
 import { formatearFecha } from "../../utils/fecha";
-import { BotonVolver, TituloPage, WrapperPage } from "../../index";
+import { BotonVolver, TituloPage, WrapperPage, Tabla, TablaContainer } from "../../index";
 import { useFacturacion, formatearMetodoPago, verDetalleVenta, imprimirVenta } from "../../hooks/useFacturacion";
 import { primaryColor, secondaryColor, accentColor, backgroundColor } from "../../utils/breakpoints";
 
@@ -558,147 +558,37 @@ export function Facturacion() {
         <h3 style={{ marginBottom: "1rem", color: primaryColor, flexShrink: 0 }}>Ventas</h3>
         
         {ventas.length > 0 ? (
-          <div style={{ 
+          <TablaContainer style={{ 
             overflowX: "auto", 
             overflowY: "auto",
             flex: 1,
             minHeight: 0
           }}>
-            <table style={{ 
-              width: "100%", 
-              borderCollapse: "collapse",
-              minWidth: "800px",
-              background: "white",
-              borderRadius: "12px",
-              overflow: "hidden"
+            <Tabla style={{ 
+              minWidth: "800px"
             }}>
               <thead>
-                <tr style={{ 
-                  backgroundColor: "#a5c4ca",
-                  borderBottom: "2px solid #dee2e6"
-                }}>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Nº Venta</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Fecha</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Cliente</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Subtotal</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>IVA</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Total</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Método Pago</th>
-                  <th style={{ 
-                    padding: "0.8rem 0.5rem", 
-                    textAlign: "center", 
-                    fontWeight: "600",
-                    color: "#232728",
-                    fontSize: "1rem",
-                    borderBottom: "1px solid #e0e6ea"
-                  }}>Acciones</th>
+                <tr>
+                  <th>Nº Venta</th>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Subtotal</th>
+                  <th>IVA</th>
+                  <th>Total</th>
+                  <th>Método Pago</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {ventas.map((venta) => (
-                  <tr key={venta.id} style={{ 
-                    borderBottom: "1px solid #e0e6ea",
-                    cursor: "pointer"
-                  }}>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      fontWeight: "600",
-                      color: primaryColor,
-                      fontSize: "0.9rem",
-                      textAlign: "center",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>{venta.numero}</td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      color: "#6c757d",
-                      fontSize: "0.9rem",
-                      textAlign: "center",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>{formatearFecha(venta.fecha)}</td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      color: "#495057",
-                      fontSize: "0.9rem",
-                      textAlign: "center",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>{venta.cliente || "Cliente General"}</td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      textAlign: "center",
-                      color: "#495057",
-                      fontSize: "0.9rem",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>€{venta.subtotal.toFixed(2)}</td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      textAlign: "center",
-                      color: "#6c757d",
-                      fontSize: "0.9rem",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>€{venta.iva.toFixed(2)}</td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      textAlign: "center",
-                      fontWeight: "600",
-                      color: "#28a745",
-                      fontSize: "0.9rem",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>€{venta.total.toFixed(2)}</td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      textAlign: "center",
-                      fontSize: "0.9rem",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>
+                  <tr key={venta.id} style={{ cursor: "pointer" }}>
+                    <td style={{ fontWeight: "600", color: primaryColor }}>{venta.numero}</td>
+                    <td style={{ color: "#6c757d" }}>{formatearFecha(venta.fecha)}</td>
+                    <td>{venta.cliente || "Cliente General"}</td>
+                    <td>€{venta.subtotal.toFixed(2)}</td>
+                    <td style={{ color: "#6c757d" }}>€{venta.iva.toFixed(2)}</td>
+                    <td style={{ fontWeight: "600", color: "#28a745" }}>€{venta.total.toFixed(2)}</td>
+                    <td>
                       <span style={{
                         padding: "0.25rem 0.5rem",
                         borderRadius: "12px",
@@ -714,12 +604,7 @@ export function Facturacion() {
                         {formatearMetodoPago(venta.metodoPago)}
                       </span>
                     </td>
-                    <td style={{ 
-                      padding: "0.8rem 0.5rem",
-                      textAlign: "center",
-                      fontSize: "0.9rem",
-                      borderBottom: "1px solid #e0e6ea"
-                    }}>
+                    <td>
                       <div style={{ 
                         display: "flex", 
                         gap: "0.25rem", 
@@ -756,8 +641,8 @@ export function Facturacion() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+            </Tabla>
+          </TablaContainer>
         ) : (
           <NoVentas>
             <div>No se encontraron ventas que coincidan con los filtros aplicados.</div>

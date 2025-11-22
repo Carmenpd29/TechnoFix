@@ -6,6 +6,9 @@ export const useVentas = () => {
   const [mostrarVentaModal, setMostrarVentaModal] = useState(false);
   const [metodoPago, setMetodoPago] = useState("efectivo");
   const [procesandoVenta, setProcesandoVenta] = useState(false);
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarModalError, setMostrarModalError] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState("");
 
   const procesarVenta = (productos) => {
     if (productos.length === 0) return;
@@ -43,9 +46,9 @@ export const useVentas = () => {
         cantidad: producto.cantidad,
         precio_unitario: producto.precio,
         iva_porcentaje: producto.iva,
-        subtotal: producto.cantidad * producto.precio
+        subtotal: producto.cantidad * producto.precio,
+        nombre_producto: producto.nombre // Almacenar nombre del producto del input
       }));
-
       const { error: errorDetalles } = await supabase
         .from('detalles_venta')
         .insert(detallesVenta);
@@ -55,11 +58,13 @@ export const useVentas = () => {
       // 3. Limpiar y mostrar éxito
       limpiarVenta();
       setMostrarVentaModal(false);
-      alert(`Venta procesada correctamente\nTotal: €${ventaData.totales.total.toFixed(2)}\nMétodo: ${metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1)}`);
+      setMensajeModal(`Venta procesada correctamente\nTotal: €${ventaData.totales.total.toFixed(2)}\nMétodo: ${metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1)}`);
+      setMostrarModalExito(true);
       
     } catch (error) {
       console.error('Error procesando venta:', error);
-      alert('Error al procesar la venta: ' + error.message);
+      setMensajeModal('Error al procesar la venta: ' + error.message);
+      setMostrarModalError(true);
     } finally {
       setProcesandoVenta(false);
     }
@@ -69,6 +74,16 @@ export const useVentas = () => {
     setMostrarVentaModal(false);
   };
 
+  const cerrarModalExito = () => {
+    setMostrarModalExito(false);
+    setMensajeModal("");
+  };
+
+  const cerrarModalError = () => {
+    setMostrarModalError(false);
+    setMensajeModal("");
+  };
+
   return {
     mostrarVentaModal,
     metodoPago,
@@ -76,6 +91,11 @@ export const useVentas = () => {
     procesandoVenta,
     procesarVenta,
     confirmarVenta,
-    cancelarVenta
+    cancelarVenta,
+    mostrarModalExito,
+    mostrarModalError,
+    mensajeModal,
+    cerrarModalExito,
+    cerrarModalError
   };
 };

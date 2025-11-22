@@ -7,6 +7,7 @@ export const useClienteDetalle = () => {
   const { id } = useParams();
   const [cliente, setCliente] = useState(null);
   const [reparaciones, setReparaciones] = useState([]);
+  const [ventas, setVentas] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +39,31 @@ export const useClienteDetalle = () => {
           setReparaciones(reparacionesData || []);
         }
 
+        // Obtener ventas del cliente
+        const { data: ventasData, error: ventasError } = await supabase
+          .from("ventas")
+          .select(`
+            *,
+            detalles_venta (
+              cantidad,
+              precio_unitario,
+              iva_porcentaje,
+              subtotal,
+              nombre_producto,
+              productos (
+                nombre
+              )
+            )
+          `)
+          .eq("cliente_id", id)
+          .order("fecha_venta", { ascending: false });
+
+        if (ventasError) {
+          console.error("Error al obtener ventas:", ventasError);
+        } else {
+          setVentas(ventasData || []);
+        }
+
       } catch (error) {
         console.error("Error inesperado:", error);
       } finally {
@@ -53,6 +79,7 @@ export const useClienteDetalle = () => {
   return {
     cliente,
     reparaciones,
+    ventas,
     loading,
     clienteId: id
   };

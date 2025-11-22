@@ -1,47 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { FaCalculator, FaChevronDown, FaChevronUp, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { BotonVolver, TituloPage, WrapperPage, supabase } from "../../index";
 import { useCalculadora } from "../../hooks/useCalculadora";
 import { useProductos } from "../../hooks/useProductos";
 import { useVentas } from "../../hooks/useVentas";
-import { calcularTotales } from "../../utils/tpvUtils";
-import {
-  CajaContainer,
-  CajaMain,
-  ProductosSection,
-  SectionTitle,
-  ProductosLista,
-  ProductoItem,
-  ProductoInput,
-  ProductoNombre,
-  EliminarBtn,
-  AgregarProductoForm,
-  AgregarBtn,
-  CalculadoraSection,
-  TotalSection,
-  TotalLinea,
-  DescuentoInput,
-  CalculadoraGrid,
-  CalculadoraDisplay,
-  CalculadoraBtn,
-  AccionesSection,
-  AccionBtn,
-  VentaModal,
-  VentaModalContent,
-  MetodoPagoSection,
-  TablaHeaders,
-  HeaderItem,
-  CalculadoraToggle,
-  CalculadoraIcon,
-  CalculadoraMini,
-  IvaCheckbox,
-  IvaCheckboxLabel,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalMessage,
-  ModalButton
-} from "../../styles/CajaStyles";
+import { CajaContainer, CajaMain, ProductosSection, SectionTitle } from "../../styles/CajaStyles";
+
+// Componentes modulares
+import { DropdownClientes } from "../../components/tpv/DropdownClientes";
+import { FormularioAgregarProducto } from "../../components/tpv/FormularioAgregarProducto";
+import { LineasDeVenta } from "../../components/tpv/LineasDeVenta";
+import { Calculadora } from "../../components/tpv/Calculadora";
+import { ResumenVenta } from "../../components/tpv/ResumenVenta";
+import { ModalVenta } from "../../components/tpv/ModalVenta";
 
 export function Caja() {
   const [descuentoGeneral, setDescuentoGeneral] = useState(0);
@@ -49,20 +19,14 @@ export function Caja() {
   const [calculadoraMiniAbierta, setCalculadoraMiniAbierta] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState("");
   const [clientes, setClientes] = useState([]);
-  const [busquedaCliente, setBusquedaCliente] = useState("Cliente General");
-  const [productosDB, setProductosDB] = useState([]);
+  const [busquedaCliente, setBusquedaCliente] = useState("");
+  const [productosDisponibles, setProductosDisponibles] = useState([]);
   const [busquedaProducto, setBusquedaProducto] = useState("");
-  const [mostrarSugerenciasProducto, setMostrarSugerenciasProducto] = useState(false);
+  const [mostrandoSugerenciasProducto, setMostrandoSugerenciasProducto] = useState(false);
   
-  // Función para limpiar búsqueda cuando se agrega producto
-  const limpiarBusquedaProducto = () => {
-    setBusquedaProducto("");
-    setMostrarSugerenciasProducto(false);
-  };
-
   // Custom hooks para manejar la lógica
   const calculadora = useCalculadora();
-  const productosManager = useProductos(limpiarBusquedaProducto);
+  const productosManager = useProductos();
   const ventasManager = useVentas();
 
   // Cargar clientes y productos al montar el componente
@@ -78,26 +42,13 @@ export function Caja() {
       // Cargar productos
       const { data: productosData } = await supabase
         .from("productos")
-        .select("id, nombre, precio, iva")
+        .select("*")
+        .eq("activo", true)
         .order("nombre", { ascending: true });
-      setProductosDB(productosData || []);
+      setProductosDisponibles(productosData || []);
     }
     cargarDatos();
   }, []);
-
-  // Cerrar sugerencias de productos al hacer clic fuera
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (mostrarSugerenciasProducto && !event.target.closest('.input-group')) {
-        setMostrarSugerenciasProducto(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [mostrarSugerenciasProducto]);
 
   // Filtrar clientes según búsqueda
   const clientesFiltrados = busquedaCliente && clientes && busquedaCliente.trim().length > 0 ? clientes.filter(cliente => {
@@ -112,22 +63,21 @@ export function Caja() {
   }) : [];
 
   // Filtrar productos según búsqueda
-  const productosFiltrados = busquedaProducto && productosDB && busquedaProducto.trim().length > 0 ? productosDB.filter(producto => {
-    const nombre = producto.nombre || '';
-    const busqueda = busquedaProducto.toLowerCase();
-    return nombre.toLowerCase().includes(busqueda);
-  }) : [];
+  const productosFiltrados = busquedaProducto && productosDisponibles && busquedaProducto.trim().length > 0 ? 
+    productosDisponibles.filter(producto => 
+      producto.nombre.toLowerCase().includes(busquedaProducto.toLowerCase())
+    ).slice(0, 8) : []; // Limitar a 8 resultados
 
-  // Función para seleccionar producto de la base de datos
-  const seleccionarProductoDB = (producto) => {
+  // Función para seleccionar un producto del dropdown
+  const seleccionarProducto = (producto) => {
     productosManager.setNuevoProducto({
       ...productosManager.nuevoProducto,
       nombre: producto.nombre,
-      precio: producto.precio || '',
-      iva: producto.iva || '21'
+      precio: producto.precio.toString(),
+      iva: producto.iva.toString()
     });
-    setBusquedaProducto("");
-    setMostrarSugerenciasProducto(false);
+    setBusquedaProducto(producto.nombre);
+    setMostrandoSugerenciasProducto(false);
   };
 
   // Funciones de limpieza y venta
@@ -135,9 +85,9 @@ export function Caja() {
     productosManager.limpiarProductos();
     setDescuentoGeneral(0);
     setClienteSeleccionado("");
-    setBusquedaCliente("Cliente General");
+    setBusquedaCliente("");
     setBusquedaProducto("");
-    setMostrarSugerenciasProducto(false);
+    setMostrandoSugerenciasProducto(false);
     calculadora.limpiarCalculadora();
   };
 
@@ -210,22 +160,32 @@ export function Caja() {
           <SectionTitle>Agregar Producto</SectionTitle>
           
           {/* Formulario con inputs individuales */}
-          <AgregarProductoForm onSubmit={productosManager.agregarProducto}>
-            <div className="input-group" style={{ position: 'relative' }}>
+          <AgregarProductoForm onSubmit={(e) => productosManager.agregarProducto(e, () => {
+            setBusquedaProducto("");
+            setMostrandoSugerenciasProducto(false);
+          })}>
+            <div className="input-group" style={{ position: "relative" }}>
               <div className="input-header">Producto</div>
               <ProductoInput
                 type="text"
-                value={productosManager.nuevoProducto.nombre}
+                value={busquedaProducto || productosManager.nuevoProducto.nombre}
                 onChange={(e) => {
                   const valor = e.target.value;
-                  productosManager.setNuevoProducto({...productosManager.nuevoProducto, nombre: valor});
                   setBusquedaProducto(valor);
-                  setMostrarSugerenciasProducto(valor.length > 0);
+                  productosManager.setNuevoProducto({
+                    ...productosManager.nuevoProducto, 
+                    nombre: valor
+                  });
+                  setMostrandoSugerenciasProducto(valor.length > 0);
                 }}
-                placeholder="Escribir o buscar producto existente"
+                onFocus={() => setMostrandoSugerenciasProducto(busquedaProducto.length > 0)}
+                onBlur={() => setTimeout(() => setMostrandoSugerenciasProducto(false), 200)}
+                placeholder="Nombre del producto"
                 required
               />
-              {mostrarSugerenciasProducto && busquedaProducto.length > 0 && productosFiltrados.length > 0 && (
+              
+              {/* Dropdown de sugerencias */}
+              {mostrandoSugerenciasProducto && productosFiltrados.length > 0 && (
                 <div style={{
                   position: "absolute",
                   top: "100%",
@@ -234,7 +194,7 @@ export function Caja() {
                   maxHeight: "150px",
                   overflowY: "auto",
                   border: "1px solid #ddd",
-                  borderRadius: "6px",
+                  borderRadius: "3px",
                   backgroundColor: "white",
                   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                   zIndex: 1000
@@ -242,16 +202,21 @@ export function Caja() {
                   {productosFiltrados.map((producto) => (
                     <div
                       key={producto.id}
-                      onClick={() => seleccionarProductoDB(producto)}
+                      onClick={() => seleccionarProducto(producto)}
                       style={{
-                        padding: "0.5rem",
+                        padding: "0.15rem 0.2rem",
                         cursor: "pointer",
                         borderBottom: "1px solid #eee",
                         fontSize: "0.75rem",
-                        fontWeight: "500"
+                        color: "#232728",
+                        transition: "background-color 0.2s"
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#f8f9fa";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "white";
+                      }}
                     >
                       {producto.nombre}
                     </div>
@@ -394,21 +359,7 @@ export function Caja() {
                 type="text"
                 placeholder="Buscar cliente por nombre, NIF o teléfono..."
                 value={busquedaCliente}
-                onChange={(e) => {
-                  const valor = e.target.value;
-                  setBusquedaCliente(valor);
-                  // Si se borra todo el contenido, volver a Cliente General
-                  if (valor === "") {
-                    setClienteSeleccionado("");
-                    setBusquedaCliente("Cliente General");
-                  }
-                }}
-                onFocus={() => {
-                  // Si está en Cliente General, limpiar para poder buscar
-                  if (busquedaCliente === "Cliente General") {
-                    setBusquedaCliente("");
-                  }
-                }}
+                onChange={(e) => setBusquedaCliente(e.target.value)}
                 style={{
                   border: "1px solid #ddd",
                   borderRadius: "3px",
@@ -420,7 +371,7 @@ export function Caja() {
                   backgroundColor: "white"
                 }}
               />
-              {busquedaCliente && busquedaCliente !== "Cliente General" && busquedaCliente.length > 0 && clientesFiltrados.length > 0 && (
+              {busquedaCliente && busquedaCliente.length > 0 && (
                 <div style={{
                   position: "absolute",
                   top: "100%",
@@ -434,19 +385,37 @@ export function Caja() {
                   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                   zIndex: 1000
                 }}>
-                  {clientesFiltrados.map((cliente) => (
+                  {!clienteSeleccionado && (
+                    <div
+                      onClick={() => {
+                        setClienteSeleccionado("");
+                        setBusquedaCliente("");
+                      }}
+                      style={{
+                        padding: "0.15rem 0.2rem",
+                        cursor: "pointer",
+                        borderBottom: "1px solid #eee",
+                        backgroundColor: "white",
+                        fontSize: "0.75rem"
+                      }}
+                    >
+                      Cliente General
+                    </div>
+                  )}
+                  {clientesFiltrados && clientesFiltrados.length > 0 && clientesFiltrados.map((cliente) => (
                     <div
                       key={cliente.id}
                       onClick={() => {
                         setClienteSeleccionado(cliente.id);
                         setBusquedaCliente(`${cliente.nombre} - ${cliente.nif}`);
                       }}
-                      style={{
-                        padding: "0.75rem",
-                        cursor: "pointer",
-                        borderBottom: "1px solid #eee",
-                        backgroundColor: clienteSeleccionado === cliente.id ? "#f0f8ff" : "white"
-                      }}
+                        style={{
+                          padding: "0.15rem 0.2rem",
+                          cursor: "pointer",
+                          borderBottom: "1px solid #eee",
+                          backgroundColor: clienteSeleccionado === cliente.id ? "#f0f8ff" : "white",
+                          fontSize: "0.75rem"
+                        }}
                       onMouseEnter={(e) => {
                         if (clienteSeleccionado !== cliente.id) {
                           e.target.style.backgroundColor = "#f8f9fa";
@@ -458,32 +427,33 @@ export function Caja() {
                         }
                       }}
                     >
-                      <div style={{ fontWeight: "600", color: "#232728" }}>
+                      <div style={{ fontWeight: "600", color: "#232728", fontSize: "0.75rem" }}>
                         {cliente.nombre}
                       </div>
-                      <div style={{ fontSize: "0.9rem", color: "#666" }}>
+                      <div style={{ fontSize: "0.8rem", color: "#666" }}>
                         {cliente.nif || 'Sin NIF'} • {cliente.telefono || 'Sin teléfono'}
                       </div>
                     </div>
                   ))}
-                  {clientesFiltrados && clientesFiltrados.length === 0 && busquedaCliente !== "Cliente General" && (
+                  {clientesFiltrados && clientesFiltrados.length === 0 && !clienteSeleccionado && (
                     <div style={{
-                      padding: "1rem",
+                      padding: "0.15rem 0.2rem",
                       textAlign: "center",
                       color: "#666",
-                      fontStyle: "italic"
+                      fontStyle: "italic",
+                      fontSize: "0.75rem"
                     }}>
                       No se encontraron clientes
                     </div>
                   )}
                 </div>
               )}
-              {clienteSeleccionado && busquedaCliente && busquedaCliente !== "Cliente General" && (
+              {clienteSeleccionado && busquedaCliente && (
                 <div style={{
                   padding: "0.5rem",
                   backgroundColor: "#f0f8ff",
                   borderRadius: "4px",
-                  fontSize: "0.9rem",
+                  fontSize: "0.75rem",
                   color: "#0066cc",
                   display: "flex",
                   justifyContent: "space-between",
@@ -500,7 +470,7 @@ export function Caja() {
                       border: "none",
                       color: "#dc3545",
                       cursor: "pointer",
-                      fontSize: "0.9rem"
+                      fontSize: "0.75rem"
                     }}
                   >
                     Limpiar
@@ -642,11 +612,11 @@ export function Caja() {
       </CalculadoraIcon>
 
       <CalculadoraMini open={calculadoraMiniAbierta}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-          <SectionTitle style={{ margin: 0, fontSize: '0.9rem' }}>Calculadora</SectionTitle>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <SectionTitle style={{ margin: 0 }}>Calculadora</SectionTitle>
           <button 
             onClick={() => setCalculadoraMiniAbierta(false)}
-            style={{ background: 'none', border: 'none', fontSize: '1rem', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer' }}
           >
             ×
           </button>
@@ -678,36 +648,6 @@ export function Caja() {
           <CalculadoraBtn onClick={calculadora.inputDecimal}>.</CalculadoraBtn>
         </CalculadoraGrid>
       </CalculadoraMini>
-
-      {/* Modal de Éxito */}
-      {ventasManager.mostrarModalExito && (
-        <ModalOverlay onClick={ventasManager.cerrarModalExito}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader className="success">
-              <FaCheckCircle className="icon" />
-            </ModalHeader>
-            <ModalMessage>{ventasManager.mensajeModal}</ModalMessage>
-            <ModalButton onClick={ventasManager.cerrarModalExito}>
-              Aceptar
-            </ModalButton>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-
-      {/* Modal de Error */}
-      {ventasManager.mostrarModalError && (
-        <ModalOverlay onClick={ventasManager.cerrarModalError}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader className="error">
-              <FaExclamationTriangle className="icon" />
-            </ModalHeader>
-            <ModalMessage>{ventasManager.mensajeModal}</ModalMessage>
-            <ModalButton error onClick={ventasManager.cerrarModalError}>
-              Aceptar
-            </ModalButton>
-          </ModalContent>
-        </ModalOverlay>
-      )}
     </CajaContainer>
     </WrapperPage>
   );

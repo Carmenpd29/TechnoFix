@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // Hook para manejar la gestión de productos en la caja
-export const useProductos = () => {
+export const useProductos = (onProductoAgregado = null) => {
   const [productos, setProductos] = useState([]);
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre: "",
@@ -35,6 +35,11 @@ export const useProductos = () => {
       descuento: "0",
       ivaIncluido: true
     });
+
+    // Llamar callback si existe (para limpiar buscador)
+    if (onProductoAgregado) {
+      onProductoAgregado();
+    }
   };
 
   const eliminarProducto = (id) => {

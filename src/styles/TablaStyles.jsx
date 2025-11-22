@@ -15,24 +15,24 @@ export const Tabla = styled.table`
   td {
     padding: 0.8rem 0.5rem;
     border-bottom: 1px solid #e0e6ea;
-    text-align: center;
-    font-size: 0.9rem;
+    text-align: left;
+    font-size: 0.75rem;
   }
   th {
     background: #a5c4ca;
     color: #232728;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   tr:last-child td {
     border-bottom: none;
   }
   @media (max-width: 1120px) {
     th {
-      font-size: 0.9rem;
+      font-size: 0.75rem;
     }
     td {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
   }
 

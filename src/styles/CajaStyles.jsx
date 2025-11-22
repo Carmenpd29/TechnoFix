@@ -155,7 +155,7 @@ export const ProductoItem = styled.div`
   .input-header {
     background: #a5c4ca;
     color: #232728;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
@@ -180,7 +180,7 @@ export const ProductoItem = styled.div`
     }
     
     .input-header {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       padding: 0.15rem 0.3rem;
     }
   }
@@ -202,7 +202,7 @@ export const ProductoInput = styled.input`
   border: 1px solid #ddd;
   border-radius: 3px;
   padding: 0.15rem 0.2rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   width: 100%;
   min-height: 26px;
   box-sizing: border-box;
@@ -220,7 +220,7 @@ export const ProductoNombre = styled.div`
   border: 1px solid #ddd;
   border-radius: 3px;
   padding: 0.1rem 0.15rem;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   width: 100%;
   min-height: 22px;
   box-sizing: border-box;
@@ -276,7 +276,7 @@ export const AgregarProductoForm = styled.form`
   .input-header {
     background: #a5c4ca;
     color: #232728;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
@@ -293,7 +293,7 @@ export const AgregarProductoForm = styled.form`
     padding: 0.4rem;
     
     .input-header {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       padding: 0.15rem 0.3rem;
     }
   }
@@ -307,6 +307,7 @@ export const AgregarProductoForm = styled.form`
     
     .input-header {
       text-align: left;
+      font-size: 0.75rem;
     }
   }
 `;
@@ -407,14 +408,14 @@ export const CalculadoraIcon = styled.div`
 
 export const CalculadoraMini = styled.div`
   position: fixed;
-  bottom: 6rem;
-  right: 2rem;
+  bottom: 5rem;
+  right: 1.5rem;
   background: white;
-  border-radius: 12px;
-  padding: 1rem;
+  border-radius: 6px;
+  padding: 0.4rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   z-index: 999;
-  width: 300px;
+  width: 190px;
   transform: ${props => props.open ? 'scale(1) translateY(0)' : 'scale(0.8) translateY(20px)'};
   opacity: ${props => props.open ? '1' : '0'};
   visibility: ${props => props.open ? 'visible' : 'hidden'};
@@ -472,8 +473,8 @@ export const DescuentoInput = styled.div`
 export const CalculadoraGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.3rem;
-  margin-top: 0.5rem;
+  gap: 0.1rem;
+  margin-top: 0.15rem;
   flex-shrink: 0;
 `;
 
@@ -481,13 +482,13 @@ export const CalculadoraDisplay = styled.div`
   grid-column: 1 / -1;
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
   color: #ecf0f1;
-  padding: 0.6rem;
-  border-radius: 4px;
-  font-size: 1.1rem;
+  padding: 0.2rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.7rem;
   font-weight: bold;
   text-align: right;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 35px;
+  min-height: 16px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -504,13 +505,15 @@ export const CalculadoraBtn = styled.button`
   }};
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 0.9rem;
+  border-radius: 2px;
+  padding: 0.15rem;
+  font-size: 0.65rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  min-height: 20px;
+  max-height: 20px;
 
   &:hover {
     transform: translateY(-1px);
@@ -642,6 +645,11 @@ export const TablaHeaders = styled.div`
     color: #232728;
     border-radius: 4px;
     margin-bottom: 0.1rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 1120px) {
+    font-size: 0.75rem;
   }
 
   @media (max-width: 900px) {
@@ -679,5 +687,89 @@ export const IvaCheckboxLabel = styled.label`
   
   .checkbox-text {
     white-space: nowrap;
+  }
+`;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+`;
+
+export const ModalContent = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: modalAppear 0.3s ease-out;
+
+  @keyframes modalAppear {
+    from {
+      opacity: 0;
+      transform: scale(0.8) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  
+  .icon {
+    font-size: 3rem;
+    margin-right: 0.5rem;
+  }
+  
+  &.success .icon {
+    color: #27ae60;
+  }
+  
+  &.error .icon {
+    color: #e74c3c;
+  }
+`;
+
+export const ModalMessage = styled.p`
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 1.5rem;
+  white-space: pre-line;
+`;
+
+export const ModalButton = styled.button`
+  background: ${props => props.error ? '#e74c3c' : '#27ae60'};
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.error ? '#c0392b' : '#229954'};
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;

@@ -5,46 +5,54 @@ import { crearPDF } from "../../components/clientes/crearPDF";
 import { formatearFecha } from "../../utils/fecha";
 
 export function VerClienteId() {
-  const { cliente, reparaciones, loading } = useClienteDetalle();
+  const { cliente, reparaciones, ventas, loading } = useClienteDetalle();
 
   const handlePDF = () => {
-    crearPDF(cliente, reparaciones);
+    crearPDF(cliente, reparaciones, ventas);
   };
 
   if (loading) return <Cargando />;
 
   return (
-    <WrapperPage>
+    <WrapperPage maxWidth={1400}>
       <BotonVolver to="/clientes/ver" />
       <TituloPage>Ficha del Cliente</TituloPage>
-      {cliente && <ClienteCard cliente={cliente} />}
+      
+      <div style={{
+        height: 'calc(100vh - 200px)',
+        overflowY: 'auto',
+        padding: '0 1rem'
+      }}>
+        {cliente && <ClienteCard cliente={cliente} />}
 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem" }}>
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
-        {reparaciones.length > 0 && (
-          <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-            <BotonPDFImprimir onClick={handlePDF}>Descargar PDF</BotonPDFImprimir>
-          </div>
-        )}
+        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+          <BotonPDFImprimir onClick={handlePDF}>Descargar PDF</BotonPDFImprimir>
+        </div>
       </div>
 
-      {reparaciones.length === 0 ? (
-        <p>No hay reparaciones para este cliente.</p>
-      ) : (
-        <TablaContainer>
-          <Tabla id="tabla-reparaciones" className="tabla-pdf">
-            <thead>
+      <TablaContainer>
+        <Tabla id="tabla-reparaciones">
+          <thead>
+            <tr>
+              <th>Artículo</th>
+              <th>Descripción</th>
+              <th>Fecha</th>
+              <th>Fecha Entrega</th>
+              <th>Precio</th>
+              <th>Observaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reparaciones.length === 0 ? (
               <tr>
-                <th>Artículo</th>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Fecha Entrega</th>
-                <th>Precio</th>
-                <th>Observaciones</th>
+                <td colSpan="6" style={{ textAlign: "center", padding: "2rem", fontStyle: "italic", color: "#666" }}>
+                  No hay registros
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {reparaciones.map((r) => (
+            ) : (
+              reparaciones.map((r) => (
                 <tr key={r.idreparacion}>
                   <td>{r.articulo}</td>
                   <td>{r.descripcion}</td>
@@ -53,11 +61,82 @@ export function VerClienteId() {
                   <td>{r.precio != null ? `${r.precio} €` : "-"}</td>
                   <td>{r.observaciones || "-"}</td>
                 </tr>
-              ))}
-            </tbody>
-          </Tabla>
-        </TablaContainer>
-      )}
+              ))
+            )}
+          </tbody>
+        </Tabla>
+      </TablaContainer>
+
+      {/* Sección de Ventas */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem", marginTop: "2rem" }}>
+        <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Historial de Ventas TPV</h3>
+      </div>
+
+      <TablaContainer>
+        <Tabla id="tabla-ventas">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Productos</th>
+              <th>Método Pago</th>
+              <th>Subtotal</th>
+              <th>IVA</th>
+              <th>Total</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ventas.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={{ textAlign: "center", padding: "2rem", fontStyle: "italic", color: "#666" }}>
+                  No hay registros
+                </td>
+              </tr>
+            ) : (
+              ventas.map((venta) => (
+                <tr key={venta.id}>
+                  <td>{formatearFecha(venta.fecha_venta)}</td>
+                  <td>
+                    <div>
+                      {venta.detalles_venta?.map((detalle, index) => (
+                        <div key={index} style={{ marginBottom: "0.25rem" }}>
+                          <span style={{ fontWeight: "600" }}>
+                            {detalle.productos?.nombre || detalle.nombre_producto || 'Producto manual'}
+                          </span>
+                          <span style={{ color: "#666", marginLeft: "0.5rem" }}>
+                            x{detalle.cantidad}
+                          </span>
+                        </div>
+                      )) || 'Sin detalles'}
+                    </div>
+                  </td>
+                  <td style={{ textTransform: "capitalize" }}>
+                    {venta.metodo_pago}
+                  </td>
+                  <td>€{venta.subtotal.toFixed(2)}</td>
+                  <td>€{venta.impuestos.toFixed(2)}</td>
+                  <td style={{ fontWeight: "bold", color: "#28a745" }}>
+                    €{venta.total.toFixed(2)}
+                  </td>
+                  <td>
+                    <span style={{
+                      backgroundColor: venta.estado === 'completada' ? "#d4edda" : "#fff3cd",
+                      color: venta.estado === 'completada' ? "#155724" : "#856404",
+                      padding: "0.25rem 0.5rem",
+                      borderRadius: "4px",
+                      fontSize: "0.8rem",
+                      fontWeight: "500"
+                    }}>
+                      {venta.estado}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </Tabla>
+      </TablaContainer>
+      </div>
     </WrapperPage>
   );
 }
