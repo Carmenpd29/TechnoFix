@@ -31,7 +31,7 @@ export function VerClienteId() {
       }}>
         {cliente && <ClienteCard cliente={cliente} />}
 
-      <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem", marginTop: "1rem" }}>
         <BotonPDFImprimir onClick={handlePDF}>Descargar PDF</BotonPDFImprimir>
       </div>
 
@@ -39,8 +39,8 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
       </div>
 
-      <TablaContainer style={{ overflow: 'visible' }}>
-        <Tabla id="tabla-reparaciones">
+      <TablaContainer style={{ overflow: 'visible', margin: '0' }}>
+        <Tabla id="tabla-reparaciones" style={{ width: '98%' }}>
           <thead>
             <tr>
               <th>Artículo</th>
@@ -79,8 +79,8 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Historial de Ventas TPV</h3>
       </div>
 
-      <TablaContainer style={{ overflow: 'visible' }}>
-        <Tabla id="tabla-ventas">
+      <TablaContainer style={{ overflow: 'visible', margin: '0' }}>
+        <Tabla id="tabla-ventas" style={{ width: '98%' }}>
           <thead>
             <tr>
               <th>Fecha</th>
