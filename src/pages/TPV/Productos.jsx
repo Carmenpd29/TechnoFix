@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { FiSearch, FiPackage, FiTool, FiCpu, FiSettings, FiHeadphones, FiActivity, FiArrowLeft, FiPlus, FiFolder, FiHelpCircle } from "react-icons/fi";
+import { FiSearch, FiPackage, FiArrowLeft, FiPlus, FiFolder, FiHelpCircle } from "react-icons/fi";
 import { BotonVolver, TituloPage, WrapperPage, Opciones, ManualPage, Tabla, TablaContainer, IconBtn, BotonesContainer, BotonMenu } from "../../index";
 import { TPVBotonMenu } from "../../styles/TPVBotonMenuStyles";
+import { ModalOverlay, ModalContent, ModalHeader, ModalMessage, ModalButton } from "../../styles/CajaStyles";
 import { useProductosTPV } from "../../hooks/useProductosTPV";
 import {
   ProductosContainer,
@@ -85,7 +86,15 @@ export function Productos() {
     editarProducto,
     eliminarProducto,
     cancelarEdicion,
-    estadisticas
+    estadisticas,
+    mostrarModalExito,
+    mostrarModalError,
+    mostrarModalConfirmacion,
+    mensajeModal,
+    cerrarModalExito,
+    cerrarModalError,
+    confirmarEliminacion,
+    cancelarEliminacion
   } = useProductosTPV();
   
   const toggleCategoria = (categoriaId) => {
@@ -94,14 +103,6 @@ export function Productos() {
       [categoriaId]: !prev[categoriaId]
     }));
   };
-  
-  const categoriasConIconos = [
-    { id: 1, label: "Reparaciones", icon: <FiTool size={24} color="#28a745" /> },
-    { id: 2, label: "Componentes", icon: <FiCpu size={24} color="#007bff" /> },
-    { id: 3, label: "Servicios", icon: <FiSettings size={24} color="#ffc107" /> },
-    { id: 4, label: "Accesorios", icon: <FiHeadphones size={24} color="#6f42c1" /> },
-    { id: 5, label: "Diagnósticos", icon: <FiActivity size={24} color="#dc3545" /> }
-  ];
 
   return (
     <WrapperPage maxWidth={1400}>
@@ -877,8 +878,8 @@ export function Productos() {
               overflowY: "auto",
               flex: 1
             }}>
-              {categoriasConIconos.map((categoria) => {
-                const productosCategoria = productos.filter(p => p.categoria?.nombre === categoria.label);
+              {categorias.map((categoria) => {
+                const productosCategoria = productos.filter(p => p.categoria?.nombre === categoria.nombre);
                 const estaAbierta = categoriasAbiertas[categoria.id];
                 
                 return (
@@ -905,9 +906,9 @@ export function Productos() {
                         alignItems: "center",
                         gap: "0.5rem"
                       }}>
-                        {categoria.icon}
-                        <h3 style={{ margin: 0, color: "#232728", fontSize: "1.1rem" }}>
-                          {categoria.label} ({productosCategoria.length} productos)
+                        <span style={{ fontSize: "1.5rem" }}>{categoria.icono || "📁"}</span>
+                        <h3 style={{ margin: 0, color: "#232728", fontSize: "1rem" }}>
+                          {categoria.nombre} ({productosCategoria.length} productos)
                         </h3>
                       </div>
                       
@@ -1073,6 +1074,56 @@ export function Productos() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Modal de Éxito */}
+      {mostrarModalExito && (
+        <ModalOverlay onClick={cerrarModalExito}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader className="success">
+              <span className="icon">✅</span>
+            </ModalHeader>
+            <ModalMessage>{mensajeModal}</ModalMessage>
+            <ModalButton onClick={cerrarModalExito}>
+              Aceptar
+            </ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* Modal de Error */}
+      {mostrarModalError && (
+        <ModalOverlay onClick={cerrarModalError}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader className="error">
+              <span className="icon">❌</span>
+            </ModalHeader>
+            <ModalMessage>{mensajeModal}</ModalMessage>
+            <ModalButton error onClick={cerrarModalError}>
+              Cerrar
+            </ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* Modal de Confirmación */}
+      {mostrarModalConfirmacion && (
+        <ModalOverlay onClick={cancelarEliminacion}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <span className="icon" style={{ color: "#f39c12" }}>⚠️</span>
+            </ModalHeader>
+            <ModalMessage>{mensajeModal}</ModalMessage>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <ModalButton error onClick={confirmarEliminacion}>
+                Eliminar
+              </ModalButton>
+              <ModalButton onClick={cancelarEliminacion} style={{ background: "#6c757d" }}>
+                Cancelar
+              </ModalButton>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
       )}
     </WrapperPage>
   );

@@ -105,11 +105,11 @@ export const formatearMetodoPago = (metodo) => {
 };
 
 export const verDetalleVenta = (venta) => {
-  alert(`Detalle de venta ${venta.numero}:\n\n${venta.productos.map(p => 
-    `${p.nombre} x${p.cantidad} - €${p.precio.toFixed(2)}`
-  ).join('\n')}\n\nTotal: €${venta.total.toFixed(2)}`);
+  // Esta función ya no es necesaria ya que se maneja con el modal en el componente
+  return venta;
 };
 
 export const imprimirVenta = (venta) => {
-  alert(`Imprimiendo venta ${venta.numero}...`);
+  // Esta función ya no es necesaria ya que se maneja directamente en el componente
+  return venta;
 };

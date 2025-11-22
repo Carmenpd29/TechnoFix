@@ -8,6 +8,14 @@ export const useProductosTPV = () => {
   const [productoEditando, setProductoEditando] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [cargando, setCargando] = useState(true);
+  
+  // Estados para modales
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarModalError, setMostrarModalError] = useState(false);
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState("");
+  const [productoAEliminar, setProductoAEliminar] = useState(null);
+  
   const [formulario, setFormulario] = useState({
     nombre: "",
     descripcion: "",
@@ -127,10 +135,12 @@ export const useProductosTPV = () => {
       await cargarProductos();
       limpiarFormulario();
       
-      alert(productoEditando ? 'Producto actualizado correctamente' : 'Producto creado correctamente');
+      setMensajeModal(productoEditando ? 'Producto actualizado correctamente' : 'Producto creado correctamente');
+      setMostrarModalExito(true);
     } catch (error) {
       console.error('Error guardando producto:', error);
-      alert('Error al guardar el producto: ' + error.message);
+      setMensajeModal('Error al guardar el producto: ' + error.message);
+      setMostrarModalError(true);
     } finally {
       setCargando(false);
     }
@@ -152,26 +162,44 @@ export const useProductosTPV = () => {
   };
 
   // Eliminar producto (desactivar)
-  const eliminarProducto = async (id) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-      setCargando(true);
-      try {
-        const { error } = await supabase
-          .from('productos')
-          .update({ activo: false })
-          .eq('id', id);
-        
-        if (error) throw error;
-        
-        await cargarProductos();
-        alert('Producto eliminado correctamente');
-      } catch (error) {
-        console.error('Error eliminando producto:', error);
-        alert('Error al eliminar el producto: ' + error.message);
-      } finally {
-        setCargando(false);
-      }
+  const eliminarProducto = (id) => {
+    const producto = productos.find(p => p.id === id);
+    setProductoAEliminar(producto);
+    setMensajeModal(`¿Estás seguro de que quieres eliminar el producto "${producto?.nombre}"?`);
+    setMostrarModalConfirmacion(true);
+  };
+
+  const confirmarEliminacion = async () => {
+    if (!productoAEliminar) return;
+    
+    setCargando(true);
+    setMostrarModalConfirmacion(false);
+    
+    try {
+      const { error } = await supabase
+        .from('productos')
+        .update({ activo: false })
+        .eq('id', productoAEliminar.id);
+      
+      if (error) throw error;
+      
+      await cargarProductos();
+      setMensajeModal('Producto eliminado correctamente');
+      setMostrarModalExito(true);
+    } catch (error) {
+      console.error('Error eliminando producto:', error);
+      setMensajeModal('Error al eliminar el producto: ' + error.message);
+      setMostrarModalError(true);
+    } finally {
+      setCargando(false);
+      setProductoAEliminar(null);
     }
+  };
+
+  const cancelarEliminacion = () => {
+    setMostrarModalConfirmacion(false);
+    setProductoAEliminar(null);
+    setMensajeModal("");
   };
 
   // Cancelar edición
@@ -213,20 +241,34 @@ export const useProductosTPV = () => {
         .insert([{
           nombre: formularioCategoria.nombre,
           descripcion: formularioCategoria.descripcion,
-          icono: formularioCategoria.icono
+          icono: formularioCategoria.icono,
+          activa: true
         }]);
       
       if (error) throw error;
       
       await cargarCategorias();
       setFormularioCategoria({ nombre: "", descripcion: "", icono: "📱" });
-      alert('Categoría creada correctamente');
+      setMensajeModal('Categoría creada correctamente');
+      setMostrarModalExito(true);
     } catch (error) {
       console.error('Error guardando categoría:', error);
-      alert('Error al crear la categoría: ' + error.message);
+      setMensajeModal('Error al crear la categoría: ' + error.message);
+      setMostrarModalError(true);
     } finally {
       setCargando(false);
     }
+  };
+
+  // Funciones para cerrar modales
+  const cerrarModalExito = () => {
+    setMostrarModalExito(false);
+    setMensajeModal("");
+  };
+
+  const cerrarModalError = () => {
+    setMostrarModalError(false);
+    setMensajeModal("");
   };
 
   // Calcular estadísticas
@@ -254,6 +296,15 @@ export const useProductosTPV = () => {
     eliminarProducto,
     cancelarEdicion,
     cargarDatos,
-    estadisticas
+    estadisticas,
+    // Estados y funciones para modales
+    mostrarModalExito,
+    mostrarModalError,
+    mostrarModalConfirmacion,
+    mensajeModal,
+    cerrarModalExito,
+    cerrarModalError,
+    confirmarEliminacion,
+    cancelarEliminacion
   };
 };
