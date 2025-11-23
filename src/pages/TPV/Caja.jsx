@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaCalculator, FaChevronDown, FaChevronUp, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { BotonVolver, TituloPage, WrapperPage, supabase } from "../../index";
+import { obtenerCodigoDisplay } from "../../utils/formatearCodigo";
 import { useCalculadora } from "../../hooks/useCalculadora";
 import { useProductos } from "../../hooks/useProductos";
 import { useVentas } from "../../hooks/useVentas";
@@ -53,11 +54,15 @@ export function Caja() {
   const [productosDB, setProductosDB] = useState([]);
   const [busquedaProducto, setBusquedaProducto] = useState("");
   const [mostrarSugerenciasProducto, setMostrarSugerenciasProducto] = useState(false);
+  const [busquedaCodigo, setBusquedaCodigo] = useState("");
+  const [mostrarSugerenciasCodigo, setMostrarSugerenciasCodigo] = useState(false);
   
   // Función para limpiar búsqueda cuando se agrega producto
   const limpiarBusquedaProducto = () => {
     setBusquedaProducto("");
     setMostrarSugerenciasProducto(false);
+    setBusquedaCodigo("");
+    setMostrarSugerenciasCodigo(false);
   };
 
   // Custom hooks para manejar la lógica
@@ -76,10 +81,26 @@ export function Caja() {
       setClientes(clientesData || []);
 
       // Cargar productos
-      const { data: productosData } = await supabase
+      const { data: productosData, error } = await supabase
         .from("productos")
-        .select("id, nombre, precio, iva")
+        .select("id, codigo, nombre, precio, iva, activo")
         .order("nombre", { ascending: true });
+      
+      if (error) {
+        console.error("Error al cargar productos:", error);
+      }
+      console.log("=== DATOS DE BASE DE DATOS ===");
+      console.log("Total productos cargados:", productosData?.length || 0);
+      console.log("Primeros 3 productos completos:", productosData?.slice(0, 3));
+      
+      // Revisar específicamente los códigos
+      productosData?.forEach((producto, index) => {
+        console.log(`Producto ${index + 1}: ID=${producto.id}, Código="${producto.codigo}", Nombre="${producto.nombre}"`);
+      });
+      
+      const productosConCodigo = productosData?.filter(p => p.codigo && p.codigo.trim() !== '') || [];
+      console.log("Productos con código válido:", productosConCodigo.length);
+      console.log("==============================");
       setProductosDB(productosData || []);
     }
     cargarDatos();
@@ -88,8 +109,9 @@ export function Caja() {
   // Cerrar sugerencias de productos al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (mostrarSugerenciasProducto && !event.target.closest('.input-group')) {
+      if ((mostrarSugerenciasProducto || mostrarSugerenciasCodigo) && !event.target.closest('.input-group')) {
         setMostrarSugerenciasProducto(false);
+        setMostrarSugerenciasCodigo(false);
       }
     };
 
@@ -97,7 +119,7 @@ export function Caja() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [mostrarSugerenciasProducto]);
+  }, [mostrarSugerenciasProducto, mostrarSugerenciasCodigo]);
 
   // Filtrar clientes según búsqueda
   const clientesFiltrados = busquedaCliente && clientes && busquedaCliente.trim().length > 0 ? clientes.filter(cliente => {
@@ -111,23 +133,68 @@ export function Caja() {
            telefono.toLowerCase().includes(busqueda);
   }) : [];
 
-  // Filtrar productos según búsqueda
+  // Filtrar productos según búsqueda por nombre
   const productosFiltrados = busquedaProducto && productosDB && busquedaProducto.trim().length > 0 ? productosDB.filter(producto => {
     const nombre = producto.nombre || '';
     const busqueda = busquedaProducto.toLowerCase();
     return nombre.toLowerCase().includes(busqueda);
   }) : [];
 
+  // Filtrar productos según búsqueda por código
+  const productosFiltradosCodigo = busquedaCodigo && productosDB && busquedaCodigo.trim().length > 0 ? productosDB.filter(producto => {
+    console.log(`=== ANÁLISIS INDIVIDUAL PRODUCTO ===`);
+    console.log(`ID: ${producto.id}`);
+    console.log(`Código raw:`, producto.codigo);
+    console.log(`Código type:`, typeof producto.codigo);
+    console.log(`Código length:`, producto.codigo ? producto.codigo.length : 'null/undefined');
+    console.log(`Nombre:`, producto.nombre);
+    console.log(`Objeto completo:`, producto);
+    
+    const codigo = producto.codigo || '';
+    console.log(`Código después de || '':`, codigo);
+    console.log(`¿Está vacío?:`, !codigo || codigo.trim() === '');
+    
+    if (!codigo || codigo.trim() === '') {
+      console.log(`❌ RECHAZADO: Código vacío o nulo`);
+      return false;
+    }
+    
+    const busqueda = busquedaCodigo.toLowerCase().trim();
+    const codigoLimpio = codigo.toLowerCase().trim();
+    
+    console.log(`Búsqueda procesada: "${busqueda}"`);
+    console.log(`Código procesado: "${codigoLimpio}"`);
+    
+    const coincide = codigoLimpio.includes(busqueda);
+    console.log(`¿Coincide "${codigoLimpio}".includes("${busqueda}")? ${coincide}`);
+    
+    if (coincide) {
+      console.log(`✅ ENCONTRADO: ${codigoLimpio} contiene ${busqueda} (${producto.nombre})`);
+    } else {
+      console.log(`❌ NO COINCIDE: ${codigoLimpio} no contiene ${busqueda}`);
+    }
+    console.log(`=== FIN ANÁLISIS ===`);
+    return coincide;
+  }) : [];
+  
+  if (busquedaCodigo) {
+    console.log(`Búsqueda '${busquedaCodigo}' encontró ${productosFiltradosCodigo.length} productos`);
+  }
+
   // Función para seleccionar producto de la base de datos
   const seleccionarProductoDB = (producto) => {
     productosManager.setNuevoProducto({
       ...productosManager.nuevoProducto,
+      id: producto.id,
+      codigo: producto.codigo || '',
       nombre: producto.nombre,
       precio: producto.precio || '',
       iva: producto.iva || '21'
     });
     setBusquedaProducto("");
     setMostrarSugerenciasProducto(false);
+    setBusquedaCodigo(producto.codigo || '');
+    setMostrarSugerenciasCodigo(false);
   };
 
   // Funciones de limpieza y venta
@@ -138,6 +205,8 @@ export function Caja() {
     setBusquedaCliente("Cliente General");
     setBusquedaProducto("");
     setMostrarSugerenciasProducto(false);
+    setBusquedaCodigo("");
+    setMostrarSugerenciasCodigo(false);
     calculadora.limpiarCalculadora();
   };
 
@@ -212,6 +281,83 @@ export function Caja() {
           {/* Formulario con inputs individuales */}
           <AgregarProductoForm onSubmit={productosManager.agregarProducto}>
             <div className="input-group" style={{ position: 'relative' }}>
+              <div className="input-header">Código</div>
+              <ProductoInput
+                type="text"
+                value={busquedaCodigo}
+                onChange={(e) => {
+                  const valor = e.target.value;
+                  setBusquedaCodigo(valor);
+                  setMostrarSugerenciasCodigo(valor.length > 0);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (productosFiltradosCodigo.length === 1) {
+                      seleccionarProductoDB(productosFiltradosCodigo[0]);
+                    } else if (productosFiltradosCodigo.length > 1) {
+                      // Si hay varios productos, seleccionar el primero
+                      seleccionarProductoDB(productosFiltradosCodigo[0]);
+                    }
+                  }
+                }}
+                placeholder="Ej: 0001, 0002..."
+              />
+              {mostrarSugerenciasCodigo && busquedaCodigo.length > 0 && (
+                <div style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  width: "350px",
+                  minWidth: "250px",
+                  maxWidth: "95vw",
+                  maxHeight: "180px",
+                  overflowY: "auto",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  backgroundColor: "white",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.13)",
+                  zIndex: 1000,
+                  padding: "0.2rem"
+                }}>
+                  {productosFiltradosCodigo.length > 0 ? (
+                    productosFiltradosCodigo.map((producto) => (
+                      <div
+                        key={producto.id}
+                        onClick={() => seleccionarProductoDB(producto)}
+                        style={{
+                          padding: "0.5rem",
+                          cursor: "pointer",
+                          borderBottom: "1px solid #eee",
+                          fontSize: "0.75rem",
+                          fontWeight: "500"
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
+                      >
+                        <div style={{ fontWeight: "bold", color: "#007bff" }}>{obtenerCodigoDisplay(producto)}</div>
+                        <div>{producto.nombre}</div>
+                        <div style={{ fontSize: "0.65rem", color: "#666" }}>€{producto.precio.toFixed(2)}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{
+                      padding: "0.75rem",
+                      fontSize: "0.75rem",
+                      color: "#856404",
+                      backgroundColor: "#fff3cd",
+                      textAlign: "center",
+                      fontStyle: "italic"
+                    }}>
+                      No se encontraron productos con código "{busquedaCodigo}".
+                      <br />
+                      <small>Los productos necesitan tener códigos asignados para aparecer aquí.</small>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="input-group" style={{ position: 'relative' }}>
               <div className="input-header">Producto</div>
               <ProductoInput
                 type="text"
@@ -230,14 +376,17 @@ export function Caja() {
                   position: "absolute",
                   top: "100%",
                   left: 0,
-                  right: 0,
-                  maxHeight: "150px",
+                  width: "350px",
+                  minWidth: "250px",
+                  maxWidth: "95vw",
+                  maxHeight: "180px",
                   overflowY: "auto",
                   border: "1px solid #ddd",
-                  borderRadius: "6px",
+                  borderRadius: "8px",
                   backgroundColor: "white",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                  zIndex: 1000
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.13)",
+                  zIndex: 1000,
+                  padding: "0.2rem"
                 }}>
                   {productosFiltrados.map((producto) => (
                     <div
@@ -253,7 +402,9 @@ export function Caja() {
                       onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
                       onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
                     >
-                      {producto.nombre}
+                      <div style={{ fontWeight: "bold", color: "#007bff" }}>{obtenerCodigoDisplay(producto)}</div>
+                      <div>{producto.nombre}</div>
+                      <div style={{ fontSize: "0.65rem", color: "#666" }}>€{producto.precio.toFixed(2)}</div>
                     </div>
                   ))}
                 </div>
@@ -271,7 +422,7 @@ export function Caja() {
               />
             </div>
             <div className="input-group">
-              <div className="input-header">Cantidad</div>
+              <div className="input-header">Uds.</div>
               <ProductoInput
                 type="number"
                 value={productosManager.nuevoProducto.cantidad}
@@ -321,9 +472,10 @@ export function Caja() {
           
           {/* Encabezado único para todas las líneas */}
           <TablaHeaders>
+            <HeaderItem>Código</HeaderItem>
             <HeaderItem>Producto</HeaderItem>
             <HeaderItem>Precio</HeaderItem>
-            <HeaderItem>Cantidad</HeaderItem>
+            <HeaderItem>Uds.</HeaderItem>
             <HeaderItem>IVA %</HeaderItem>
             <HeaderItem>Desc. %</HeaderItem>
             <HeaderItem>IVA Inc.</HeaderItem>
@@ -333,6 +485,18 @@ export function Caja() {
           <ProductosLista>
             {productosManager.productos.map((producto) => (
               <ProductoItem key={producto.id}>
+                <div style={{ 
+                  fontFamily: "monospace", 
+                  fontSize: "0.75rem", 
+                  fontWeight: "bold", 
+                  color: "#007bff",
+                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  {obtenerCodigoDisplay(producto)}
+                </div>
                 <ProductoNombre>{producto.nombre}</ProductoNombre>
                 <ProductoInput
                   type="number"
@@ -384,31 +548,25 @@ export function Caja() {
           {/* Selección de Cliente */}
           <TotalSection style={{ marginBottom: "1rem" }}>
             <SectionTitle>Cliente</SectionTitle>
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.5rem",
-              position: "relative"
-            }}>
+            <div className="input-group" style={{ position: 'relative', marginBottom: '0.5rem' }}>
+              <div className="input-header">Buscar cliente</div>
               <input
                 type="text"
-                placeholder="Buscar cliente por nombre, NIF o teléfono..."
                 value={busquedaCliente}
                 onChange={(e) => {
                   const valor = e.target.value;
                   setBusquedaCliente(valor);
-                  // Si se borra todo el contenido, volver a Cliente General
                   if (valor === "") {
                     setClienteSeleccionado("");
                     setBusquedaCliente("Cliente General");
                   }
                 }}
                 onFocus={() => {
-                  // Si está en Cliente General, limpiar para poder buscar
                   if (busquedaCliente === "Cliente General") {
                     setBusquedaCliente("");
                   }
                 }}
+                placeholder="Buscar cliente por nombre, NIF o teléfono..."
                 style={{
                   border: "1px solid #ddd",
                   borderRadius: "3px",
@@ -420,64 +578,65 @@ export function Caja() {
                   backgroundColor: "white"
                 }}
               />
-              {busquedaCliente && busquedaCliente !== "Cliente General" && busquedaCliente.length > 0 && clientesFiltrados.length > 0 && (
-                <div style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  right: 0,
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                  border: "1px solid #ddd",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                  zIndex: 1000
-                }}>
-                  {clientesFiltrados.map((cliente) => (
-                    <div
-                      key={cliente.id}
-                      onClick={() => {
-                        setClienteSeleccionado(cliente.id);
-                        setBusquedaCliente(`${cliente.nombre} - ${cliente.nif}`);
-                      }}
-                      style={{
-                        padding: "0.75rem",
-                        cursor: "pointer",
-                        borderBottom: "1px solid #eee",
-                        backgroundColor: clienteSeleccionado === cliente.id ? "#f0f8ff" : "white"
-                      }}
-                      onMouseEnter={(e) => {
-                        if (clienteSeleccionado !== cliente.id) {
-                          e.target.style.backgroundColor = "#f8f9fa";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (clienteSeleccionado !== cliente.id) {
-                          e.target.style.backgroundColor = "white";
-                        }
-                      }}
-                    >
-                      <div style={{ fontWeight: "600", color: "#232728" }}>
-                        {cliente.nombre}
+              {busquedaCliente && busquedaCliente !== "Cliente General" && busquedaCliente.length > 0 &&
+                !clienteSeleccionado && clientesFiltrados.length > 0 && (
+                  <div style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    width: "100%",
+                    minWidth: "180px",
+                    maxWidth: "100%",
+                    maxHeight: "180px",
+                    overflowY: "auto",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    backgroundColor: "white",
+                    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.13)",
+                    zIndex: 1000,
+                    padding: "0.2rem"
+                  }}>
+                    {clientesFiltrados.map((cliente) => (
+                      <div
+                        key={cliente.id}
+                        onClick={() => {
+                          setClienteSeleccionado(cliente.id);
+                          setBusquedaCliente(cliente.nombre);
+                          setTimeout(() => {
+                            document.activeElement.blur();
+                          }, 0);
+                        }}
+                        style={{
+                          padding: "0.5rem",
+                          cursor: "pointer",
+                          borderBottom: "1px solid #eee",
+                          fontSize: "0.75rem",
+                          fontWeight: "500"
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
+                      >
+                        <div style={{ fontWeight: "bold", color: "#007bff" }}>{cliente.nombre}</div>
+                        <div>{cliente.nif || 'Sin NIF'} • {cliente.telefono || 'Sin teléfono'}</div>
                       </div>
-                      <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                        {cliente.nif || 'Sin NIF'} • {cliente.telefono || 'Sin teléfono'}
-                      </div>
-                    </div>
-                  ))}
-                  {clientesFiltrados && clientesFiltrados.length === 0 && busquedaCliente !== "Cliente General" && (
-                    <div style={{
-                      padding: "1rem",
-                      textAlign: "center",
-                      color: "#666",
-                      fontStyle: "italic"
-                    }}>
-                      No se encontraron clientes
-                    </div>
-                  )}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )
+              }
+              {busquedaCliente && busquedaCliente !== "Cliente General" && busquedaCliente.length > 0 &&
+                !clienteSeleccionado && clientesFiltrados.length === 0 && (
+                  <div style={{
+                    padding: "0.75rem",
+                    fontSize: "0.75rem",
+                    color: "#856404",
+                    backgroundColor: "#fff3cd",
+                    textAlign: "center",
+                    fontStyle: "italic"
+                  }}>
+                    No se encontraron clientes con "{busquedaCliente}".
+                  </div>
+                )
+              }
               {clienteSeleccionado && busquedaCliente && busquedaCliente !== "Cliente General" && (
                 <div style={{
                   padding: "0.5rem",
@@ -549,7 +708,7 @@ export function Caja() {
           {/* Acciones */}
           <AccionesSection>
             <AccionBtn cobrar onClick={() => ventasManager.procesarVenta(productosManager.productos)} disabled={productosManager.productos.length === 0}>
-              {ventasManager.procesandoVenta ? 'Procesando...' : `Vender €${totales.total.toFixed(2)}`}
+              {ventasManager.procesandoVenta ? 'Procesando...' : `Finalizar venta €${totales.total.toFixed(2)}`}
             </AccionBtn>
             <AccionBtn limpiar onClick={limpiarVenta}>
               Limpiar

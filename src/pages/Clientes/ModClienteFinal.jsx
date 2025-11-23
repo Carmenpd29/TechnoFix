@@ -1,7 +1,8 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BotonVolver, supabase, TituloPage, WrapperPage } from "../../index";
-import { Form, Field, Label, Input, Boton, Mensaje, ErrorMsg, ObligatorioMsg } from "../../styles/ModClienteFinalStyles";
+import { BotonVolver, supabase, TituloPage, WrapperPage, IconBtn } from "../../index";
+import { FiSave } from "react-icons/fi";
+import { Form, Field, Label, Input, Mensaje, ErrorMsg, ObligatorioMsg } from "../../styles/ModClienteFinalStyles";
 
 const initialState = {
   nombre: "",
@@ -14,7 +15,6 @@ const initialState = {
 
 export function ModClienteFinal() {
   const { id } = useParams();
-  console.log("ID recibido en ModClienteFinal:", id);
   const location = useLocation();
   const navigate = useNavigate();
   const [form, setForm] = useState(initialState);
@@ -162,9 +162,12 @@ export function ModClienteFinal() {
         <ObligatorioMsg>
         <span>*</span> Campos obligatorios
       </ObligatorioMsg>
-        <Boton type="submit" disabled={loading}>
-          {loading ? "Modificando..." : "Modificar"}
-        </Boton>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+          <IconBtn type="submit" disabled={loading}>
+            <FiSave size={16} />
+            <span>{loading ? "Modificando..." : "Modificar"}</span>
+          </IconBtn>
+        </div>
       </Form>
       
       {mensaje && <Mensaje>{mensaje}</Mensaje>}

@@ -37,13 +37,16 @@ export const useFormularioCliente = (clienteInicial = null) => {
     setLoading(true);
     
     try {
+      // Usar datos sanitizados para la inserción
+      const datosLimpios = validacion.datosSanitizados;
+      
       const { error } = await supabase.from("clientes").insert([{
-        nombre: form.nombre,
-        apellidos: form.apellidos,
-        telefono: form.telefono,
-        nif: form.nif || null,
-        direccion: form.direccion || null,
-        correo: form.correo || null,
+        nombre: datosLimpios.nombre,
+        apellidos: datosLimpios.apellidos || null,
+        telefono: datosLimpios.telefono,
+        nif: datosLimpios.nif || null,
+        direccion: datosLimpios.direccion || null,
+        correo: datosLimpios.correo || null,
       }]);
 
       if (error) {
@@ -74,15 +77,18 @@ export const useFormularioCliente = (clienteInicial = null) => {
     setLoading(true);
     
     try {
+      // Usar datos sanitizados para la actualización
+      const datosLimpios = validacion.datosSanitizados;
+      
       const { error } = await supabase
         .from("clientes")
         .update({
-          nombre: form.nombre,
-          apellidos: form.apellidos,
-          telefono: form.telefono,
-          nif: form.nif || null,
-          direccion: form.direccion || null,
-          correo: form.correo || null,
+          nombre: datosLimpios.nombre,
+          apellidos: datosLimpios.apellidos || null,
+          telefono: datosLimpios.telefono,
+          nif: datosLimpios.nif || null,
+          direccion: datosLimpios.direccion || null,
+          correo: datosLimpios.correo || null,
         })
         .eq("id", id);
 

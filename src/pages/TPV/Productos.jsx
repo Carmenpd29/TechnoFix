@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { FiSearch, FiPackage, FiArrowLeft, FiPlus, FiFolder, FiHelpCircle } from "react-icons/fi";
+import { FiSearch, FiPackage, FiArrowLeft, FiPlus, FiFolder, FiHelpCircle, FiEdit, FiSave, FiX, FiTrash2 } from "react-icons/fi";
 import { BotonVolver, TituloPage, WrapperPage, Opciones, ManualPage, Tabla, TablaContainer, IconBtn, BotonesContainer, BotonMenu } from "../../index";
+import { formatearCodigoProducto } from "../../utils/formatearCodigo";
 import { TPVBotonMenu } from "../../styles/TPVBotonMenuStyles";
 import { ModalOverlay, ModalContent, ModalHeader, ModalMessage, ModalButton } from "../../styles/CajaStyles";
 import { useProductosTPV } from "../../hooks/useProductosTPV";
@@ -96,6 +97,19 @@ export function Productos() {
     confirmarEliminacion,
     cancelarEliminacion
   } = useProductosTPV();
+
+  const manejarCierreModalExito = () => {
+    const mensajeContienePalabra = mensajeModal.includes('actualizado');
+    cerrarModalExito();
+    if (mensajeContienePalabra) {
+      // Si el mensaje contiene "actualizado", venía de una edición
+      setMostrandoFormulario(false);
+      setMostrandoTablaProductos(true);
+    } else {
+      // Si era un producto nuevo, cerrar formulario normalmente
+      setMostrandoFormulario(false);
+    }
+  };
   
   const toggleCategoria = (categoriaId) => {
     setCategoriasAbiertas(prev => ({
@@ -232,129 +246,25 @@ export function Productos() {
           margin: "1rem 0",
           padding: "0 1rem"
         }}>
-          <button
-            onClick={() => setMostrandoFormulario(true)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.75rem 1rem",
-              backgroundColor: "#a5c4ca",
-              color: "#232728",
-              border: "none",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background-color 0.2s",
-              boxShadow: "0 2px 8px rgba(64, 74, 76, 0.15)",
-              justifyContent: "flex-start"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#607074";
-              e.target.style.color = "#caf0f8";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "#a5c4ca";
-              e.target.style.color = "#232728";
-            }}
-          >
-            <FiPlus size={20} />
-            Nuevo Producto
-          </button>
+          <IconBtn onClick={() => setMostrandoFormulario(true)}>
+            <FiPlus size={16} />
+            <span>Nuevo Producto</span>
+          </IconBtn>
           
-          <button
-            onClick={() => setMostrandoFormularioCategoria(true)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.75rem 1rem",
-              backgroundColor: "#a5c4ca",
-              color: "#232728",
-              border: "none",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background-color 0.2s",
-              boxShadow: "0 2px 8px rgba(64, 74, 76, 0.15)",
-              justifyContent: "flex-start"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#607074";
-              e.target.style.color = "#caf0f8";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "#a5c4ca";
-              e.target.style.color = "#232728";
-            }}
-          >
+          <IconBtn onClick={() => setMostrandoFormularioCategoria(true)}>
             <FiFolder size={20} />
-            Nueva Categoría
-          </button>
+            <span>Nueva Categoría</span>
+          </IconBtn>
           
-          <button
-            onClick={() => setMostrandoTablaProductos(true)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.75rem 1rem",
-              backgroundColor: "#a5c4ca",
-              color: "#232728",
-              border: "none",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background-color 0.2s",
-              boxShadow: "0 2px 8px rgba(64, 74, 76, 0.15)",
-              justifyContent: "flex-start"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#607074";
-              e.target.style.color = "#caf0f8";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "#a5c4ca";
-              e.target.style.color = "#232728";
-            }}
-          >
+          <IconBtn onClick={() => setMostrandoTablaProductos(true)}>
             <FiPackage size={20} />
-            Ver Productos
-          </button>
+            <span>Ver Productos</span>
+          </IconBtn>
           
-          <button
-            onClick={() => setMostrandoTablaCategorias(true)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.75rem 1rem",
-              backgroundColor: "#a5c4ca",
-              color: "#232728",
-              border: "none",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background-color 0.2s",
-              boxShadow: "0 2px 8px rgba(64, 74, 76, 0.15)",
-              justifyContent: "flex-start"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#607074";
-              e.target.style.color = "#caf0f8";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "#a5c4ca";
-              e.target.style.color = "#232728";
-            }}
-          >
+          <IconBtn onClick={() => setMostrandoTablaCategorias(true)}>
             <FiFolder size={20} />
-            Ver Categorías
-          </button>
+            <span>Ver Categorías</span>
+          </IconBtn>
         </div>
       </ProductosContainer>
 
@@ -404,7 +314,10 @@ export function Productos() {
               <button
                 onClick={() => {
                   setMostrandoFormulario(false);
-                  if (productoEditando) cancelarEdicion();
+                  if (productoEditando) {
+                    setMostrandoTablaProductos(true);
+                    cancelarEdicion();
+                  }
                 }}
                 style={{
                   backgroundColor: "transparent",
@@ -432,6 +345,22 @@ export function Productos() {
               <FormularioProducto onSubmit={guardarProducto}>
                 <FormRow>
                   <FormGroup>
+                    <label>Código del Producto</label>
+                    <Input
+                      type="text"
+                      name="codigo"
+                      value={formulario.codigo}
+                      onChange={manejarCambio}
+                      placeholder="Se generará automáticamente si está vacío"
+                      style={{
+                        fontFamily: "monospace",
+                        fontWeight: "bold",
+                        color: "#007bff",
+                        backgroundColor: "#f8f9fa"
+                      }}
+                    />
+                  </FormGroup>
+                  <FormGroup>
                     <label>Nombre del Producto *</label>
                     <Input
                       type="text"
@@ -442,6 +371,9 @@ export function Productos() {
                       required
                     />
                   </FormGroup>
+                </FormRow>
+
+                <FormRow>
                   <FormGroup>
                     <label>Precio (€) *</label>
                     <Input
@@ -514,21 +446,29 @@ export function Productos() {
                   />
                 </FormGroup>
 
-                <BotonesContainer>
-                  <GuardarBtn type="submit">
-                    {productoEditando ? 'Actualizar' : 'Guardar'} Producto
-                  </GuardarBtn>
-                  <GuardarBtn 
-                    type="button" 
+                <div style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "center",
+                  marginTop: "1.5rem"
+                }}>
+                  <IconBtn type="submit">
+                    <FiSave size={16} />
+                    <span>{productoEditando ? 'Actualizar' : 'Guardar'}</span>
+                  </IconBtn>
+                  <IconBtn
+                    eliminar
+                    type="button"
                     onClick={() => {
                       setMostrandoFormulario(false);
+                      setMostrandoTablaProductos(true);
                       if (productoEditando) cancelarEdicion();
                     }}
-                    style={{ background: '#dc3545 !important', border: 'none !important' }}
                   >
-                    Cancelar
-                  </GuardarBtn>
-                </BotonesContainer>
+                    <FiX size={16} />
+                    <span>Cancelar</span>
+                  </IconBtn>
+                </div>
               </FormularioProducto>
             </div>
           </div>
@@ -645,21 +585,28 @@ export function Productos() {
                     rows={2}
                   />
                 </FormGroup>
-                <BotonesContainer>
-                  <GuardarBtn type="submit">
-                    Crear Categoría
-                  </GuardarBtn>
-                  <GuardarBtn 
-                    type="button" 
+                <div style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "center",
+                  marginTop: "1.5rem"
+                }}>
+                  <IconBtn type="submit">
+                    <FiSave size={16} />
+                    <span>Crear Categoría</span>
+                  </IconBtn>
+                  <IconBtn
+                    eliminar
+                    type="button"
                     onClick={() => {
                       setMostrandoFormularioCategoria(false);
                       setFormularioCategoria({ nombre: "", descripcion: "", icono: "📱" });
                     }}
-                    style={{ background: '#dc3545 !important', border: 'none !important' }}
                   >
-                    Cancelar
-                  </GuardarBtn>
-                </BotonesContainer>
+                    <FiX size={16} />
+                    <span>Cancelar</span>
+                  </IconBtn>
+                </div>
               </form>
             </div>
           </div>
@@ -752,12 +699,14 @@ export function Productos() {
                 <Tabla>
                   <thead>
                     <tr>
+                      <th>Código</th>
                       <th>Producto</th>
                       <th>Categoría</th>
                       <th>Precio</th>
                       <th>IVA</th>
                       <th>Stock</th>
                       <th>Descripción</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -765,6 +714,15 @@ export function Productos() {
                       .filter(producto => !filtroCategoria || (producto.categoria && producto.categoria.nombre === filtroCategoria))
                       .map((producto) => (
                       <tr key={producto.id}>
+                        <td style={{ 
+                          fontFamily: "monospace", 
+                          fontWeight: "bold", 
+                          color: "#007bff",
+                          backgroundColor: "#f8f9fa",
+                          padding: "0.5rem"
+                        }}>
+                          {formatearCodigoProducto(producto)}
+                        </td>
                         <td style={{ fontWeight: "600", color: "#232728" }}>{producto.nombre}</td>
                         <td>
                           <span style={{
@@ -793,11 +751,27 @@ export function Productos() {
                         <td style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {producto.descripcion || "-"}
                         </td>
+                        <td>
+                          <IconBtn
+                            onClick={() => {
+                              editarProducto(producto);
+                              setMostrandoFormulario(true);
+                              setMostrandoTablaProductos(false);
+                            }}
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem"
+                            }}
+                          >
+                            <FiEdit size={12} />
+                            <span>Editar</span>
+                          </IconBtn>
+                        </td>
                       </tr>
                     ))}
                     {productos.filter(producto => !filtroCategoria || producto.categoria === filtroCategoria).length === 0 && (
                       <tr>
-                        <td colSpan="6" style={{ textAlign: "center", padding: "2rem", color: "#666", fontStyle: "italic" }}>
+                        <td colSpan="7" style={{ textAlign: "center", padding: "2rem", color: "#666", fontStyle: "italic" }}>
                           {filtroCategoria ? `No hay productos en la categoría "${filtroCategoria}"` : "No hay productos registrados"}
                         </td>
                       </tr>
@@ -932,6 +906,7 @@ export function Productos() {
                             <Tabla>
                               <thead>
                                 <tr>
+                                  <th>Código</th>
                                   <th>Producto</th>
                                   <th>Precio</th>
                                   <th>IVA</th>
@@ -942,6 +917,14 @@ export function Productos() {
                               <tbody>
                                 {productosCategoria.map((producto) => (
                                   <tr key={producto.id}>
+                                    <td style={{ 
+                                      fontFamily: "monospace", 
+                                      fontWeight: "bold", 
+                                      color: "#007bff",
+                                      fontSize: "0.9rem"
+                                    }}>
+                                      {formatearCodigoProducto(producto)}
+                                    </td>
                                     <td style={{ fontWeight: "600", color: "#232728" }}>{producto.nombre}</td>
                                     <td style={{ fontWeight: "bold", color: "#28a745" }}>
                                       €{producto.precio.toFixed(2)}
@@ -1010,22 +993,27 @@ export function Productos() {
             maxHeight: "80vh",
             display: "flex",
             flexDirection: "column",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)"
+            boxShadow: "0 2px 12px rgba(0, 0, 0, 0.1)",
+            border: "1px solid #e0e0e0"
           }}>
             <div style={{
-              padding: "1.5rem",
+              padding: "1rem 1.5rem",
               borderBottom: "1px solid #e0e0e0",
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
+              alignItems: "center",
+              gap: "0.5rem",
+              background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+              borderRadius: "12px 12px 0 0"
             }}>
-              <h2 style={{
+              <FiHelpCircle size={18} />
+              <h3 style={{
                 margin: 0,
                 color: "#232728",
-                fontSize: "1.5rem"
+                fontSize: "1.1rem",
+                fontWeight: "600"
               }}>
                 Ayuda - Gestión de Productos
-              </h2>
+              </h3>
               <button
                 onClick={() => setMostrandoAyuda(false)}
                 style={{
@@ -1033,7 +1021,8 @@ export function Productos() {
                   border: "none",
                   fontSize: "1.5rem",
                   cursor: "pointer",
-                  color: "#666"
+                  color: "#666",
+                  marginLeft: "auto"
                 }}
               >
                 ×
@@ -1044,7 +1033,8 @@ export function Productos() {
               padding: "1.5rem",
               overflowY: "auto",
               flex: 1,
-              textAlign: "justify",
+              color: "#607074",
+              fontSize: "0.95rem",
               lineHeight: "1.6"
             }}>
               <h3 style={{ color: "#232728", marginTop: 0 }}>Funciones Principales</h3>
@@ -1078,13 +1068,13 @@ export function Productos() {
 
       {/* Modal de Éxito */}
       {mostrarModalExito && (
-        <ModalOverlay onClick={cerrarModalExito}>
+        <ModalOverlay onClick={manejarCierreModalExito}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader className="success">
               <span className="icon">✅</span>
             </ModalHeader>
             <ModalMessage>{mensajeModal}</ModalMessage>
-            <ModalButton onClick={cerrarModalExito}>
+            <ModalButton onClick={manejarCierreModalExito}>
               Aceptar
             </ModalButton>
           </ModalContent>
@@ -1118,7 +1108,7 @@ export function Productos() {
               <ModalButton error onClick={confirmarEliminacion}>
                 Eliminar
               </ModalButton>
-              <ModalButton onClick={cancelarEliminacion} style={{ background: "#6c757d" }}>
+              <ModalButton onClick={cancelarEliminacion}>
                 Cancelar
               </ModalButton>
             </div>

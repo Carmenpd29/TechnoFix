@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FiUsers, FiUserPlus, } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { Opciones, WrapperPage, BotonMenu, ManualPage, TituloPage } from "../index";
+import { Opciones, WrapperPage, BotonMenu, InfoCard, TituloPage, IconBtn } from "../index";
 
 export function Clientes({ user }) {
   const navigate = useNavigate();
@@ -30,51 +30,34 @@ export function Clientes({ user }) {
         gridTemplateColumns: "1fr 1fr",
         gap: "1rem",
         margin: "1rem 0",
-        padding: "0 1rem"
+        padding: "0 1rem",
+        maxWidth: "600px",
+        marginLeft: "auto",
+        marginRight: "auto"
       }}>
         {opciones
           .filter(op => op.visible)
           .map(op => (
-            <button
+            <IconBtn
               key={op.label}
               onClick={op.onClick}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.75rem 1rem",
-                backgroundColor: "#a5c4ca",
-                color: "#232728",
-                border: "none",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "background-color 0.2s",
-                boxShadow: "0 2px 8px rgba(64, 74, 76, 0.15)",
+                minHeight: "50px",
                 justifyContent: "flex-start"
               }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "#607074";
-                e.target.style.color = "#caf0f8";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "#a5c4ca";
-                e.target.style.color = "#232728";
-              }}
             >
-              {React.cloneElement(op.icon, { size: 20 })}
-              {op.label}
-            </button>
+              {op.label === "Ver" ? <FiUsers size={20} /> : <FiUserPlus size={20} />}
+              <span>{op.label}</span>
+            </IconBtn>
           ))}
       </div>
-      <ManualPage>
+      <InfoCard title="Gestión de Clientes" icon={<FiUsers size={18} />}>
         <p>
           Selecciona una opción para gestionar los clientes.
           <br />- <b>Ver</b>: Para ver, editar y eliminar clientes.
           <br />- <b>Añadir</b>: Para añadir un nuevo cliente.
         </p>
-      </ManualPage>
+      </InfoCard>
     </WrapperPage>
   );
 }

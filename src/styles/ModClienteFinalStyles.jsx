@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 export const Form = styled.form`
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 0.8rem;
 `;
 
 export const Field = styled.div`
@@ -15,8 +15,9 @@ export const Field = styled.div`
 
 export const Label = styled.label`
   font-weight: 600;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
   color: #003459;
+  font-size: 0.9rem;
   span {
     color: #e74c3c;
     font-size: 1.1em;
@@ -25,9 +26,9 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  padding: 0.6rem 0.8rem;
+  padding: 0.4rem 0.6rem;
   border: 1.5px solid #a5c4ca;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 0.9rem;
   outline: none;
   transition: border 0.2s;
@@ -43,7 +44,7 @@ export const Input = styled.input`
 
 export const Boton = styled.button`
   width: 40%;
-  margin: 1.2rem auto 0 auto; 
+  margin: 0.8rem auto 0 auto; 
   display: block;             
   padding: 0.7rem 0;
   background: linear-gradient(90deg, #607074 0%, #a5c4ca 100%);

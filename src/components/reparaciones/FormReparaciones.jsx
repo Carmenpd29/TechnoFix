@@ -1,5 +1,7 @@
 import { ZonaReparaciones } from "../../styles/ZonaReparacionesStyles";
-import { Fechas, Datos, GuardarButton } from "../../styles/FormReparacionesStyles";
+import { Fechas, Datos } from "../../styles/FormReparacionesStyles";
+import { IconBtn } from "../../index";
+import { FiSave } from "react-icons/fi";
 
 export function FormReparaciones({
   cliente,
@@ -218,9 +220,12 @@ export function FormReparaciones({
           )}
         </Datos>
       </ZonaReparaciones>
-      <GuardarButton type="submit" disabled={loading}>
-        {modoEdicion ? "Guardar cambios" : "Guardar"}
-      </GuardarButton>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+        <IconBtn type="submit" disabled={loading}>
+          <FiSave size={16} />
+          <span>{modoEdicion ? "Guardar cambios" : "Guardar"}</span>
+        </IconBtn>
+      </div>
     </form>
   );
 }

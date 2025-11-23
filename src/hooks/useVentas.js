@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase/supabaseClient";
+import { validarDatosVenta } from "../utils/middleware-seguridad";
+import { formatearCodigoProducto } from "../utils/formatearCodigo";
 
 // Hook para manejar las ventas y modal de confirmación
 export const useVentas = () => {
@@ -19,16 +21,31 @@ export const useVentas = () => {
     setProcesandoVenta(true);
     
     try {
+      // Validar y sanitizar datos de venta
+      const validacion = validarDatosVenta({
+        ...ventaData,
+        metodoPago
+      });
+      
+      if (!validacion.valido) {
+        console.error('Datos de venta no válidos:', validacion.errores);
+        setMensajeModal('Error en los datos de la venta: ' + Object.values(validacion.errores).join(', '));
+        setMostrarModalError(true);
+        return;
+      }
+      
+      const datosLimpios = validacion.datosSanitizados;
+      
       // 1. Crear la venta
       const ventaInsert = {
-        cliente_id: ventaData.cliente?.id || null,
-        subtotal: ventaData.totales.subtotal,
-        descuento: ventaData.totales.totalDescuentos,
-        impuestos: ventaData.totales.totalIva,
-        total: ventaData.totales.total,
-        metodo_pago: metodoPago,
+        cliente_id: datosLimpios.cliente?.id || null,
+        subtotal: datosLimpios.totales.subtotal,
+        descuento: datosLimpios.totales.totalDescuentos,
+        impuestos: datosLimpios.totales.totalIva,
+        total: datosLimpios.totales.total,
+        metodo_pago: datosLimpios.metodoPago,
         estado: 'completada',
-        notas: ventaData.cliente ? `Venta a ${ventaData.cliente.nombre}` : 'Venta a Cliente General'
+        notas: datosLimpios.cliente ? `Venta a ${datosLimpios.cliente.nombre}` : 'Venta a Cliente General'
       };
 
       const { data: ventaCreada, error: errorVenta } = await supabase
@@ -40,14 +57,23 @@ export const useVentas = () => {
       if (errorVenta) throw errorVenta;
 
       // 2. Crear los detalles de venta
-      const detallesVenta = ventaData.productos.map(producto => ({
+      console.log('=== Productos a guardar en detalles_venta ===');
+      datosLimpios.productos.forEach((producto, idx) => {
+        console.log(`Producto #${idx + 1}:`, {
+          id: producto.id,
+          codigo: producto.codigo,
+          nombre: producto.nombre,
+          resultadoCodigo: formatearCodigoProducto(producto)
+        });
+      });
+      const detallesVenta = datosLimpios.productos.map(producto => ({
         venta_id: ventaCreada.id,
-        producto_id: null, // Para productos agregados manualmente
         cantidad: producto.cantidad,
         precio_unitario: producto.precio,
         iva_porcentaje: producto.iva,
         subtotal: producto.cantidad * producto.precio,
-        nombre_producto: producto.nombre // Almacenar nombre del producto del input
+        nombre_producto: producto.nombre,
+        codigo_producto: formatearCodigoProducto(producto) // Usar código formateado con fallback
       }));
       const { error: errorDetalles } = await supabase
         .from('detalles_venta')

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { supabase } from "../supabase/supabaseClient";
 
 // Hook para manejar filtros y datos de facturación/ventas
 export const useFacturacion = () => {
   const [ventas, setVentas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filtros, setFiltros] = useState({
     fechaInicio: "",
     fechaFin: "",
@@ -11,39 +13,73 @@ export const useFacturacion = () => {
     maxImporte: ""
   });
 
-  // Cargar datos de ejemplo (en producción vendría de Supabase)
+  const cargarVentas = async () => {
+    setLoading(true);
+    try {
+      const { data: ventasData, error } = await supabase
+        .from('ventas')
+        .select(`
+          id,
+          subtotal,
+          descuento,
+          impuestos,
+          total,
+          metodo_pago,
+          estado,
+          notas,
+          created_at,
+          cliente_id,
+          clientes (
+            nombre,
+            apellidos,
+            nif,
+            telefono,
+            correo,
+            direccion
+          ),
+          detalles_venta (
+            cantidad,
+            precio_unitario,
+            iva_porcentaje,
+            subtotal,
+            nombre_producto,
+            codigo_producto
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Transformar los datos para que coincidan con el formato esperado
+      const ventasTransformadas = ventasData.map((venta, index) => ({
+        id: venta.id,
+        numero: 'V2024-' + String(venta.id).padStart(3, '0'),
+        fecha: venta.created_at,
+        cliente_id: venta.cliente_id,
+        cliente: venta.clientes ? venta.clientes : "Cliente General",
+        productos: venta.detalles_venta.map(detalle => ({
+          nombre: detalle.nombre_producto,
+          codigo: detalle.codigo_producto,
+          cantidad: detalle.cantidad,
+          precio: detalle.precio_unitario
+        })),
+        subtotal: venta.subtotal,
+        iva: venta.impuestos,
+        total: venta.total,
+        metodoPago: venta.metodo_pago,
+        descuentos: venta.descuento
+      }));
+
+      setVentas(ventasTransformadas);
+    } catch (error) {
+      console.error('Error cargando ventas:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const ventasEjemplo = [
-      {
-        id: 1,
-        numero: "V2024-001",
-        fecha: new Date().toISOString(),
-        productos: [
-          { nombre: "Reparación Pantalla iPhone", cantidad: 1, precio: 89.99 },
-          { nombre: "Protector de Pantalla", cantidad: 1, precio: 9.99 }
-        ],
-        subtotal: 99.98,
-        iva: 20.99,
-        total: 120.97,
-        metodoPago: "tarjeta",
-        descuentos: 0
-      },
-      {
-        id: 2,
-        numero: "V2024-002",
-        fecha: new Date(Date.now() - 86400000).toISOString(),
-        productos: [
-          { nombre: "Batería Samsung Galaxy", cantidad: 1, precio: 45.50 },
-          { nombre: "Diagnóstico Completo", cantidad: 1, precio: 25.00 }
-        ],
-        subtotal: 70.50,
-        iva: 14.81,
-        total: 85.31,
-        metodoPago: "efectivo",
-        descuentos: 0
-      }
-    ];
-    setVentas(ventasEjemplo);
+    cargarVentas();
   }, []);
 
   // Filtrar ventas según criterios
@@ -79,7 +115,9 @@ export const useFacturacion = () => {
     ventas: ventasFiltradas,
     filtros,
     estadisticas,
-    actualizarFiltros
+    loading,
+    actualizarFiltros,
+    recargarVentas: cargarVentas
   };
 };
 
@@ -96,20 +134,11 @@ export const formatearFecha = (fecha) => {
 
 export const formatearMetodoPago = (metodo) => {
   const metodos = {
+    'bizum': 'Bizum',
     'efectivo': 'Efectivo',
+    'mixto': 'Mixto',
     'tarjeta': 'Tarjeta',
-    'transferencia': 'Transferencia',
-    'mixto': 'Mixto'
+    'transferencia': 'Transferencia'
   };
   return metodos[metodo] || metodo;
-};
-
-export const verDetalleVenta = (venta) => {
-  // Esta función ya no es necesaria ya que se maneja con el modal en el componente
-  return venta;
-};
-
-export const imprimirVenta = (venta) => {
-  // Esta función ya no es necesaria ya que se maneja directamente en el componente
-  return venta;
 };

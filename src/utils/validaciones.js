@@ -1,47 +1,35 @@
 // Utilidades de validación para formularios
+import { 
+  validarNIFCompleto, 
+  validarEmailCompleto, 
+  validarTelefonoEspanol,
+  validarYSanitizarCliente 
+} from './seguridad';
 
+// Mantener compatibilidad con código existente
 export const validarNIF = (nif) => {
   if (!nif) return true; // Opcional
-  const nifRegex = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i;
-  return nifRegex.test(nif);
+  return validarNIFCompleto(nif);
 };
 
 export const validarEmail = (email) => {
   if (!email) return true; // Opcional
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  return validarEmailCompleto(email);
 };
 
 export const validarTelefono = (telefono) => {
   if (!telefono) return false;
-  const telefonoRegex = /^[0-9]{9}$/;
-  return telefonoRegex.test(telefono.replace(/\s/g, ""));
+  return validarTelefonoEspanol(telefono);
 };
 
 export const validarFormularioCliente = (form) => {
-  const errores = {};
-  
-  if (!form.nombre?.trim()) {
-    errores.nombre = "El nombre es obligatorio";
-  }
-  
-  if (!form.telefono?.trim()) {
-    errores.telefono = "El teléfono es obligatorio";
-  } else if (!validarTelefono(form.telefono)) {
-    errores.telefono = "El teléfono debe tener 9 dígitos";
-  }
-  
-  if (form.nif && !validarNIF(form.nif)) {
-    errores.nif = "NIF inválido";
-  }
-  
-  if (form.correo && !validarEmail(form.correo)) {
-    errores.email = "Email inválido";
-  }
+  // Usar la nueva función de seguridad para validación completa
+  const resultado = validarYSanitizarCliente(form);
   
   return {
-    esValido: Object.keys(errores).length === 0,
-    errores
+    esValido: resultado.valido,
+    errores: resultado.errores,
+    datosSanitizados: resultado.datosSanitizados
   };
 };
 

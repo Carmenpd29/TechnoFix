@@ -1,7 +1,8 @@
 import React from "react";
-import { BotonVolver, TituloPage, WrapperPage } from "../../index";
+import { BotonVolver, TituloPage, WrapperPage, IconBtn } from "../../index";
+import { FiSave } from "react-icons/fi";
 import { useFormularioCliente } from "../../hooks/useFormularioCliente";
-import { Form, Field, Label, Input, Error, Boton, Nota, Mensaje } from "../../styles/InsertClienteStyles";
+import { Form, Field, Label, Input, Error, Nota, Mensaje } from "../../styles/InsertClienteStyles";
 
 export function InsertCliente() {
   const {
@@ -110,9 +111,12 @@ export function InsertCliente() {
           {errores.email && <Error>{errores.email}</Error>}
         </Field>
 
-        <Boton type="submit" disabled={loading}>
-          {loading ? "Guardando..." : "Guardar cliente"}
-        </Boton>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+          <IconBtn type="submit" disabled={loading}>
+            <FiSave size={16} />
+            <span>{loading ? "Guardando..." : "Guardar cliente"}</span>
+          </IconBtn>
+        </div>
       </Form>
       {mensaje && <Mensaje>{mensaje}</Mensaje>}
       <Nota>

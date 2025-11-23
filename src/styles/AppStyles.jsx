@@ -37,7 +37,7 @@ export const AppWrapper = styled.div`
 export const Container = styled.main`
   display: grid;
   min-height: 100vh;
-  height: 100%;
+  height: 100vh;
   background: #f8fafc;
   grid-template-columns: 260px 1fr;
   grid-template-rows: 1fr auto;

@@ -39,8 +39,8 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
       </div>
 
-      <TablaContainer style={{ overflow: 'visible', margin: '0' }}>
-        <Tabla id="tabla-reparaciones" style={{ width: '98%' }}>
+      <TablaContainer style={{ overflow: 'visible', margin: '0', width: '100%' }}>
+        <Tabla id="tabla-reparaciones" style={{ width: '100%', tableLayout: 'fixed' }}>
           <thead>
             <tr>
               <th>Artículo</th>
@@ -79,12 +79,12 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Historial de Ventas TPV</h3>
       </div>
 
-      <TablaContainer style={{ overflow: 'visible', margin: '0' }}>
-        <Tabla id="tabla-ventas" style={{ width: '98%' }}>
+      <TablaContainer style={{ overflow: 'visible', margin: '0', width: '100%' }}>
+        <Tabla id="tabla-ventas" style={{ width: '100%', tableLayout: 'fixed' }}>
           <thead>
             <tr>
               <th>Fecha</th>
-              <th>Productos</th>
+              <th style={{ width: "30%" }}>Productos</th>
               <th>Método Pago</th>
               <th>Subtotal</th>
               <th>IVA</th>
@@ -111,7 +111,7 @@ export function VerClienteId() {
                             {detalle.productos?.nombre || detalle.nombre_producto || 'Producto manual'}
                           </span>
                           <span style={{ color: "#666", marginLeft: "0.5rem" }}>
-                            x{detalle.cantidad}
+                            {detalle.cantidad}
                           </span>
                         </div>
                       )) || 'Sin detalles'}

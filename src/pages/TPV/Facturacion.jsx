@@ -5,9 +5,11 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../../assets/logo.png";
 import { formatearFecha } from "../../utils/fecha";
-import { BotonVolver, TituloPage, WrapperPage, Tabla, TablaContainer } from "../../index";
-import { useFacturacion, formatearMetodoPago, verDetalleVenta, imprimirVenta } from "../../hooks/useFacturacion";
+import { BotonVolver, TituloPage, WrapperPage, Tabla, TablaContainer, IconBtn } from "../../index";
+import { useFacturacion, formatearMetodoPago } from "../../hooks/useFacturacion";
+import { useConfiguracionEmpresaContext } from "../../contexts/ConfiguracionEmpresaContext";
 import { primaryColor, secondaryColor, accentColor, backgroundColor } from "../../utils/breakpoints";
+import { supabase } from "../../supabase/supabaseClient";
 
 const FacturacionContainer = styled.div`
   position: relative;
@@ -72,19 +74,7 @@ const Select = styled.select`
   }
 `;
 
-const FiltrarBtn = styled.button`
-  background: ${primaryColor};
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-  font-weight: 500;
-
-  &:hover {
-    background: ${secondaryColor};
-  }
-`;
+// Removed - using IconBtn now
 
 const VentasGrid = styled.div`
   display: grid;
@@ -167,26 +157,7 @@ const VentaAcciones = styled.div`
   border-top: 1px solid #eee;
 `;
 
-const AccionBtn = styled.button`
-  background: ${props => {
-    if (props.ver) return accentColor;
-    if (props.imprimir) return '#28a745';
-    return '#6c757d';
-  }};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-
-  &:hover {
-    opacity: 0.9;
-  }
-`;
+// Removed - using IconBtn now
 
 const EstadisticasGrid = styled.div`
   display: grid;
@@ -228,7 +199,8 @@ const NoVentas = styled.div`
 `;
 
 export function Facturacion() {
-  const { ventas, filtros, estadisticas, actualizarFiltros } = useFacturacion();
+  const { ventas, filtros, estadisticas, loading, actualizarFiltros } = useFacturacion();
+  const { configuracion } = useConfiguracionEmpresaContext();
   const [ventaSeleccionada, setVentaSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
 
@@ -250,13 +222,33 @@ export function Facturacion() {
     });
 
     const marginLeft = 40;
+    const marginRight = 40;
+    const pageWidth = 595; // A4 width in points
     let y = 40;
 
-    // Logo
+    // Logo (usar configuración de empresa si existe)
+    const logoSrc = configuracion.logo_url || logo;
     const img = new window.Image();
-    img.src = logo;
+    img.src = logoSrc;
     await new Promise(resolve => { img.onload = resolve; });
-    pdf.addImage(img, "PNG", marginLeft, y, 60, 60);
+    
+    // Calcular dimensiones proporcionales para el logo
+    const maxLogoWidth = 80;
+    const maxLogoHeight = 60;
+    const aspectRatio = img.width / img.height;
+    
+    let logoWidth, logoHeight;
+    if (aspectRatio > maxLogoWidth / maxLogoHeight) {
+      // Logo más ancho que alto
+      logoWidth = maxLogoWidth;
+      logoHeight = maxLogoWidth / aspectRatio;
+    } else {
+      // Logo más alto que ancho
+      logoHeight = maxLogoHeight;
+      logoWidth = maxLogoHeight * aspectRatio;
+    }
+    
+    pdf.addImage(img, "PNG", marginLeft, y, logoWidth, logoHeight);
 
     // Título del documento
     y += 70;
@@ -264,27 +256,114 @@ export function Facturacion() {
     pdf.setFont("helvetica", "bold");
     pdf.text("FACTURA DE VENTA", marginLeft, y);
     
-    // Información de la venta
+    // Obtener datos del cliente si no es cliente general
+    let datosCliente = null;
+    if (venta.cliente_id && venta.cliente !== "Cliente General") {
+      try {
+        const { data, error } = await supabase.from('clientes')
+          .select('nombre, apellidos, nif, telefono, direccion, correo')
+          .eq('id', venta.cliente_id)
+          .single();
+        
+        if (!error && data) {
+          datosCliente = data;
+        }
+      } catch (error) {
+        console.error('Error obteniendo datos del cliente:', error);
+      }
+    } else if (venta.cliente && venta.cliente !== "Cliente General" && typeof venta.cliente === 'object') {
+      // Si ya vienen los datos del cliente en el objeto venta
+      datosCliente = venta.cliente;
+    }
+    
     y += 30;
-    pdf.setFontSize(14);
+    
+    // Dimensiones para las cajas
+    const leftBoxX = marginLeft;
+    const leftBoxWidth = datosCliente ? 250 : 350;
+    const rightBoxX = pageWidth - marginRight - 250;
+    const rightBoxWidth = 240;
+    const boxHeight = datosCliente ? 120 : 100;
+    
+    // Dibujar caja de información de venta (lado izquierdo)
+    pdf.setDrawColor(165, 196, 202); // Color del borde (azul claro)
+    pdf.setLineWidth(1);
+    pdf.rect(leftBoxX, y, leftBoxWidth, boxHeight);
+    
+    // Fondo suave para la caja izquierda
+    pdf.setFillColor(250, 252, 253); // Azul muy claro
+    pdf.rect(leftBoxX, y, leftBoxWidth, boxHeight, 'F');
+    pdf.rect(leftBoxX, y, leftBoxWidth, boxHeight); // Borde encima del relleno
+    
+    // Título de información de venta
+    pdf.setFontSize(12);
     pdf.setFont("helvetica", "bold");
-    pdf.text("Información de la Venta", marginLeft, y);
+    pdf.setTextColor(0, 52, 89); // Azul oscuro
+    pdf.text("Información de la Venta", leftBoxX + 10, y + 15);
+    
+    // Contenido de información de venta
     pdf.setFont("helvetica", "normal");
-    y += 22;
-    pdf.setFontSize(11);
-    pdf.text(`Número de Venta: ${venta.numero}`, marginLeft, y);
-    y += 18;
-    pdf.text(`Fecha: ${formatearFecha(venta.fecha)}`, marginLeft, y);
-    y += 18;
-    pdf.text(`Cliente: ${venta.cliente || "Cliente General"}`, marginLeft, y);
-    y += 18;
-    pdf.text(`Método de Pago: ${formatearMetodoPago(venta.metodoPago)}`, marginLeft, y);
+    pdf.setFontSize(10);
+    pdf.setTextColor(60, 60, 60); // Gris oscuro
+    pdf.text(`Número de Venta: ${venta.numero}`, leftBoxX + 10, y + 30);
+    pdf.text(`Fecha: ${formatearFecha(venta.fecha)}`, leftBoxX + 10, y + 45);
+    pdf.text(`Cliente: ${typeof venta.cliente === 'object' ? `${venta.cliente.nombre} ${venta.cliente.apellidos || ''}` : (venta.cliente || "Cliente General")}`, leftBoxX + 10, y + 60);
+    pdf.text(`Método de Pago: ${formatearMetodoPago(venta.metodoPago)}`, leftBoxX + 10, y + 75);
+    
+    // Dibujar caja de datos del cliente (lado derecho) - solo si hay cliente específico
+    if (datosCliente) {
+      // Caja del cliente
+      pdf.setDrawColor(165, 196, 202);
+      pdf.setLineWidth(1);
+      pdf.rect(rightBoxX, y, rightBoxWidth, boxHeight);
+      
+      // Fondo suave para la caja derecha
+      pdf.setFillColor(245, 250, 252); // Azul muy claro diferente
+      pdf.rect(rightBoxX, y, rightBoxWidth, boxHeight, 'F');
+      pdf.rect(rightBoxX, y, rightBoxWidth, boxHeight); // Borde encima del relleno
+      
+      // Título de datos del cliente
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(0, 52, 89);
+      pdf.text("Datos del Cliente", rightBoxX + 10, y + 15);
+      
+      // Contenido de datos del cliente
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      pdf.setTextColor(60, 60, 60);
+      pdf.text(`Nombre: ${datosCliente.nombre || ""} ${datosCliente.apellidos || ""}`, rightBoxX + 10, y + 30);
+      
+      if (datosCliente.nif) {
+        pdf.text(`NIF: ${datosCliente.nif}`, rightBoxX + 10, y + 45);
+      }
+      
+      if (datosCliente.telefono) {
+        pdf.text(`Teléfono: ${datosCliente.telefono}`, rightBoxX + 10, y + 60);
+      }
+      
+      if (datosCliente.correo) {
+        pdf.text(`Correo: ${datosCliente.correo}`, rightBoxX + 10, y + 75);
+      }
+      
+      if (datosCliente.direccion) {
+        const direccionLines = pdf.splitTextToSize(`Dirección: ${datosCliente.direccion}`, 220);
+        pdf.text(direccionLines, rightBoxX + 10, y + 90);
+      }
+    }
+    
+    // Ajustar y para continuar después de las cajas
+    y += boxHeight + 20;
 
+    // Resetear colores para la tabla
+    pdf.setTextColor(0, 0, 0); // Negro para texto normal
+    
     // Tabla de productos
-    y += 30;
     autoTable(pdf, {
       startY: y,
-      margin: { left: marginLeft, right: marginLeft },
+      margin: { left: marginLeft, right: marginRight },
+      theme: 'grid',
+      minCellHeight: 20,
       head: [[
         "Producto",
         "Cantidad",
@@ -293,7 +372,7 @@ export function Facturacion() {
       ]],
       body: venta.productos.map(producto => [
         producto.nombre,
-        `x${producto.cantidad}`,
+        producto.cantidad.toString(),
         `€${producto.precio.toFixed(2)}`,
         `€${(producto.precio * producto.cantidad).toFixed(2)}`
       ]),
@@ -314,39 +393,48 @@ export function Facturacion() {
         `€${venta.total.toFixed(2)}`
       ]],
       styles: {
-        fontSize: 10,
-        cellPadding: { top: 4, right: 8, bottom: 4, left: 8 },
+        fontSize: 8,
+        cellPadding: { top: 3, right: 6, bottom: 3, left: 6 },
         lineWidth: 0.5,
-        lineColor: [200, 200, 200],
+        lineColor: [255, 255, 255],
         overflow: "linebreak",
         valign: "middle"
       },
       headStyles: {
         fillColor: [165, 196, 202],
-        textColor: [35, 39, 40],
+        textColor: [0, 52, 89],
         halign: "center",
         fontStyle: "bold"
       },
       footStyles: {
-        fillColor: [245, 245, 245],
-        textColor: [35, 39, 40],
+        fillColor: [165, 196, 202],
+        textColor: [0, 52, 89],
         fontStyle: "bold",
         halign: "right"
       },
+      didParseCell: function(data) {
+        // Si es una celda del pie (foot) y es la columna 0 o 1, poner fondo blanco
+        if (data.section === 'foot' && (data.column.index === 0 || data.column.index === 1)) {
+          data.cell.styles.fillColor = [255, 255, 255];
+        }
+      },
       columnStyles: {
-        0: { cellWidth: 200, halign: "left" },   // Producto
-        1: { cellWidth: 80, halign: "center" },  // Cantidad
-        2: { cellWidth: 100, halign: "right" },  // Precio Unitario
-        3: { cellWidth: 100, halign: "right" }   // Total
+        0: { halign: "left" },     // Producto - ancho automático
+        1: { cellWidth: 80, halign: "center" },   // Cantidad
+        2: { cellWidth: 100, halign: "right" },   // Precio Unitario
+        3: { cellWidth: 100, halign: "right" }    // Total
       }
     });
 
-    // Información adicional en el pie
-    const finalY = pdf.lastAutoTable.finalY + 30;
+    // Footer en la parte inferior de la página
+    const pageHeight = 842; // Altura de página A4 en puntos
+    const footerY = pageHeight - 40; // 40pt desde el final de la página
+    
     pdf.setFontSize(9);
     pdf.setFont("helvetica", "normal");
-    pdf.text("Gracias por su compra", marginLeft, finalY);
-    pdf.text("TechnoFix - Sistema de Gestión", marginLeft, finalY + 15);
+    pdf.setTextColor(100, 100, 100); // Gris para el footer
+    pdf.text("Gracias por su compra", marginLeft, footerY - 15);
+    pdf.text(configuracion.mensaje_footer || "TechnoFix - Sistema de Gestión", marginLeft, footerY);
 
     pdf.save(`factura_venta_${venta.numero}_${venta.fecha}.pdf`);
   };
@@ -510,10 +598,11 @@ export function Facturacion() {
           style={{ width: "90px", padding: "0.4rem 0.5rem", fontSize: "0.85rem" }}
         >
           <option value="">Todos</option>
+          <option value="bizum">Bizum</option>
           <option value="efectivo">Efectivo</option>
-          <option value="tarjeta">Tarjeta</option>
-          <option value="transferencia">Transfer</option>
           <option value="mixto">Mixto</option>
+          <option value="tarjeta">Tarjeta</option>
+          <option value="transferencia">Transferencia</option>
         </Select>
         
         <label style={{ fontSize: "0.85rem", fontWeight: "500", color: "#232728", whiteSpace: "nowrap" }}>Min €:</label>
@@ -536,12 +625,13 @@ export function Facturacion() {
           style={{ width: "60px", padding: "0.4rem 0.5rem", fontSize: "0.85rem" }}
         />
         
-        <FiltrarBtn 
-          onClick={() => console.log("Aplicar filtros")}
+        <IconBtn 
+          onClick={() => {}}
           style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}
         >
-          Filtrar
-        </FiltrarBtn>
+          <FiFilter size={14} />
+          <span>Filtrar</span>
+        </IconBtn>
       </div>
 
       {/* Tabla de Ventas */}
@@ -557,7 +647,17 @@ export function Facturacion() {
       }}>
         <h3 style={{ marginBottom: "1rem", color: primaryColor, flexShrink: 0 }}>Ventas</h3>
         
-        {ventas.length > 0 ? (
+        {loading ? (
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            height: "200px",
+            color: "#666"
+          }}>
+            Cargando ventas...
+          </div>
+        ) : ventas.length > 0 ? (
           <TablaContainer style={{ 
             overflowX: "auto", 
             overflowY: "auto",
@@ -584,7 +684,7 @@ export function Facturacion() {
                   <tr key={venta.id} style={{ cursor: "pointer" }}>
                     <td style={{ fontWeight: "600", color: primaryColor }}>{venta.numero}</td>
                     <td style={{ color: "#6c757d" }}>{formatearFecha(venta.fecha)}</td>
-                    <td>{venta.cliente || "Cliente General"}</td>
+                    <td>{typeof venta.cliente === 'object' ? `${venta.cliente.nombre} ${venta.cliente.apellidos || ''}` : (venta.cliente || "Cliente General")}</td>
                     <td>€{venta.subtotal.toFixed(2)}</td>
                     <td style={{ color: "#6c757d" }}>€{venta.iva.toFixed(2)}</td>
                     <td style={{ fontWeight: "600", color: "#28a745" }}>€{venta.total.toFixed(2)}</td>
@@ -724,7 +824,7 @@ export function Facturacion() {
             }}>
               <div>
                 <strong>Cliente:</strong>
-                <div>{ventaSeleccionada.cliente || "Cliente General"}</div>
+                <div>{typeof ventaSeleccionada.cliente === 'object' ? `${ventaSeleccionada.cliente.nombre} ${ventaSeleccionada.cliente.apellidos || ''}` : (ventaSeleccionada.cliente || "Cliente General")}</div>
               </div>
               <div>
                 <strong>Método de Pago:</strong>
@@ -782,7 +882,7 @@ export function Facturacion() {
                     borderBottom: index < ventaSeleccionada.productos.length - 1 ? "1px solid #dee2e6" : "none"
                   }}>
                     <div>{producto.nombre}</div>
-                    <div style={{ textAlign: "center" }}>x{producto.cantidad}</div>
+                    <div style={{ textAlign: "center" }}>{producto.cantidad}</div>
                     <div style={{ textAlign: "right" }}>€{producto.precio.toFixed(2)}</div>
                     <div style={{ textAlign: "right" }}>€{(producto.precio * producto.cantidad).toFixed(2)}</div>
                   </div>

@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 export const Fechas = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: flex-start;
   width: 100%;
-  max-width: 340px;
+  max-width: 300px;
   margin: 0 auto;
   flex-wrap: nowrap;
 
@@ -21,14 +21,14 @@ export const Fechas = styled.div`
       margin-bottom: 0.2rem;
     }
     input[type="date"] {
-      padding: 0.6rem;
+      padding: 0.4rem;
       border-radius: 6px;
       border: 1.5px solid #a5c4ca;
       font-size: 0.9rem;
       width: 100%;
       min-width: 0;
       max-width: 100%;
-      height: 43px;
+      height: 36px;
       box-sizing: border-box;
       background: #fff;
       color: #232728;
@@ -48,16 +48,16 @@ export const Fechas = styled.div`
 export const Datos = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.5rem;
   width: 100%;
-  max-width: 340px;
+  max-width: 300px;
   margin: 0 auto;
   input,
   textarea {
-    padding: 0.6rem;
+    padding: 0.4rem;
     border-radius: 6px;
     border: 1.5px solid #a5c4ca;
-    font-size: 1rem;
+    font-size: 0.9rem;
     background: #fff;
     color: #232728;
     resize: vertical;
@@ -68,8 +68,8 @@ export const Datos = styled.div`
     cursor: not-allowed;
   }
   textarea {
-    min-height: 60px;
-    max-height: 180px;
+    min-height: 50px;
+    max-height: 120px;
   }
 
   @media (max-width: 1120px) {
@@ -81,8 +81,8 @@ export const Datos = styled.div`
 `;
 
 export const GuardarButton = styled.button`
-  margin-top: 1.2rem;
-  padding: 0.85rem;
+  margin-top: 0.8rem;
+  padding: 0.6rem;
   background: linear-gradient(90deg, #607074 60%, #404a4c 100%);
   color: #caf0f8;
   border: none;

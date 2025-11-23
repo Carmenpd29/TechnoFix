@@ -7,26 +7,34 @@ export const Fondo = styled.div`
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #e7f7fa 0%, #b3c6d1 100%);
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 export const Card = styled.div`
   background: #fff;
-  padding: 2rem 2rem 2rem 2rem;
+  padding: 2rem;
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(55, 130, 165, 0.18),
     0 1.5px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80vw;
-  max-width: 420px;
+  width: 90vw;
+  max-width: 800px;
   min-width: 0;
 
   @media (max-width: 1120px) {
-    padding: 1rem 0.5rem 1rem 0.5rem;
-    width: 70vw;
+    padding: 1.5rem 1rem;
+    width: 95vw;
+    max-width: 95vw;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+    width: 98vw;
     max-width: 98vw;
-    font-size: 0.8rem;
   }
 `;
 

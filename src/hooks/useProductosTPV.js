@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase/supabaseClient";
+import { obtenerCodigoUnico } from "../utils/generarCodigoProducto";
 
 // Hook para manejar la gestión de productos TPV
 export const useProductosTPV = () => {
@@ -17,6 +18,7 @@ export const useProductosTPV = () => {
   const [productoAEliminar, setProductoAEliminar] = useState(null);
   
   const [formulario, setFormulario] = useState({
+    codigo: "",
     nombre: "",
     descripcion: "",
     precio: "",
@@ -56,7 +58,7 @@ export const useProductosTPV = () => {
         categoria:categorias_productos(nombre)
       `)
       .eq('activo', true)
-      .order('nombre');
+      .order('codigo');
     
     if (error) {
       console.error('Error cargando productos:', error);
@@ -90,8 +92,28 @@ export const useProductosTPV = () => {
   );
 
   // Manejar cambios en el formulario
-  const manejarCambio = (e) => {
+  const manejarCambio = async (e) => {
     const { name, value } = e.target;
+    
+    // Si cambió la categoría y no hay código manual, generar uno sugerido
+    if (name === 'categoria' && value && !formulario.codigo?.trim() && !productoEditando) {
+      try {
+        // Obtener nombre de la categoría
+        const categoria = categorias.find(cat => cat.id === parseInt(value));
+        if (categoria) {
+          const codigoSugerido = await obtenerCodigoUnico(supabase, parseInt(value), categoria.nombre);
+          setFormulario(prev => ({
+            ...prev,
+            [name]: value,
+            codigo: codigoSugerido
+          }));
+          return;
+        }
+      } catch (error) {
+        console.error('Error generando código sugerido:', error);
+      }
+    }
+    
     setFormulario(prev => ({
       ...prev,
       [name]: value
@@ -115,7 +137,7 @@ export const useProductosTPV = () => {
       };
 
       if (productoEditando) {
-        // Editar producto existente
+        // Editar producto existente - no cambiar el código
         const { error } = await supabase
           .from('productos')
           .update(datosProducto)
@@ -124,6 +146,33 @@ export const useProductosTPV = () => {
         if (error) throw error;
       } else {
         // Crear nuevo producto
+        
+        let codigoFinal = formulario.codigo?.trim();
+        
+        // Si no hay código manual, generar uno automático
+        if (!codigoFinal) {
+          // 1. Obtener la información de la categoría para generar el código
+          let nombreCategoria = 'general';
+          if (datosProducto.categoria_id) {
+            const { data: categoria } = await supabase
+              .from('categorias_productos')
+              .select('nombre')
+              .eq('id', datosProducto.categoria_id)
+              .single();
+            
+            if (categoria) {
+              nombreCategoria = categoria.nombre;
+            }
+          }
+          
+          // 2. Generar código único automático
+          codigoFinal = await obtenerCodigoUnico(supabase, datosProducto.categoria_id, nombreCategoria);
+        }
+        
+        // 3. Agregar el código final a los datos del producto
+        datosProducto.codigo = codigoFinal;
+        
+        // 4. Insertar el producto con el código
         const { error } = await supabase
           .from('productos')
           .insert([datosProducto]);
@@ -133,9 +182,12 @@ export const useProductosTPV = () => {
       
       // Recargar productos
       await cargarProductos();
-      limpiarFormulario();
       
-      setMensajeModal(productoEditando ? 'Producto actualizado correctamente' : 'Producto creado correctamente');
+      const eraEdicion = productoEditando !== null;
+      limpiarFormulario();
+      setProductoEditando(null);
+      
+      setMensajeModal(eraEdicion ? 'Producto actualizado correctamente' : 'Producto creado correctamente');
       setMostrarModalExito(true);
     } catch (error) {
       console.error('Error guardando producto:', error);
@@ -150,14 +202,15 @@ export const useProductosTPV = () => {
   const editarProducto = (producto) => {
     setProductoEditando(producto);
     setFormulario({
-      nombre: producto.nombre,
-      descripcion: producto.descripcion,
-      precio: producto.precio.toString(),
-      categoria: producto.categoria,
-      iva: producto.iva.toString(),
-      codigoBarras: producto.codigoBarras,
-      stock: producto.stock.toString(),
-      stockMinimo: producto.stockMinimo.toString()
+      codigo: producto.codigo || "",
+      nombre: producto.nombre || "",
+      descripcion: producto.descripcion || "",
+      precio: producto.precio ? producto.precio.toString() : "",
+      categoria: producto.categoria_id ? producto.categoria_id.toString() : "",
+      iva: producto.iva ? producto.iva.toString() : "21",
+      codigoBarras: producto.codigo_barras || "",
+      stock: producto.stock ? producto.stock.toString() : "0",
+      stockMinimo: producto.stock_minimo ? producto.stock_minimo.toString() : "5"
     });
   };
 
@@ -211,6 +264,7 @@ export const useProductosTPV = () => {
   // Limpiar formulario
   const limpiarFormulario = () => {
     setFormulario({
+      codigo: "",
       nombre: "",
       descripcion: "",
       precio: "",

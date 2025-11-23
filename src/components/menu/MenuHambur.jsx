@@ -1,19 +1,27 @@
-import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX } from "react-icons/fi";
+import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX, FiSettings } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useUserStore, NombreUsuario } from "../../index";
+import { useUserStore, UserInfo } from "../../index";
+import { useConfiguracionEmpresaContext } from "../../contexts/ConfiguracionEmpresaContext";
 import { Overlay, CloseButton, MenuLayout, ColLogo, LogoHambur, MenuLinks, SalirButton, MenuOption, Backdrop } from "../../styles/MenuHamburStyles";
 
 export function MenuHambur({ user, onLogout, open, setOpen }) {
   const navigate = useNavigate();
   const { rol } = user || {};
   const logout = useUserStore((state) => state.logout);
+  const { configuracion } = useConfiguracionEmpresaContext();
 
   const menuHambur = [
     {
       label: "Usuarios",
       to: "/usuarios",
       icon: <FiUser size={20} style={{ marginRight: 8 }} />,
+      visible: rol === "admin",
+    },
+    {
+      label: "Empresa",
+      to: "/empresa",
+      icon: <FiSettings size={20} style={{ marginRight: 8 }} />,
       visible: rol === "admin",
     },
     {
@@ -46,22 +54,17 @@ export function MenuHambur({ user, onLogout, open, setOpen }) {
         <MenuLayout>
           <ColLogo>
             <LogoHambur
-              src="/TechnoFix/assets/Logo.png"
-              alt="TechnoFix logo"
+              src={configuracion.logo_url || "/TechnoFix/assets/Logo.png"}
+              alt="Logo empresa"
               style={{ cursor: "pointer" }}
               onClick={() => {
                 setOpen(false);
                 navigate("/home");
               }}
             />
-            {user?.nombre && (
-              <NombreUsuario
-                to="/usuarios/editarme"
-                onClick={() => setOpen(false)}
-              >
-                {user.nombre}
-              </NombreUsuario>
-            )}
+            <div onClick={() => setOpen(false)}>
+              <UserInfo user={user} />
+            </div>
             <SalirButton onClick={handleLogout}>
               <FiLogOut size={16} style={{ marginRight: 6 }} />
               Salir

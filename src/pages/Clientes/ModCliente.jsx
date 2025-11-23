@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { BotonVolver, BuscadorClientes, TituloPage, WrapperPage } from "../../index";
-import { AceptarBtn } from "../../styles/ModClienteStyles";
+import { BotonVolver, BuscadorClientes, TituloPage, WrapperPage, IconBtn } from "../../index";
+import { FiCheck } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 export function ModCliente() {
@@ -20,9 +20,12 @@ export function ModCliente() {
       <BotonVolver to="/clientes" />
       <TituloPage>Modificar Cliente</TituloPage>
       <BuscadorClientes onSeleccionar={setSeleccionado} />
-      <AceptarBtn disabled={!seleccionado} onClick={handleAceptar}>
-        Aceptar
-      </AceptarBtn>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+        <IconBtn disabled={!seleccionado} onClick={handleAceptar}>
+          <FiCheck size={16} />
+          <span>Aceptar</span>
+        </IconBtn>
+      </div>
     </WrapperPage>
   );
 }

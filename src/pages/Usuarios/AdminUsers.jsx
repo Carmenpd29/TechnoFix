@@ -24,26 +24,13 @@ export function AdminUsers() {
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function fetchUsuarios() {
-      setLoading(true);
-      const { data } = await supabase
-        .from("usuarios")
-        .select("id, nombre, rol")
-        .order("nombre", { ascending: true });
-      setUsuarios(data || []);
-      setLoading(false);
-    }
-    fetchUsuarios();
-  }, []);
-
   const handleEditar = (usuario) => {
     navigate(`/usuarios/editar`, { state: { usuario } });
   };
 
   const handleEliminar = (usuario) => {
     if (usuario.rol === "admin") {
-      alert("No se puede eliminar un usuario administrador.");
+      // No permitir eliminar administradores
       return;
     }
     setUsuarioAEliminar(usuario);
@@ -63,19 +50,38 @@ export function AdminUsers() {
     { key: "rol", label: "Rol" },
   ];
 
+  if (loading) {
+    return (
+      <Wrapper>
+        <BotonVolver to="/usuarios" />
+        <TituloPage>Usuarios</TituloPage>
+        <div style={{ textAlign: "center", padding: "2rem" }}>
+          Cargando usuarios...
+        </div>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper style={{ position: "relative" }}>
       <BotonVolver to="/usuarios" />
       <TituloPage>Usuarios</TituloPage>
-      <TablaAdmin
-        columns={columns}
-        data={usuarios}
-        loading={loading}
-        onEdit={handleEditar}
-        onDelete={handleEliminar}
-        iconEdit={FiEdit}
-        iconDelete={FiTrash2}
-      />
+      
+      {usuarios.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "2rem", color: "#607074" }}>
+          No hay usuarios registrados.
+        </div>
+      ) : (
+        <TablaAdmin
+          columns={columns}
+          data={usuarios}
+          loading={loading}
+          onEdit={handleEditar}
+          onDelete={handleEliminar}
+          iconEdit={FiEdit}
+          iconDelete={FiTrash2}
+        />
+      )}
 
       {showConfirm && (
         <ConfirmOverlay>

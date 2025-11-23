@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { supabase, BotonVolver, TituloPage } from "../../index";
+import { supabase, BotonVolver, TituloPage, IconBtn } from "../../index";
+import { FiSave, FiEye, FiEyeOff } from "react-icons/fi";
 
 export function ModMyUser() {
   const [user, setUser] = useState(null);
@@ -8,6 +9,8 @@ export function ModMyUser() {
   const [mensaje, setMensaje] = useState("");
   const [mensajeTipo, setMensajeTipo] = useState(""); // "error" o "success"
   const [loading, setLoading] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -85,33 +88,54 @@ export function ModMyUser() {
           </Field>
           <Field>
             <Label>Contraseña actual</Label>
-            <Input
-              name="passwordActual"
-              type="password"
-              value={form.passwordActual}
-              onChange={handleChange}
-              required
-              autoComplete="current-password"
-              placeholder="Introduce tu contraseña actual"
-              disabled={loading}
-            />
+            <PasswordWrapper>
+              <Input
+                name="passwordActual"
+                type={showCurrentPassword ? "text" : "password"}
+                value={form.passwordActual}
+                onChange={handleChange}
+                required
+                autoComplete="current-password"
+                placeholder="Introduce tu contraseña actual"
+                disabled={loading}
+              />
+              <EyeButton
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                disabled={loading}
+              >
+                {showCurrentPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+              </EyeButton>
+            </PasswordWrapper>
           </Field>
           <Field>
             <Label>Nueva contraseña</Label>
-            <Input
-              name="passwordNueva"
-              type="password"
-              value={form.passwordNueva}
-              onChange={handleChange}
-              required
-              autoComplete="new-password"
-              placeholder="Introduce la nueva contraseña"
-              disabled={loading}
-            />
+            <PasswordWrapper>
+              <Input
+                name="passwordNueva"
+                type={showNewPassword ? "text" : "password"}
+                value={form.passwordNueva}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+                placeholder="Introduce la nueva contraseña"
+                disabled={loading}
+              />
+              <EyeButton
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                disabled={loading}
+              >
+                {showNewPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+              </EyeButton>
+            </PasswordWrapper>
           </Field>
-          <Boton type="submit" disabled={loading}>
-            {loading ? "Guardando..." : "Guardar cambios"}
-          </Boton>
+          <ButtonContainer>
+            <IconBtn type="submit" disabled={loading}>
+              <FiSave size={16} />
+              <span>{loading ? "Guardando..." : "Guardar"}</span>
+            </IconBtn>
+          </ButtonContainer>
           {mensaje && (
             <Mensaje $tipo={mensajeTipo}>{mensaje}</Mensaje>
           )}
@@ -174,21 +198,41 @@ const Input = styled.input`
   }
 `;
 
-const Boton = styled.button`
-  padding: 0.8rem;
-  font-size: 1rem;
-  color: white;
-  background: linear-gradient(90deg, #607074 0%, #a5c4ca 100%);
+const PasswordWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const EyeButton = styled.button`
+  position: absolute;
+  right: 12px;
+  background: none;
   border: none;
-  border-radius: 10px;
-  width: 100%;
-  box-sizing: border-box;
   cursor: pointer;
-  transition: background 0.3s;
-  &:disabled {
-    background: #007bff70;
-    cursor: not-allowed;
+  color: #607074;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background-color 0.2s;
+  
+  &:hover {
+    color: #404a4c;
+    background-color: rgba(165, 196, 202, 0.1);
   }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 `;
 
 const Mensaje = styled.p`

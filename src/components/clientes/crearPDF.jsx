@@ -2,6 +2,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../../assets/logo.png";
 import { formatearFecha } from "../../utils/fecha";
+import { supabase } from "../../supabase/supabaseClient";
 
 export async function crearPDF(cliente, reparaciones, ventas = []) {
   const pdf = new jsPDF({
@@ -13,31 +14,90 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
   const marginLeft = 40;
   let y = 40;
 
-  // Logo
+  // Cargar configuración de empresa
+  let configuracion = {
+    logo_url: '',
+    mensaje_footer: 'TechnoFix - Sistema de Gestión'
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from('configuracion_empresa')
+      .select('logo_url, mensaje_footer')
+      .single();
+
+    if (!error && data) {
+      configuracion = data;
+    }
+  } catch (error) {
+    console.error('Error cargando configuración:', error);
+  }
+
+  // Logo (usar configuración de empresa si existe)
+  const logoSrc = configuracion.logo_url || logo;
   const img = new window.Image();
-  img.src = logo;
+  img.src = logoSrc;
   await new Promise(resolve => { img.onload = resolve; });
-  pdf.addImage(img, "PNG", marginLeft, y, 60, 60);
+  
+  // Calcular dimensiones proporcionales para el logo
+  const maxLogoWidth = 80;
+  const maxLogoHeight = 60;
+  const aspectRatio = img.width / img.height;
+  
+  let logoWidth, logoHeight;
+  if (aspectRatio > maxLogoWidth / maxLogoHeight) {
+    // Logo más ancho que alto
+    logoWidth = maxLogoWidth;
+    logoHeight = maxLogoWidth / aspectRatio;
+  } else {
+    // Logo más alto que ancho
+    logoHeight = maxLogoHeight;
+    logoWidth = maxLogoHeight * aspectRatio;
+  }
+  
+  pdf.addImage(img, "PNG", marginLeft, y, logoWidth, logoHeight);
 
   // Card de cliente
   y += 70;
-  pdf.setFontSize(14);
+  
+  // Dimensiones para la caja del cliente
+  const clientBoxX = marginLeft;
+  const clientBoxWidth = 300;
+  const clientBoxHeight = 120;
+  
+  // Dibujar caja de datos del cliente
+  pdf.setDrawColor(165, 196, 202); // Color del borde (azul claro)
+  pdf.setLineWidth(1);
+  pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight);
+  
+  // Fondo suave para la caja
+  pdf.setFillColor(245, 250, 252); // Azul muy claro
+  pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight, 'F');
+  pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight); // Borde encima del relleno
+  
+  // Título de datos del cliente
+  pdf.setFontSize(12);
   pdf.setFont("helvetica", "bold");
-  pdf.text("Datos del cliente", marginLeft, y);
+  pdf.setTextColor(0, 52, 89); // Azul oscuro
+  pdf.text("Datos del Cliente", clientBoxX + 10, y + 15);
+  
+  // Contenido de datos del cliente
   pdf.setFont("helvetica", "normal");
-  y += 22;
-  pdf.setFontSize(11);
-  pdf.text(`Nombre: ${cliente?.nombre || ""} ${cliente?.apellidos || ""}`, marginLeft, y);
-  y += 18;
-  pdf.text(`NIF: ${cliente?.nif || ""}`, marginLeft, y);
-  y += 18;
-  pdf.text(`Teléfono: ${cliente?.telefono || ""}`, marginLeft, y);
-  y += 18;
-  pdf.text(`Correo: ${cliente?.correo || ""}`, marginLeft, y);
-  y += 18;
-  const direccion = pdf.splitTextToSize(`Dirección: ${cliente?.direccion || ""}`, 400);
-  pdf.text(direccion, marginLeft, y);
-  y += direccion.length * 14;
+  pdf.setFontSize(10);
+  pdf.setTextColor(60, 60, 60); // Gris oscuro
+  pdf.text(`Nombre: ${cliente?.nombre || ""} ${cliente?.apellidos || ""}`, clientBoxX + 10, y + 30);
+  pdf.text(`NIF: ${cliente?.nif || ""}`, clientBoxX + 10, y + 45);
+  pdf.text(`Teléfono: ${cliente?.telefono || ""}`, clientBoxX + 10, y + 60);
+  pdf.text(`Correo: ${cliente?.correo || ""}`, clientBoxX + 10, y + 75);
+  
+  const direccion = pdf.splitTextToSize(`Dirección: ${cliente?.direccion || ""}`, 280);
+  pdf.text(direccion, clientBoxX + 10, y + 90);
+  
+  // Ajustar y para continuar después de la caja
+  y += clientBoxHeight + 20;
+  
+  // Resetear colores para el resto del documento
+  pdf.setTextColor(0, 0, 0);
 
   // Título de Reparaciones
   y += 30;
@@ -121,23 +181,23 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
     head: [[
       "Fecha",
       "Productos",
+      "Unidades",
       "Método Pago",
       "Subtotal",
       "IVA",
-      "Total",
-      "Estado"
+      "Total"
     ]],
     body: ventas.map(venta => [
       formatearFecha(venta.fecha_venta),
       venta.detalles_venta?.map(detalle => {
         const nombre = detalle.productos?.nombre || detalle.nombre_producto || 'Producto manual';
-        return `${nombre} x${detalle.cantidad}`;
+        return nombre;
       }).join('\n') || 'Sin detalles',
+      venta.detalles_venta?.map(detalle => detalle.cantidad.toString()).join('\n') || '-',
       venta.metodo_pago?.charAt(0).toUpperCase() + (venta.metodo_pago?.slice(1) || ''),
       `€${venta.subtotal?.toFixed(2) || '0.00'}`,
       `€${venta.impuestos?.toFixed(2) || '0.00'}`,
-      `€${venta.total?.toFixed(2) || '0.00'}`,
-      venta.estado?.charAt(0).toUpperCase() + (venta.estado?.slice(1) || '')
+      `€${venta.total?.toFixed(2) || '0.00'}`
     ]),
     styles: {
       fontSize: 8,
@@ -155,14 +215,23 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
     },
     columnStyles: {
       0: { cellWidth: 70 }, // Fecha
-      1: { cellWidth: 110 }, // Productos
-      2: { cellWidth: 70 }, // Método Pago
-      3: { cellWidth: 60, halign: "right" }, // Subtotal
-      4: { cellWidth: 50, halign: "right" }, // IVA
-      5: { cellWidth: 60, halign: "right" }, // Total
-      6: { cellWidth: 90 } // Estado
+      1: { cellWidth: 140 }, // Productos 
+      2: { cellWidth: 50, halign: "center" }, // Unidades
+      3: { cellWidth: 80 }, // Método Pago 
+      4: { cellWidth: 60, halign: "right" }, // Subtotal
+      5: { cellWidth: 50, halign: "right" }, // IVA
+      6: { cellWidth: 60, halign: "right" } // Total
     }
   });
+
+  // Footer en la parte inferior de la página
+  const pageHeight = 842; // Altura de página A4 en puntos
+  const footerY = pageHeight - 40; // 40pt desde el final de la página
+  
+  pdf.setFontSize(9);
+  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(100, 100, 100); // Gris para el footer
+  pdf.text(configuracion.mensaje_footer || "TechnoFix - Sistema de Gestión", marginLeft, footerY);
 
   pdf.save(`ficha_completa_${cliente?.nombre || ""}_${cliente?.nif || ""}.pdf`);
 }

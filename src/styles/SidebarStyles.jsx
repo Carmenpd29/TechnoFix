@@ -5,7 +5,7 @@ export const SidebarWrapper = styled.nav`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 2.5rem 1.5rem 2rem 1.5rem;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
   min-width: 250px;
   max-width: 270px;
   box-sizing: border-box;
@@ -34,10 +34,11 @@ export const LogoMenu = styled.img`
 export const MenuLinks = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
   align-items: stretch;
-  margin: 2.2rem 0;
+  margin: 1.5rem 0;
   width: 100%;
+  flex: 1;
 `;
 
 export const MenuOption = styled.button`

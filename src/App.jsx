@@ -13,6 +13,7 @@ import {
   MenuHambur,
   Footer, 
 } from "./index";
+import { ConfiguracionEmpresaProvider } from "./contexts/ConfiguracionEmpresaContext";
 
 function App() {
   const user = useUserStore((state) => state.user);
@@ -46,9 +47,10 @@ function App() {
   if (loading) return <div>Cargando...</div>;
 
   return (
-    <AppWrapper>
-      <GlobalStyles />
-      <Routes>
+    <ConfiguracionEmpresaProvider>
+      <AppWrapper>
+        <GlobalStyles />
+        <Routes>
         <Route
           path="/login"
           element={
@@ -96,6 +98,7 @@ function App() {
         />
       </Routes>
     </AppWrapper>
+    </ConfiguracionEmpresaProvider>
   );
 }
 

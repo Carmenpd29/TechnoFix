@@ -172,8 +172,6 @@ export function AddReparacion() {
       precio: parseFloat(precio),
     };
 
-    console.log("Insertando reparación:", datos);
-
     const { error } = await supabase.from("reparaciones").insert([datos]);
     if (error) {
       setMensaje({ texto: `Error al guardar la reparación: ${error.message}`, tipo: "error" });

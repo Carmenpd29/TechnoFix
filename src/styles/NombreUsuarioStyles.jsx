@@ -6,7 +6,7 @@ export const NombreUsuario = styled(Link)`
   color: rgb(220, 227, 233);
   font-weight: 700;
   text-align: center;
-  margin: 1.1rem 0 1.1rem 0;
+  margin: 0;
   letter-spacing: 0.5px;
   text-decoration: none;
   cursor: pointer;

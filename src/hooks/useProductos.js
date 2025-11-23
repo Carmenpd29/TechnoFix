@@ -4,6 +4,7 @@ import { useState } from "react";
 export const useProductos = (onProductoAgregado = null) => {
   const [productos, setProductos] = useState([]);
   const [nuevoProducto, setNuevoProducto] = useState({
+    codigo: "",
     nombre: "",
     precio: "",
     cantidad: "1",
@@ -17,7 +18,9 @@ export const useProductos = (onProductoAgregado = null) => {
     if (!nuevoProducto.nombre || !nuevoProducto.precio) return;
 
     const producto = {
-      id: Date.now(),
+      // Usar el id de la base de datos si existe, si no generar uno temporal
+      id: nuevoProducto.id || Date.now(),
+      codigo: nuevoProducto.codigo || null, // Agregar código si existe
       ...nuevoProducto,
       precio: parseFloat(nuevoProducto.precio) || 0,
       cantidad: parseFloat(nuevoProducto.cantidad) || 1,
@@ -42,6 +45,22 @@ export const useProductos = (onProductoAgregado = null) => {
     }
   };
 
+  // Función para agregar un producto desde la base de datos
+  const agregarProductoBD = (productoBD) => {
+    const producto = {
+      id: productoBD.id, // ID real de la base de datos
+      codigo: productoBD.codigo || null,
+      nombre: productoBD.nombre,
+      precio: productoBD.precio,
+      cantidad: 1,
+      iva: productoBD.iva || 21,
+      descuento: 0,
+      ivaIncluido: true
+    };
+
+    setProductos([...productos, producto]);
+  };
+
   const eliminarProducto = (id) => {
     setProductos(productos.filter(p => p.id !== id));
   };
@@ -55,6 +74,7 @@ export const useProductos = (onProductoAgregado = null) => {
   const limpiarProductos = () => {
     setProductos([]);
     setNuevoProducto({
+      codigo: "",
       nombre: "",
       precio: "",
       cantidad: "1",
@@ -69,6 +89,7 @@ export const useProductos = (onProductoAgregado = null) => {
     nuevoProducto,
     setNuevoProducto,
     agregarProducto,
+    agregarProductoBD,
     eliminarProducto,
     actualizarProducto,
     limpiarProductos

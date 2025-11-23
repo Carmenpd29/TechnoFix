@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FiLogOut, FiShoppingCart, FiUsers, FiUser } from "react-icons/fi";
+import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiSettings } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
-import { useUserStore, NombreUsuario } from "../../index";
+import { useUserStore, UserInfo } from "../../index";
+import { useConfiguracionEmpresaContext } from "../../contexts/ConfiguracionEmpresaContext";
 import { SidebarWrapper, LogoMenu, MenuLinks, MenuOption, SalirButton, BarraSeparadora } from "../../styles/SidebarStyles";
 
 export function Sidebar({ user }) {
   const navigate = useNavigate();
   const rol = user?.rol;
   const logout = useUserStore((state) => state.logout);
+  const { configuracion } = useConfiguracionEmpresaContext();
 
   const handleLogout = async () => {
     await logout();
@@ -18,25 +20,25 @@ export function Sidebar({ user }) {
     <SidebarWrapper>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <LogoMenu
-          src="/TechnoFix/assets/Logo.png"
-          alt="TechnoFix logo"
+          src={configuracion.logo_url || "/TechnoFix/assets/Logo.png"}
+          alt="Logo empresa"
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/home")}
         />
         <BarraSeparadora />
-        {user?.nombre && (
-          <>
-            <NombreUsuario to="/usuarios/editarme">{user.nombre}</NombreUsuario>
-          </>
-        )}
+        <UserInfo user={user} />
         <BarraSeparadora />
         <MenuLinks>
-          {/* Opción Usuarios solo para admin */}
+          {/* Opciones solo para admin */}
           {rol === "admin" && (
             <>
               <MenuOption onClick={() => navigate("/usuarios")}>
                 <FiUser size={20} style={{ marginRight: 8 }} />
                 Usuarios
+              </MenuOption>
+              <MenuOption onClick={() => navigate("/empresa")}>
+                <FiSettings size={20} style={{ marginRight: 8 }} />
+                Empresa
               </MenuOption>
               <BarraSeparadora />
             </>

@@ -51,11 +51,6 @@ export const calcularTotales = (productos, descuentoGeneral = 0) => {
 };
 
 export const procesarVentaCompleta = (ventaData) => {
-  // Aquí se podría integrar con Supabase para guardar la venta
-  console.log("Venta realizada:", {
-    ...ventaData,
-    fecha: new Date().toISOString()
-  });
   
   return {
     success: true,

@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
-import { supabase, BotonVolver,TituloPage } from "../../index";
+import { supabase, BotonVolver, TituloPage, IconBtn } from "../../index";
+import { FiSave } from "react-icons/fi";
 
 export function ModUsers() {
   const location = useLocation();
@@ -88,9 +89,12 @@ export function ModUsers() {
               <option value="empleado">Empleado/a</option>
             </Select>
           </Field>
-          <Boton type="submit" disabled={loading}>
-            {loading ? "Guardando..." : "Guardar cambios"}
-          </Boton>
+          <ButtonContainer>
+            <IconBtn type="submit" disabled={loading}>
+              <FiSave size={16} />
+              <span>{loading ? "Guardando..." : "Guardar"}</span>
+            </IconBtn>
+          </ButtonContainer>
           {mensaje && (
             <Mensaje $tipo={mensajeTipo}>{mensaje}</Mensaje>
           )}
@@ -168,21 +172,10 @@ const Select = styled.select`
   }
 `;
 
-const Boton = styled.button`
-  padding: 0.8rem;
-  font-size: 1rem;
-  color: white;
-  background: linear-gradient(90deg, #607074 0%, #a5c4ca 100%);
-  border: none;
-  border-radius: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: background 0.3s;
-  &:disabled {
-    background: #007bff70;
-    cursor: not-allowed;
-  }
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 `;
 
 const Mensaje = styled.p`

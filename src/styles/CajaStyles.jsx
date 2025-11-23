@@ -94,6 +94,7 @@ export const ProductosLista = styled.div`
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 0.2rem;
+  width: 100%;
 
   @media (max-width: 1200px) {
     max-height: calc(70vh - 180px);
@@ -132,7 +133,7 @@ export const ProductosLista = styled.div`
 
 export const ProductoItem = styled.div`
   display: grid;
-  grid-template-columns: 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
+  grid-template-columns: 80px 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
   gap: 0.15rem;
   padding: 0.3rem;
   border: none;
@@ -196,6 +197,59 @@ export const ProductoItem = styled.div`
       text-align: left;
     }
   }
+
+  /* Cuando tiene input-group (para agregar producto) */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .input-header {
+    background: #a5c4ca;
+    color: #232728;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 2fr 1fr 80px;
+    gap: 0.3rem;
+    
+    .precio, .iva, .descuento {
+      display: none;
+    }
+    
+    .input-header {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.3rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    
+    .input-group {
+      align-items: stretch;
+    }
+    
+    .input-header {
+      text-align: left;
+    }
+  }
 `;
 
 export const ProductoInput = styled.input`
@@ -204,7 +258,8 @@ export const ProductoInput = styled.input`
   padding: 0.15rem 0.2rem;
   font-size: 0.8rem;
   width: 100%;
-  min-height: 26px;
+  min-height: 28px;
+  height: 28px;
   box-sizing: border-box;
   text-align: center;
 
@@ -220,15 +275,16 @@ export const ProductoNombre = styled.div`
   border: 1px solid #ddd;
   border-radius: 3px;
   padding: 0.1rem 0.15rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   width: 100%;
-  min-height: 22px;
+  min-height: 28px;
+  height: 28px;
   box-sizing: border-box;
   background: white;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: flex-start;
+  text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -256,7 +312,7 @@ export const EliminarBtn = styled.button`
 
 export const AgregarProductoForm = styled.form`
   display: grid;
-  grid-template-columns: 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
+  grid-template-columns: 80px 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
   gap: 0.15rem;
   padding: 0.4rem;
   border: none;
@@ -265,6 +321,55 @@ export const AgregarProductoForm = styled.form`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
   margin-bottom: 0.4rem;
+
+  & > button {
+    align-self: center;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .input-header {
+    background: #a5c4ca;
+    color: #232728;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    padding: 0.4rem;
+    
+    .input-header {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.3rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    
+    .input-group {
+      align-items: stretch;
+    }
+    
+    .input-header {
+      text-align: left;
+      font-size: 0.75rem;
+    }
+  }
 
   .input-group {
     display: flex;
@@ -324,7 +429,8 @@ export const AgregarBtn = styled.button`
   transition: all 0.2s;
   width: 100%;
   height: auto;
-  min-height: 26px;
+  min-height: 28px;
+  height: 28px;
 
   &:hover {
     background: ${secondaryColor};
@@ -628,7 +734,7 @@ export const MetodoPagoSection = styled.div`
 
 export const TablaHeaders = styled.div`
   display: grid;
-  grid-template-columns: 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
+  grid-template-columns: 80px 1.8fr 0.7fr 0.5fr 0.5fr 0.5fr 0.5fr 60px;
   gap: 0.15rem;
   padding: 0.3rem;
   background: #a5c4ca;
@@ -659,10 +765,37 @@ export const TablaHeaders = styled.div`
       display: none;
     }
   }
+
+  &.agregar-headers {
+    background: #a5c4ca;
+    color: #232728;
+    border-radius: 4px;
+    margin-bottom: 0.1rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 1120px) {
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 2fr 1fr 80px;
+    
+    .precio-header, .iva-header, .descuento-header {
+      display: none;
+    }
+  }
 `;
 
 export const HeaderItem = styled.div`
   text-align: center;
+  border-right: 1px solid rgba(35, 39, 40, 0.2);
+  padding-right: 0.3rem;
+  
+  &:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
   
   &.nombre-header {
     text-align: left;
@@ -754,8 +887,8 @@ export const ModalMessage = styled.p`
 `;
 
 export const ModalButton = styled.button`
-  background: ${props => props.error ? '#e74c3c' : '#27ae60'};
-  color: white;
+  background: ${props => props.error ? '#e74c3c' : '#a5c4ca'};
+  color: ${props => props.error ? 'white' : '#232728'};
   border: none;
   border-radius: 6px;
   padding: 0.75rem 1.5rem;
@@ -765,7 +898,8 @@ export const ModalButton = styled.button`
   transition: all 0.2s;
 
   &:hover {
-    background: ${props => props.error ? '#c0392b' : '#229954'};
+    background: ${props => props.error ? '#c0392b' : '#607074'};
+    color: ${props => props.error ? 'white' : '#caf0f8'};
     transform: translateY(-1px);
   }
 
