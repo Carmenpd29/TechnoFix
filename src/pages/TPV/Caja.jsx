@@ -237,7 +237,7 @@ export function Caja() {
   const totales = calcularTotales(productosManager.productos, descuentoGeneral);
 
   return (
-    <WrapperPage maxWidth={1400}>
+    <WrapperPage maxWidth={1600}>
       <BotonVolver to="/tpv" />
       
       {/* Header responsive para evitar superposición */}

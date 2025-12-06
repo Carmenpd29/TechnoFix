@@ -10,7 +10,10 @@ export const useUsuarios = () => {
   const fetchUsuarios = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from("usuarios").select("*");
+      const { data, error } = await supabase
+        .from("usuarios")
+        .select("*")
+        .order("nombre", { ascending: true });
       if (error) {
         setMensaje("Error al cargar usuarios");
         console.error(error);

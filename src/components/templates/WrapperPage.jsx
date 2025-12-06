@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
-export function WrapperPage({ children, maxWidth = 900, ...props }) {
+export function WrapperPage({ children, maxWidth = 1600, ...props }) {
   return <Wrapper $maxWidth={maxWidth} {...props}>{children}</Wrapper>;
 }
 
 const Wrapper = styled.div`
   width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-width: min(900px, calc(100vw - 7rem));
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: min(${props => props.$maxWidth || 1600}px, calc(100vw - 7rem));
   margin: 2.5rem auto;
   padding: 2rem 1.5rem;
   background: #f8fafb;
