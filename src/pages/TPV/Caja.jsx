@@ -49,6 +49,9 @@ import {
 } from "../../styles/CajaStyles";
 
 export function Caja() {
+    // Refs para los inputs de display de la calculadora
+    const inputCalcDisplayRef = React.useRef(null);
+    const inputCalcMiniDisplayRef = React.useRef(null);
   const [descuentoGeneral, setDescuentoGeneral] = useState(0);
   const [calculadoraAbierta, setCalculadoraAbierta] = useState(false);
   const [calculadoraMiniAbierta, setCalculadoraMiniAbierta] = useState(false);
@@ -109,6 +112,20 @@ export function Caja() {
     }
     cargarDatos();
   }, []);
+
+  useEffect(() => {
+    if (calculadoraAbierta && inputCalcDisplayRef.current) {
+      inputCalcDisplayRef.current.focus();
+      inputCalcDisplayRef.current.setSelectionRange(inputCalcDisplayRef.current.value.length, inputCalcDisplayRef.current.value.length);
+    }
+  }, [calculadoraAbierta]);
+
+  useEffect(() => {
+    if (calculadoraMiniAbierta && inputCalcMiniDisplayRef.current) {
+      inputCalcMiniDisplayRef.current.focus();
+      inputCalcMiniDisplayRef.current.setSelectionRange(inputCalcMiniDisplayRef.current.value.length, inputCalcMiniDisplayRef.current.value.length);
+    }
+  }, [calculadoraMiniAbierta]);
 
   // Cerrar sugerencias de productos al hacer clic fuera
   useEffect(() => {
@@ -749,28 +766,50 @@ export function Caja() {
             
             {calculadoraAbierta && (
               <CalculadoraGrid>
-                <CalculadoraDisplay>{calculadora.calculadora}</CalculadoraDisplay>
-                
+                <div style={{gridColumn: '1 / -1', marginBottom: '0.5rem'}}>
+                  <input
+                    ref={inputCalcDisplayRef}
+                    value={calculadora.calculadora}
+                    style={{
+                      width: '100%',
+                      background: 'transparent',
+                      border: 'none',
+                      fontSize: '1.3rem',
+                      fontWeight: 'bold',
+                      color: '#232728',
+                      textAlign: 'right',
+                      outline: 'none',
+                    }}
+                    onChange={() => {}}
+                    onKeyDown={e => {
+                      if (e.key >= '0' && e.key <= '9') calculadora.inputDigito(Number(e.key));
+                      if (e.key === '+' || e.key === '-') calculadora.inputOperador(e.key);
+                      if (e.key === '*' || e.key === 'x' || e.key === 'X') calculadora.inputOperador('×');
+                      if (e.key === '/' || e.key === ':') calculadora.inputOperador('÷');
+                      if (e.key === '.' || e.key === ',') calculadora.inputDecimal();
+                      if (e.key === 'Enter' || e.key === '=') calculadora.ejecutarCalculo();
+                      if (e.key === 'Backspace') calculadora.setCalculadora(calculadora.calculadora.slice(0, -1) || '0');
+                      if (e.key === 'c' || e.key === 'C') calculadora.limpiarCalculadora();
+                      e.preventDefault();
+                    }}
+                  />
+                </div>
                 <CalculadoraBtn clear onClick={calculadora.limpiarCalculadora}>C</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputOperador("÷")}>÷</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputOperador("×")}>×</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.setCalculadora(calculadora.calculadora.slice(0, -1) || "0")}>←</CalculadoraBtn>
-                
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(7)}>7</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(8)}>8</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(9)}>9</CalculadoraBtn>
                 <CalculadoraBtn operator onClick={() => calculadora.inputOperador("-")}>-</CalculadoraBtn>
-                
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(4)}>4</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(5)}>5</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(6)}>6</CalculadoraBtn>
                 <CalculadoraBtn operator onClick={() => calculadora.inputOperador("+")}>+</CalculadoraBtn>
-                
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(1)}>1</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(2)}>2</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(3)}>3</CalculadoraBtn>
                 <CalculadoraBtn equals onClick={calculadora.ejecutarCalculo} style={{gridRow: "span 2"}}>=</CalculadoraBtn>
-                
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(0)} style={{gridColumn: "span 2"}}>0</CalculadoraBtn>
                 <CalculadoraBtn onClick={calculadora.inputDecimal}>.</CalculadoraBtn>
               </CalculadoraGrid>
@@ -835,28 +874,50 @@ export function Caja() {
           </button>
         </div>
         <CalculadoraGrid>
-          <CalculadoraDisplay>{calculadora.calculadora}</CalculadoraDisplay>
-          
+          <div style={{gridColumn: '1 / -1', marginBottom: '0.5rem'}}>
+            <input
+              ref={inputCalcMiniDisplayRef}
+              value={calculadora.calculadora}
+              style={{
+                width: '100%',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '1.3rem',
+                fontWeight: 'bold',
+                color: '#232728',
+                textAlign: 'right',
+                outline: 'none',
+              }}
+              onChange={() => {}}
+              onKeyDown={e => {
+                if (e.key >= '0' && e.key <= '9') calculadora.inputDigito(Number(e.key));
+                if (e.key === '+' || e.key === '-') calculadora.inputOperador(e.key);
+                if (e.key === '*' || e.key === 'x' || e.key === 'X') calculadora.inputOperador('×');
+                if (e.key === '/' || e.key === ':') calculadora.inputOperador('÷');
+                if (e.key === '.' || e.key === ',') calculadora.inputDecimal();
+                if (e.key === 'Enter' || e.key === '=') calculadora.ejecutarCalculo();
+                if (e.key === 'Backspace') calculadora.setCalculadora(calculadora.calculadora.slice(0, -1) || '0');
+                if (e.key === 'c' || e.key === 'C') calculadora.limpiarCalculadora();
+                e.preventDefault();
+              }}
+            />
+          </div>
           <CalculadoraBtn clear onClick={calculadora.limpiarCalculadora}>C</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputOperador("÷")}>÷</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputOperador("×")}>×</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.setCalculadora(calculadora.calculadora.slice(0, -1) || "0")}>←</CalculadoraBtn>
-          
           <CalculadoraBtn onClick={() => calculadora.inputDigito(7)}>7</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(8)}>8</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(9)}>9</CalculadoraBtn>
           <CalculadoraBtn operator onClick={() => calculadora.inputOperador("-")}>-</CalculadoraBtn>
-          
           <CalculadoraBtn onClick={() => calculadora.inputDigito(4)}>4</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(5)}>5</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(6)}>6</CalculadoraBtn>
           <CalculadoraBtn operator onClick={() => calculadora.inputOperador("+")}>+</CalculadoraBtn>
-          
           <CalculadoraBtn onClick={() => calculadora.inputDigito(1)}>1</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(2)}>2</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(3)}>3</CalculadoraBtn>
           <CalculadoraBtn equals onClick={calculadora.ejecutarCalculo} style={{gridRow: "span 2"}}>=</CalculadoraBtn>
-          
           <CalculadoraBtn onClick={() => calculadora.inputDigito(0)} style={{gridColumn: "span 2"}}>0</CalculadoraBtn>
           <CalculadoraBtn onClick={calculadora.inputDecimal}>.</CalculadoraBtn>
         </CalculadoraGrid>
@@ -892,6 +953,6 @@ export function Caja() {
         </ModalOverlay>
       )}
     </CajaContainer>
-    </WrapperPage>
+  </WrapperPage>
   );
 }
