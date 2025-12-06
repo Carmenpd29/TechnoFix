@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { BotonVolver, supabase, TituloPage, WrapperPage, IconBtn } from "../../index";
 import { FiSave } from "react-icons/fi";
 import { Form, Field, Label, Input, Mensaje, ErrorMsg, ObligatorioMsg } from "../../styles/ModClienteFinalStyles";
+import { FormularioBootstrap } from "../../components/general/FormularioBootstrap";
 
 const initialState = {
   nombre: "",
@@ -92,86 +93,24 @@ export function ModClienteFinal() {
     <WrapperPage>
       <BotonVolver to="/clientes/ver" />
       <TituloPage>Editar Cliente</TituloPage>
-      <Form onSubmit={handleSubmit} autoComplete="off">
-        <Field>
-          <Label>Nombre <span>*</span></Label>
-          <Input
-            name="nombre"
-            value={form.nombre}
-            onChange={handleChange}
-            required
-            placeholder="Nombre del cliente"
-            disabled={loading}
-            autoComplete="given-name"
-          />
-        </Field>
-        <Field>
-          <Label>Apellidos</Label>
-          <Input
-            name="apellidos"
-            value={form.apellidos}
-            onChange={handleChange}
-            placeholder="Apellidos del cliente (opcional)"
-            disabled={loading}
-          />
-        </Field>
-        <Field>
-          <Label>Teléfono <span>*</span></Label>
-          <Input
-            name="telefono"
-            value={form.telefono}
-            onChange={handleChange}
-            required
-            placeholder="Teléfono de contacto"
-            disabled={loading}
-            autoComplete="tel"
-          />
-        </Field>
-        <Field>
-          <Label>NIF</Label>
-          <Input
-            name="nif"
-            value={form.nif}
-            onChange={handleChange}
-            placeholder="NIF (opcional)"
-            disabled={loading}
-          />
-        </Field>
-        <Field>
-          <Label>Dirección</Label>
-          <Input
-            name="direccion"
-            value={form.direccion}
-            onChange={handleChange}
-            placeholder="Dirección (opcional)"
-            disabled={loading}
-          />
-        </Field>
-        <Field>
-          <Label>Correo</Label>
-          <Input
-            name="correo"
-            value={form.correo}
-            onChange={handleChange}
-            placeholder="Correo electrónico (opcional)"
-            type="email"
-            disabled={loading}
-            autoComplete="email"
-          />
-        </Field>
-        <ObligatorioMsg>
-        <span>*</span> Campos obligatorios
-      </ObligatorioMsg>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
-          <IconBtn type="submit" disabled={loading}>
-            <FiSave size={16} />
-            <span>{loading ? "Modificando..." : "Modificar"}</span>
-          </IconBtn>
-        </div>
-      </Form>
-      
-      {mensaje && <Mensaje>{mensaje}</Mensaje>}
-      {error && <ErrorMsg>{error}</ErrorMsg>}
+      <FormularioBootstrap
+        fields={[
+          { name: "nombre", label: "Nombre", required: true, placeholder: "Nombre del cliente" },
+          { name: "apellidos", label: "Apellidos", placeholder: "Apellidos del cliente (opcional)" },
+          { name: "telefono", label: "Teléfono", required: true, placeholder: "Teléfono de contacto" },
+          { name: "nif", label: "NIF", placeholder: "NIF (opcional)" },
+          { name: "direccion", label: "Dirección", placeholder: "Dirección (opcional)" },
+          { name: "correo", label: "Correo", type: "email", placeholder: "Correo electrónico (opcional)" },
+        ]}
+        values={form}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        loading={loading}
+        mensaje={mensaje ? { tipo: "ok", texto: mensaje } : error ? { tipo: "error", texto: error } : null}
+        buttonText={loading ? "Modificando..." : "Modificar"}
+      >
+        <div className="text-muted mb-2" style={{ fontSize: '0.9rem' }}><span>*</span> Campos obligatorios</div>
+      </FormularioBootstrap>
     </WrapperPage>
   );
 }

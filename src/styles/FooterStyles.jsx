@@ -13,7 +13,11 @@ export const FooterContainer = styled.footer`
   padding: 0.8rem 0;
   font-size: 1rem;
   letter-spacing: 1px;
-  
+  position: static;
+  left: unset;
+  bottom: unset;
+  z-index: 10;
+
   @media (max-width: 1120px) {
     font-size: 0.8rem;
   }

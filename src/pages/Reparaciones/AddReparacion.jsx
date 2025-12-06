@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { BotonVolver, supabase, TituloPage, WrapperPage, FormReparaciones, ZonaCliente } from "../../index";
+import { BotonVolver, supabase, TituloPage, WrapperPage, ZonaCliente } from "../../index";
+import { FormReparacionesBootstrap } from "../../components/reparaciones/FormReparacionesBootstrap.jsx";
 import { useEffect, useState } from "react";
 
 // Hook para debounce
@@ -53,15 +54,7 @@ export function AddReparacion() {
   useEffect(() => {
     if (!debouncedBusqueda) {
       setClientes([]);
-      setCliente({
-        id: "",
-        nombre: "",
-        apellidos: "",
-        telefono: "",
-        nif: "",
-        direccion: "",
-        correo: "",
-      });
+      // No limpiar el cliente seleccionado si ya hay uno
       return;
     }
     setLoadingClientes(true);
@@ -76,19 +69,13 @@ export function AddReparacion() {
           setLoadingClientes(false);
           if (error || !data || data.length === 0) {
             setClientes([]);
-            setCliente({
-              id: "",
-              nombre: "",
-              apellidos: "",
-              telefono: "",
-              nif: "",
-              direccion: "",
-              correo: "",
-            });
             return;
           }
           setClientes(data);
-          setCliente(data[0]);
+          // Solo actualizar cliente si no hay uno seleccionado o si el id es diferente
+          if (!cliente.id || cliente.id !== data[0].id) {
+            setCliente(data[0]);
+          }
         });
     } else {
       // Busca por nombre, apellidos o nif
@@ -103,19 +90,13 @@ export function AddReparacion() {
           setLoadingClientes(false);
           if (error || !data || data.length === 0) {
             setClientes([]);
-            setCliente({
-              id: "",
-              nombre: "",
-              apellidos: "",
-              telefono: "",
-              nif: "",
-              direccion: "",
-              correo: "",
-            });
             return;
           }
           setClientes(data);
-          if (data.length === 1) setCliente(data[0]);
+          // Solo actualizar cliente si no hay uno seleccionado o si la búsqueda es exactamente igual al nombre completo
+          if (!cliente.id && data.length === 1) {
+            setCliente(data[0]);
+          }
         });
     }
   }, [debouncedBusqueda]);
@@ -210,7 +191,7 @@ export function AddReparacion() {
         setCliente={setCliente}
         loadingClientes={loadingClientes}
       />
-      <FormReparaciones
+      <FormReparacionesBootstrap
         cliente={cliente}
         tecnicos={tecnicos}
         tecnico={tecnico}

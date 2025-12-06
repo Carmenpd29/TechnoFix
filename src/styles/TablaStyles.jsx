@@ -18,10 +18,15 @@ export const Tabla = styled.table`
     border-right: 1px solid #f0f4f5;
     text-align: left;
     font-size: 0.75rem;
+    vertical-align: middle;
     
     &:last-child {
       border-right: none;
     }
+  }
+  td:last-child {
+    text-align: center;
+    vertical-align: middle;
   }
   th {
     background: #a5c4ca;

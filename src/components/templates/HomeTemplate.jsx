@@ -26,9 +26,8 @@ export function HomeTemplate() {
           <p>
             - <b>TPV</b>: Punto de venta completo con gestión de productos, categorías y facturación.<br />
             - <b>Clientes</b>: Administración integral de la base de clientes con historial completo.<br />
-            - <b>Reparaciones</b>: Control detallado de servicios técnicos y seguimiento de reparaciones.<br /><br />
-            <span style={{ textDecoration: 'underline' }}><b>Para administradores</b></span><br />
-            - <b>Usuarios</b>: Gestión de permisos y usuarios del sistema.<br />
+            - <b>Reparaciones</b>: Control detallado de servicios técnicos y seguimiento de reparaciones.<br />
+            - <b>Usuarios</b>: Gestión de permisos y usuarios del sistema (solo administradores).<br />
             - <b>Empresa</b>: Personalización de logo, nombre y configuración empresarial.
           </p>
           <p>

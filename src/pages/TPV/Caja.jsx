@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { FiTrash } from "react-icons/fi";
 import { FaCalculator, FaChevronDown, FaChevronUp, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import { FiPlus, FiShoppingCart } from "react-icons/fi";
 import { BotonVolver, TituloPage, WrapperPage, supabase } from "../../index";
+import { IconBtnTabla } from "../../styles/TablaAdminStyles";
+import { IconBtn } from "../../components/general/IconBtn";
 import { obtenerCodigoDisplay } from "../../utils/formatearCodigo";
 import { useCalculadora } from "../../hooks/useCalculadora";
 import { useProductos } from "../../hooks/useProductos";
@@ -279,7 +283,19 @@ export function Caja() {
           <SectionTitle>Agregar Producto</SectionTitle>
           
           {/* Formulario con inputs individuales */}
-          <AgregarProductoForm onSubmit={productosManager.agregarProducto}>
+          <AgregarProductoForm
+            onSubmit={productosManager.agregarProducto}
+            onKeyDown={e => {
+              if (
+                e.key === 'Enter' &&
+                productosManager.nuevoProducto.nombre &&
+                productosManager.nuevoProducto.precio
+              ) {
+                e.preventDefault();
+                productosManager.agregarProducto(e);
+              }
+            }}
+          >
             <div className="input-group" style={{ position: 'relative' }}>
               <div className="input-header">Código</div>
               <ProductoInput
@@ -335,7 +351,7 @@ export function Caja() {
                         onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
                         onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
                       >
-                        <div style={{ fontWeight: "bold", color: "#007bff" }}>{obtenerCodigoDisplay(producto)}</div>
+                        <div style={{ fontWeight: "bold", color: "rgb(14, 41, 61)" }}>{obtenerCodigoDisplay(producto)}</div>
                         <div>{producto.nombre}</div>
                         <div style={{ fontSize: "0.65rem", color: "#666" }}>€{producto.precio.toFixed(2)}</div>
                       </div>
@@ -402,7 +418,7 @@ export function Caja() {
                       onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
                       onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
                     >
-                      <div style={{ fontWeight: "bold", color: "#007bff" }}>{obtenerCodigoDisplay(producto)}</div>
+                      <div style={{ fontWeight: "bold", color: "rgb(14, 41, 61)" }}>{obtenerCodigoDisplay(producto)}</div>
                       <div>{producto.nombre}</div>
                       <div style={{ fontSize: "0.65rem", color: "#666" }}>€{producto.precio.toFixed(2)}</div>
                     </div>
@@ -457,14 +473,23 @@ export function Caja() {
                   checked={productosManager.nuevoProducto.ivaIncluido}
                   onChange={(e) => productosManager.setNuevoProducto({...productosManager.nuevoProducto, ivaIncluido: e.target.checked})}
                 />
-                <span className="checkbox-text">Sí</span>
               </IvaCheckboxLabel>
             </div>
             <div className="input-group">
               <div className="input-header">Acción</div>
-              <AgregarBtn type="submit" disabled={!productosManager.nuevoProducto.nombre || !productosManager.nuevoProducto.precio}>
-                Agregar
-              </AgregarBtn>
+              <IconBtnTabla
+                type="submit"
+                title="Agregar producto"
+                disabled={!productosManager.nuevoProducto.nombre || !productosManager.nuevoProducto.precio}
+              >
+                <FiShoppingCart
+                  style={{
+                    fontSize: '1.3rem',
+                    color: (!productosManager.nuevoProducto.nombre || !productosManager.nuevoProducto.precio) ? '#607074' : '#007bff',
+                    paddingTop: '4px'
+                  }}
+                />
+              </IconBtnTabla>
             </div>
           </AgregarProductoForm>
           
@@ -533,11 +558,10 @@ export function Caja() {
                     checked={producto.ivaIncluido !== false}
                     onChange={(e) => productosManager.actualizarProducto(producto.id, 'ivaIncluido', e.target.checked)}
                   />
-                  <span className="checkbox-text">Sí</span>
                 </IvaCheckboxLabel>
-                <EliminarBtn onClick={() => productosManager.eliminarProducto(producto.id)}>
-                  Eliminar
-                </EliminarBtn>
+                <IconBtnTabla eliminar onClick={() => productosManager.eliminarProducto(producto.id)} title="Eliminar línea">
+                  <FiTrash style={{ fontSize: '1.3rem', paddingTop: '4px' }} />
+                </IconBtnTabla>
               </ProductoItem>
             ))}
           </ProductosLista>
@@ -616,7 +640,7 @@ export function Caja() {
                         onMouseEnter={(e) => e.target.style.backgroundColor = "#f0f8ff"}
                         onMouseLeave={(e) => e.target.style.backgroundColor = "white"}
                       >
-                        <div style={{ fontWeight: "bold", color: "#007bff" }}>{cliente.nombre}</div>
+                        <div style={{ fontWeight: "bold", color: "rgb(14, 41, 61)" }}>{cliente.nombre}</div>
                         <div>{cliente.nif || 'Sin NIF'} • {cliente.telefono || 'Sin teléfono'}</div>
                       </div>
                     ))}

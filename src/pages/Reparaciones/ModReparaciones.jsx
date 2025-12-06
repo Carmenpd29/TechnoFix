@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase, BotonVolver, TituloPage, WrapperPage, FormReparaciones } from "../../index";
+import { FormReparacionesBootstrap } from "../../components/reparaciones/FormReparacionesBootstrap";
 
 export function ModReparaciones() {
   const { id } = useParams();
@@ -98,7 +99,7 @@ export function ModReparaciones() {
     <WrapperPage>
       <BotonVolver to="/reparaciones/ver" />
       <TituloPage>Modificar Reparación</TituloPage>
-      <FormReparaciones
+      <FormReparacionesBootstrap
         cliente={reparacion.clientes || { nombre: "", apellidos: "", telefono: "" }}
         tecnicos={tecnicos}
         tecnico={reparacion.idtecnico || ""}
@@ -118,7 +119,8 @@ export function ModReparaciones() {
         mensaje={mensaje || error}
         onSubmit={handleGuardar}
         loading={loading}
-        modoEdicion={true}
+        modoEdicion={false}
+        buttonText={loading ? "Modificando..." : "Modificar"}
       />
     </WrapperPage>
   );

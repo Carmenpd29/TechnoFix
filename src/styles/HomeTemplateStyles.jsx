@@ -9,7 +9,15 @@ export const Fondo = styled.div`
   background: linear-gradient(135deg, #e7f7fa 0%, #b3c6d1 100%);
   padding: 0.5rem 1rem;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media (max-width: 700px) {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    padding-bottom: 1.5rem;
+  }
 `;
 
 export const Card = styled.div`

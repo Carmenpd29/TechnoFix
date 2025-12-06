@@ -108,17 +108,17 @@ export function VerClientes() {
           <IconBtn
             title="Ver"
             onClick={() => navigate(`/clientes/ver/${selected.id}`)}
+            style={{ position: 'relative' }}
           >
             <FiEye />
-            <span>Ver</span>
           </IconBtn>
           {(user?.rol === "admin" || user?.rol === "encargado") && (
             <IconBtn
               title="Editar"
               onClick={() => navigate(`/clientes/modificar/${selected.id}`)}
+              style={{ position: 'relative' }}
             >
               <FiEdit />
-              <span>Editar</span>
             </IconBtn>
           )}
           {user?.rol === "admin" && (
@@ -127,9 +127,9 @@ export function VerClientes() {
               eliminar="true"
               disabled={eliminando}
               onClick={handleEliminar}
+              style={{ position: 'relative' }}
             >
               <FiTrash2 />
-              <span>{eliminando ? "Eliminando..." : "Eliminar"}</span>
             </IconBtn>
           )}
         </BotonesContainer>

@@ -18,18 +18,33 @@ export const ZonaReparaciones = styled.div`
   .fila-tecnico-precio {
     font-family: inherit;
     display: flex;
-    gap: 1.2rem;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: stretch;
     width: 100%;
-    max-width: 340px;
+    max-width: 100%;
     margin: 0 auto;
+  }
+  @media (max-width: 700px) {
+    .fila-tecnico-precio {
+      flex-direction: column;
+      gap: 0.7rem;
+      max-width: 100%;
+    }
+    select, .precio {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+    }
   }
   select {
     font-family: inherit;
     flex: 1 1 180px;
-    min-width: 120px;
-    max-width: 220px;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
     height: 40px;
+    box-sizing: border-box;
   }
   .datos {
     font-family: inherit;
@@ -52,24 +67,16 @@ export const ZonaReparaciones = styled.div`
     color: #232728;
     font-family: inherit;
   }
-  @media (max-width: 1120px) {
-    label {
-      font-size: 0.8rem;
-    }
-    
+  @media (max-width: 900px) {
     .fila-tecnico-precio {
-      flex-direction: row;
-      gap: 1rem;
-      width: 100%;
-      max-width: 340px;
-    }
-    select {
-      min-width: 0;
+      flex-direction: column;
+      gap: 0.7rem;
       max-width: 100%;
     }
-    .precio {
-      margin-left: 0;
-      height: 43px;
+    select, .precio {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
     }
   }
 `;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { FormularioBootstrap } from "../../components/general/FormularioBootstrap";
 import { supabase, BotonVolver, TituloPage } from "../../index";
 
 export function NewUser() {
@@ -88,67 +89,24 @@ export function NewUser() {
     <Wrapper style={{ position: "relative" }}>
       <BotonVolver to="/usuarios" />
       <TituloPage>Nuevo Usuario</TituloPage>
-      <FormContainer>
-        <Form onSubmit={handleSubmit}>
-          <Field>
-            <Label>Nombre</Label>
-            <Input
-              name="nombre"
-              value={form.nombre}
-              onChange={handleChange}
-              required
-              placeholder="Nombre del usuario"
-              disabled={loading}
-              autoComplete="name"
-            />
-          </Field>
-          <Field>
-            <Label>Email</Label>
-            <Input
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              placeholder="Email del usuario"
-              disabled={loading}
-              autoComplete="email"
-            />
-          </Field>
-          <Field>
-            <Label>Rol</Label>
-            <Select
-              name="rol"
-              value={form.rol}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            >
-              <option value="">Selecciona un rol</option>
-              <option value="admin">Administrador</option>
-              <option value="encargado">Encargado/a</option>
-              <option value="empleado">Empleado/a</option>
-            </Select>
-          </Field>
-          <Field>
-            <Label>Contraseña</Label>
-            <Input
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              placeholder="Contraseña"
-              disabled={loading}
-              autoComplete="new-password"
-            />
-          </Field>
-          <Boton type="submit" disabled={loading}>
-            {loading ? "Guardando..." : "Crear usuario"}
-          </Boton>
-          {mensaje && <Mensaje $tipo={mensajeTipo}>{mensaje}</Mensaje>}
-        </Form>
-      </FormContainer>
+      <FormularioBootstrap
+        fields={[
+          { name: "nombre", label: "Nombre", required: true, placeholder: "Nombre del usuario" },
+          { name: "email", label: "Email", type: "email", required: true, placeholder: "Email del usuario" },
+          { name: "rol", label: "Rol", type: "select", required: true, options: [
+            { value: "admin", label: "Administrador" },
+            { value: "encargado", label: "Encargado/a" },
+            { value: "empleado", label: "Empleado/a" }
+          ] },
+          { name: "password", label: "Contraseña", type: "password", required: true, placeholder: "Contraseña" },
+        ]}
+        values={form}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        loading={loading}
+        mensaje={mensaje ? { tipo: mensajeTipo === "success" ? "ok" : "error", texto: mensaje } : null}
+        buttonText={loading ? "Guardando..." : "Crear usuario"}
+      />
     </Wrapper>
   );
 }

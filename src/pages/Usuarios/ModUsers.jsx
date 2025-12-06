@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUserStore } from "../../store/userStore";
 import styled from "styled-components";
 import { supabase, BotonVolver, TituloPage, IconBtn } from "../../index";
 import { FiSave } from "react-icons/fi";
@@ -8,10 +9,28 @@ export function ModUsers() {
   const location = useLocation();
   const navigate = useNavigate();
   const usuario = location.state?.usuario;
+  const [esUnicoAdmin, setEsUnicoAdmin] = useState(false);
+  const { login } = useUserStore();
 
   const [form, setForm] = useState({
     rol: usuario?.rol || "",
   });
+    useEffect(() => {
+      async function checkUnicoAdmin() {
+        if (usuario?.rol === "admin") {
+          const { data, error } = await supabase
+            .from("usuarios")
+            .select("id")
+            .eq("rol", "admin");
+          if (!error && data && data.length === 1 && data[0].id === usuario.id) {
+            setEsUnicoAdmin(true);
+          } else {
+            setEsUnicoAdmin(false);
+          }
+        }
+      }
+      checkUnicoAdmin();
+    }, [usuario]);
   const [mensaje, setMensaje] = useState("");
   const [mensajeTipo, setMensajeTipo] = useState(""); // "error" o "success"
   const [loading, setLoading] = useState(false);
@@ -42,6 +61,13 @@ export function ModUsers() {
       setLoading(false);
       return;
     }
+    // Bloquear si es el único admin y se intenta cambiar a otro rol
+    if (usuario.rol === "admin" && esUnicoAdmin && form.rol !== "admin") {
+      setMensaje("No puedes cambiar el rol de este usuario porque es el único administrador.");
+      setMensajeTipo("error");
+      setLoading(false);
+      return;
+    }
 
     const { error } = await supabase
       .from("usuarios")
@@ -56,6 +82,16 @@ export function ModUsers() {
     } else {
       setMensaje("Rol actualizado correctamente.");
       setMensajeTipo("success");
+      // Refrescar el usuario en el store si es el usuario logueado
+      if (usuario.id === useUserStore.getState().user?.id) {
+        // Recargar datos del usuario desde supabase
+        const { data: userActualizado } = await supabase
+          .from("usuarios")
+          .select("*")
+          .eq("id", usuario.id)
+          .single();
+        if (userActualizado) login(userActualizado);
+      }
     }
   };
 
@@ -81,7 +117,7 @@ export function ModUsers() {
               value={form.rol}
               onChange={handleChange}
               required
-              disabled={loading}
+              disabled={loading || (usuario.rol === "admin" && esUnicoAdmin)}
             >
               <option value="">Selecciona un rol</option>
               <option value="admin">Administrador</option>

@@ -47,7 +47,7 @@ export function Empresa() {
           Aquí puedes personalizar la configuración de tu empresa.
         </p>
         <p>
-          - <b>Editar</b>: Para configurar el logo, nombre de empresa y mensaje del footer.
+          - <b>Ver</b>: Para configurar el logo, nombre de empresa y mensaje del footer.
         </p>
       </InfoCard>
     </WrapperPage>

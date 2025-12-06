@@ -36,12 +36,28 @@ export const Fechas = styled.div`
   }
 
   @media (max-width: 1120px) {
-    input[type="date"] {
       font-size: 0.8rem;
     }
     input[type="date"]::placeholder {
       font-size: 0.8rem;
     }
+        input,
+        textarea,
+        select {
+          font-family: inherit;
+          font-size: 1rem;
+          padding: 0.7rem;
+          border-radius: 6px;
+          border: 1.5px solid #a5c4ca;
+          margin-bottom: 0.7rem;
+          width: 100%;
+          min-width: 0;
+          max-width: none; /* Changed to none for full responsiveness */
+          box-sizing: border-box;
+          background: #fff;
+          color: #232728;
+          resize: none;
+        }
   }
 `;
 
@@ -53,6 +69,22 @@ export const Datos = styled.div`
   max-width: 300px;
   margin: 0 auto;
   input,
+  textarea,
+  select {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.7rem;
+    border-radius: 6px;
+    border: 1.5px solid #a5c4ca;
+    margin-bottom: 0.7rem;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    color: #232728;
+    resize: none;
+  }
   textarea {
     padding: 0.4rem;
     border-radius: 6px;

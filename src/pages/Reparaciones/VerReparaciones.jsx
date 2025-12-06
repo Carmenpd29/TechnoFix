@@ -150,9 +150,9 @@ export function VerReparaciones() {
               onClick={() =>
                 navigate(`/reparaciones/mod/${selected.idreparacion}`)
               }
+              style={{ position: 'relative' }}
             >
               <FiEdit />
-              <span>Editar</span>
             </IconBtn>
           )}
           {user?.rol === "admin" && (
@@ -161,9 +161,9 @@ export function VerReparaciones() {
               eliminar="true"
               disabled={eliminando}
               onClick={handleEliminar}
+              style={{ position: 'relative' }}
             >
               <FiTrash2 />
-              <span>{eliminando ? "Eliminando..." : "Eliminar"}</span>
             </IconBtn>
           )}
         </EditarContainer>

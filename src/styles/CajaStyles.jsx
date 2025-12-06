@@ -295,13 +295,15 @@ export const EliminarBtn = styled.button`
   color: white;
   border: none;
   border-radius: 3px;
-  padding: 0.15rem 0.2rem;
+  padding: 0.15rem;
   cursor: pointer;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
   transition: all 0.2s;
-  width: 100%;
-  min-height: 26px;
 
   &:hover {
     background: #c82333;
@@ -422,15 +424,15 @@ export const AgregarBtn = styled.button`
   color: white;
   border: none;
   border-radius: 3px;
-  padding: 0.15rem 0.2rem;
+  padding: 0.15rem;
   cursor: pointer;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
   transition: all 0.2s;
-  width: 100%;
-  height: auto;
-  min-height: 28px;
-  height: 28px;
 
   &:hover {
     background: ${secondaryColor};

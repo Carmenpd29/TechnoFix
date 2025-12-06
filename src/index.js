@@ -1,26 +1,7 @@
-// =====================================
-// APP PRINCIPAL
-// =====================================
 export { default as App } from './App';
-
-// =====================================
-// SERVICIOS
-// =====================================
 export * from './supabase/supabaseClient';
-
-// =====================================
-// STORE
-// =====================================
 export * from './store/userStore';
-
-// =====================================
-// ROUTERS
-// =====================================
 export * from './routers/routes';
-
-// =====================================
-// STYLES
-// =====================================
 export * from './styles/AdminStyles';
 export * from './styles/AppStyles';
 export * from './styles/BotonMenuStyles';
@@ -54,17 +35,9 @@ export * from './styles/VerClientesStyles';
 export * from './styles/VerReparacionesStyles';
 export * from './styles/ZonaClienteStyles';
 export * from './styles/ZonaReparacionesStyles';
-
-// =====================================
-// UTILS
-// =====================================
 export * from './utils/breakpoints';
 export * from './utils/tpvUtils';
 export * from './utils/validaciones';
-
-// =====================================
-// HOOKS
-// =====================================
 export * from './hooks/useCalculadora';
 export * from './hooks/useProductos';
 export * from './hooks/useProductosTPV';
