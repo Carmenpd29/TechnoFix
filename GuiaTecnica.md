@@ -27,7 +27,8 @@ src/
 - **Clientes:** Gestión, búsqueda, edición y PDF de clientes
 - **Reparaciones:** Alta, modificación, consulta y generación de PDF
 - **TPV (Caja):** Venta de productos, gestión de líneas, cobro y selección de cliente
-- **Usuarios:** Administración y registro de usuarios
+- **Usuarios:** Administración y registro de usuarios (solo admin). El usuario admin no tiene acciones de edición/eliminación.
+- **Empresa:** Personalización de logo y nombre de empresa (solo admin).
 
 ## 5. Dependencias
 - @supabase/supabase-js
@@ -44,11 +45,15 @@ src/
 - Ejecutar en desarrollo: `npm run dev`
 - Compilar para producción: `npm run build`
 - Despliegue estático en carpeta `docs/`
+- Si modificas la seguridad, revisa las políticas RLS y la persistencia de sesión en el store de usuario (Zustand).
 
-## 7. Seguridad
-- Validación y sanitización de entradas
-- Autenticación y autorización con Supabase
-- Políticas RLS en la base de datos
+## 7. Seguridad y Autenticación
+- Validación y sanitización de entradas en formularios y búsquedas.
+- Autenticación y autorización con Supabase: solo usuarios autenticados pueden acceder a rutas privadas.
+- Protección de rutas en frontend: ningún usuario sin sesión puede acceder a vistas internas ni por URL directa.
+- Persistencia de sesión: el estado de usuario se mantiene tras recargas y navegación interna.
+- Gestión de roles: solo los administradores pueden gestionar usuarios y configuración de empresa. El usuario admin no puede ser editado ni eliminado desde la interfaz.
+- Políticas RLS (Row Level Security) activas en la base de datos para proteger los datos según el usuario autenticado.
 
 ## 8. Base de Datos
 - Tablas principales: clientes, reparaciones, productos, ventas, usuarios
