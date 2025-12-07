@@ -5,15 +5,19 @@ export const TablaContainer = styled.div`
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 `;
 
 export const Tabla = styled.table`
   width: 100%;
-  min-width: 800px;
+  min-width: 0;
   border-collapse: collapse;
   background: white;
   border-radius: 12px;
   overflow: hidden;
+  table-layout: auto;
   th {
     padding: 0.8rem 0.5rem;
     border-bottom: 1px solid #e0e6ea;
