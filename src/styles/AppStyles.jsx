@@ -1,20 +1,7 @@
 import styled from "styled-components";
 
 export const Header = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 60px;
-  background: linear-gradient(120deg, #a5c4ca 0%, #607074 100%);
-  display: flex;
-  align-items: center;
-  z-index: 210; 
-  box-shadow: 0 2px 8px #404a4c22;
-
-  @media (min-width: 900px) {
-    display: none;
-  }
+  display: none;
 `;
 
 export const HamburguesaButton = styled.button`
@@ -40,7 +27,7 @@ export const Container = styled.main`
   height: 100vh;
   background: #f8fafc;
   grid-template-columns: 260px 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr 56px;
   color: #003459;
 
   .contentSidebar {
@@ -59,20 +46,26 @@ export const Container = styled.main`
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     width: 100%;
-    height: 100%;
     min-width: 0;
     overflow-y: auto;
     margin-top: 0;
     box-sizing: border-box;
     background: linear-gradient(120deg,rgb(204, 228, 233) 0%,rgb(186, 203, 207) 100%);
+    min-height: calc(100vh - 56px);
+    height: auto;
   }
   footer {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
+    height: 56px;
+    min-height: 56px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 56px;
     .contentSidebar {
       display: none;
     }
@@ -81,11 +74,17 @@ export const Container = styled.main`
     }
     .contentRouters {
       grid-column: 1;
-      margin-top: 60px;
-      padding: 0 0.2rem;
+      padding: 56px 0.2rem 0 0.2rem;
+      min-height: calc(100vh - 56px - 56px);
+      height: auto;
+      box-sizing: border-box;
     }
     footer {
       grid-column: 1;
+      height: 56px;
+      min-height: 56px;
+      width: 100%;
+      box-sizing: border-box;
     }
   }
 

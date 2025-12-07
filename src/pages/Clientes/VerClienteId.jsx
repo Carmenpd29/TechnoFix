@@ -21,12 +21,10 @@ export function VerClienteId() {
       <div style={{
         position: 'relative',
         width: '100%',
-        height: '65vh',
         display: 'flex',
         flexDirection: 'column',
         background: 'transparent',
         padding: 0,
-        overflowY: 'auto',
         marginTop: '0.5rem'
       }}>
         {cliente && <ClienteCard cliente={cliente} />}
@@ -39,8 +37,9 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
       </div>
 
-      <TablaContainer style={{ overflow: 'visible', margin: '0', width: '100%' }}>
-        <Tabla id="tabla-reparaciones" style={{ width: '100%', tableLayout: 'fixed' }}>
+      <TablaContainer style={{ overflowX: 'scroll', margin: '0', width: '100%' }}>
+        <div style={{overflowY: 'auto', width: '100%', maxWidth: '100vw', maxHeight: '350px'}}>
+          <Tabla id="tabla-reparaciones" style={{ width: '100%', tableLayout: 'fixed', minWidth: '800px' }}>
           <thead>
             <tr>
               <th>Artículo</th>
@@ -72,6 +71,7 @@ export function VerClienteId() {
             )}
           </tbody>
         </Tabla>
+        </div>
       </TablaContainer>
 
       {/* Sección de Ventas */}
@@ -79,13 +79,14 @@ export function VerClienteId() {
         <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Historial de Ventas TPV</h3>
       </div>
 
-      <TablaContainer style={{ overflow: 'visible', margin: '0', width: '100%' }}>
-        <Tabla id="tabla-ventas" style={{ width: '100%', tableLayout: 'fixed' }}>
+      <TablaContainer style={{ overflowX: 'scroll', margin: '0', width: '100%' }}>
+        <div style={{overflowY: 'auto', width: '100%', maxWidth: '100vw', maxHeight: '350px'}}>
+          <Tabla id="tabla-ventas" style={{ width: '100%', tableLayout: 'fixed', minWidth: '900px' }}>
           <thead>
             <tr>
               <th>Fecha</th>
               <th style={{ width: "30%" }}>Productos</th>
-              <th>Método Pago</th>
+              <th>Pago</th>
               <th>Subtotal</th>
               <th>IVA</th>
               <th>Total</th>
@@ -142,6 +143,7 @@ export function VerClienteId() {
             )}
           </tbody>
         </Tabla>
+        </div>
       </TablaContainer>
       </div>
     </WrapperPage>

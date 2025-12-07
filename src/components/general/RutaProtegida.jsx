@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useSeguridad } from '../hooks/useSeguridad';
-import { Cargando } from '../components/general/Cargando';
+import { useSeguridad } from '../../hooks/useSeguridad';
+import { Cargando } from './Cargando';
 
 // Componente para proteger rutas que requieren autenticación
 export function RutaProtegida({ children, requiereRol = null, funcionalidad = null }) {
@@ -35,12 +35,21 @@ export function RutaProtegida({ children, requiereRol = null, funcionalidad = nu
         <button 
           onClick={() => window.history.back()}
           style={{
-            padding: '0.5rem 1rem',
-            background: '#007bff',
-            color: 'white',
+            marginTop: '0.8rem',
+            padding: '0.6rem',
+            background: 'linear-gradient(90deg, #607074 60%, #404a4c 100%)',
+            color: '#caf0f8',
             border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
+            fontSize: '0.9rem',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px #404a4c33',
+            letterSpacing: '0.5px',
+            borderRadius: '8px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            zIndex: 10
           }}
         >
           Volver
@@ -67,12 +76,21 @@ export function RutaProtegida({ children, requiereRol = null, funcionalidad = nu
         <button 
           onClick={() => window.history.back()}
           style={{
-            padding: '0.5rem 1rem',
-            background: '#007bff',
-            color: 'white',
+            marginTop: '0.8rem',
+            padding: '0.6rem',
+            background: 'linear-gradient(90deg, #607074 60%, #404a4c 100%)',
+            color: '#caf0f8',
             border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
+            fontSize: '0.9rem',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px #404a4c33',
+            letterSpacing: '0.5px',
+            borderRadius: '8px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            zIndex: 10
           }}
         >
           Volver
@@ -97,7 +115,7 @@ export function RutaAdmin({ children }) {
 // Componente para rutas que requieren autenticación básica
 export function RutaAutenticada({ children }) {
   return (
-    <RutaProtegida requiereRol={['admin', 'trabajador']}>
+    <RutaProtegida requiereRol={['admin', 'trabajador', 'encargado']}>
       {children}
     </RutaProtegida>
   );

@@ -25,6 +25,7 @@ import {
   Empresa,
   ConfiguracionEmpresa,
 } from "../index";
+import { RutaAutenticada, RutaAdmin } from "../components/general/RutaProtegida";
 
 export function MyRoutes({ user }) {
   const location = useLocation();
@@ -34,45 +35,131 @@ export function MyRoutes({ user }) {
     <Routes>
       {/* Ruta por defecto */}
       <Route path="/" element={<Navigate to="/home" replace />} />
-      
-      {/* Rutas principales */}
-      <Route path="/home" element={<Home />} />
+      {/* Rutas públicas */}
       <Route path="/register" element={<Register />} />
-      
-      {/* Rutas de Clientes */}
-      <Route path="/clientes" element={<Clientes user={user} />} />
-      <Route path="/clientes/eliminar" element={<DelCliente />} />
-      <Route path="/clientes/insertar" element={<InsertCliente />} />
-      <Route path="/clientes/modificar" element={<ModCliente />} />
-      <Route path="/clientes/modificar/:id" element={<ModClienteFinal />} />
-      <Route path="/clientes/ver" element={<VerClientes />} />
-      <Route path="/clientes/ver/:id" element={<VerClienteId />} />
-      
-      {/* Rutas de Reparaciones */}
-      <Route path="/reparaciones" element={<Reparaciones />} />
-      <Route path="/reparaciones/add" element={<AddReparacion />} />
-      <Route path="/reparaciones/mod/:id" element={<ModReparaciones />} />
-      <Route path="/reparaciones/ver" element={<VerReparaciones />} />
-      
-      {/* Rutas de TPV */}
-      <Route path="/tpv" element={<TPV />} />
-      <Route path="/tpv/caja" element={<Caja />} />
-      <Route path="/tpv/productos" element={<Productos />} />
-      <Route path="/tpv/facturacion" element={<Facturacion />} />
-      
-      {/* Rutas de Usuarios */}
-      <Route path="/usuarios" element={<Usuarios />} />
-      <Route path="/usuarios/editar" element={<ModUsers />} />
-      <Route path="/usuarios/editarme" element={<ModMyUser />} />
-      <Route path="/usuarios/lista" element={<AdminUsers />} />
-      <Route path="/usuarios/nuevo" element={<NewUser />} />
-      
-      {/* Rutas de Empresa */}
-      <Route path="/empresa" element={<Empresa />} />
-      <Route path="/empresa/configuracion" element={<ConfiguracionEmpresa />} />
-      
+      {/* Rutas protegidas */}
+      <Route path="/home" element={
+        <RutaAutenticada>
+          <Home />
+        </RutaAutenticada>
+      } />
+      {/* Clientes */}
+      <Route path="/clientes" element={
+        <RutaAutenticada>
+          <Clientes user={user} />
+        </RutaAutenticada>
+      } />
+      <Route path="/clientes/eliminar" element={
+        <RutaAutenticada>
+          <DelCliente />
+        </RutaAutenticada>
+      } />
+      <Route path="/clientes/insertar" element={
+        <RutaAutenticada>
+          <InsertCliente />
+        </RutaAutenticada>
+      } />
+      <Route path="/clientes/modificar" element={
+        <RutaAutenticada>
+          <ModCliente />
+        </RutaAutenticada>
+      } />
+      <Route path="/clientes/modificar/:id" element={
+        <RutaAutenticada>
+          <ModClienteFinal />
+        </RutaAutenticada>
+      } />
+      <Route path="/clientes/ver" element={
+        <RutaAutenticada>
+          <VerClientes />
+        </RutaAutenticada>
+      } />
+      <Route path="/clientes/ver/:id" element={
+        <RutaAutenticada>
+          <VerClienteId />
+        </RutaAutenticada>
+      } />
+      {/* Reparaciones */}
+      <Route path="/reparaciones" element={
+        <RutaAutenticada>
+          <Reparaciones />
+        </RutaAutenticada>
+      } />
+      <Route path="/reparaciones/add" element={
+        <RutaAutenticada>
+          <AddReparacion />
+        </RutaAutenticada>
+      } />
+      <Route path="/reparaciones/mod/:id" element={
+        <RutaAutenticada>
+          <ModReparaciones />
+        </RutaAutenticada>
+      } />
+      <Route path="/reparaciones/ver" element={
+        <RutaAutenticada>
+          <VerReparaciones />
+        </RutaAutenticada>
+      } />
+      {/* TPV */}
+      <Route path="/tpv" element={
+        <RutaAutenticada>
+          <TPV />
+        </RutaAutenticada>
+      } />
+      <Route path="/tpv/caja" element={
+        <RutaAutenticada>
+          <Caja />
+        </RutaAutenticada>
+      } />
+      <Route path="/tpv/productos" element={
+        <RutaAutenticada>
+          <Productos />
+        </RutaAutenticada>
+      } />
+      <Route path="/tpv/facturacion" element={
+        <RutaAutenticada>
+          <Facturacion />
+        </RutaAutenticada>
+      } />
+      {/* Usuarios */}
+      <Route path="/usuarios" element={
+        <RutaAdmin>
+          <Usuarios />
+        </RutaAdmin>
+      } />
+      <Route path="/usuarios/editar" element={
+        <RutaAdmin>
+          <ModUsers />
+        </RutaAdmin>
+      } />
+      <Route path="/usuarios/editarme" element={
+        <RutaAutenticada>
+          <ModMyUser />
+        </RutaAutenticada>
+      } />
+      <Route path="/usuarios/lista" element={
+        <RutaAdmin>
+          <AdminUsers />
+        </RutaAdmin>
+      } />
+      <Route path="/usuarios/nuevo" element={
+        <RutaAdmin>
+          <NewUser />
+        </RutaAdmin>
+      } />
+      {/* Empresa */}
+      <Route path="/empresa" element={
+        <RutaAdmin>
+          <Empresa />
+        </RutaAdmin>
+      } />
+      <Route path="/empresa/configuracion" element={
+        <RutaAdmin>
+          <ConfiguracionEmpresa />
+        </RutaAdmin>
+      } />
       {/* Ruta catch-all */}
-      <Route path="*" element={<Home />} />
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }

@@ -29,9 +29,15 @@ export const LoginCaja = styled.div`
 export const Subtitulo = styled.h3`
   color: #232728;
   margin: 1.2rem 0 1rem 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.7rem;
+  font-weight: 700;
   text-align: center;
+
+  &.sub {
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin: 1.2rem 0 1rem 0;
+  }
 `;
 
 export const Input = styled.input`

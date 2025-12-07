@@ -10,7 +10,9 @@ export const FooterContainer = styled.footer`
   );
   color: #fff;
   text-align: center;
-  padding: 0.8rem 0;
+  padding: 0.35rem 0;
+  min-height: unset;
+  height: unset;
   font-size: 1rem;
   letter-spacing: 1px;
   position: static;

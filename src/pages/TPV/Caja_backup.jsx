@@ -556,7 +556,7 @@ export function Caja() {
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(1)}>1</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(2)}>2</CalculadoraBtn>
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(3)}>3</CalculadoraBtn>
-                <CalculadoraBtn equals onClick={calculadora.ejecutarCalculo} style={{gridRow: "span 2"}}>=</CalculadoraBtn>
+                <CalculadoraBtn equals={true} onClick={calculadora.ejecutarCalculo} style={{gridRow: "span 2"}}>=</CalculadoraBtn>
                 
                 <CalculadoraBtn onClick={() => calculadora.inputDigito(0)} style={{gridColumn: "span 2"}}>0</CalculadoraBtn>
                 <CalculadoraBtn onClick={calculadora.inputDecimal}>.</CalculadoraBtn>
@@ -642,7 +642,7 @@ export function Caja() {
           <CalculadoraBtn onClick={() => calculadora.inputDigito(1)}>1</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(2)}>2</CalculadoraBtn>
           <CalculadoraBtn onClick={() => calculadora.inputDigito(3)}>3</CalculadoraBtn>
-          <CalculadoraBtn equals onClick={calculadora.ejecutarCalculo} style={{gridRow: "span 2"}}>=</CalculadoraBtn>
+                <CalculadoraBtn equals={true} onClick={calculadora.ejecutarCalculo} style={{gridRow: "span 2"}}>=</CalculadoraBtn>
           
           <CalculadoraBtn onClick={() => calculadora.inputDigito(0)} style={{gridColumn: "span 2"}}>0</CalculadoraBtn>
           <CalculadoraBtn onClick={calculadora.inputDecimal}>.</CalculadoraBtn>

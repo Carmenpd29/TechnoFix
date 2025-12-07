@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase, Footer, TituloPage } from "../index";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { LoginWrapper, LoginCaja, Subtitulo, Input, PasswordWrapper, EyeButton, Entrar, ErrorMsg, BarraSeparadora, FondoDegradado, LogoImg } from "../styles/LoginStyles";
+import { useConfiguracionEmpresaContext } from "../contexts/ConfiguracionEmpresaContext";
 
 export function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ export function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const { configuracion } = useConfiguracionEmpresaContext();
 
   // LOGIN
   const handleSubmit = async (e) => {
@@ -104,10 +106,8 @@ export function Login({ onLogin }) {
     <LoginWrapper>
       <FondoDegradado>
         <LoginCaja>
-          <div style={{ display: "flex", alignItems: "center", width: "100%", marginBottom: "2rem" }}>
-            <LogoImg src="/TechnoFix/assets/Logo.png" alt="TechnoFix" />
-            <TituloPage >Iniciar sesión</TituloPage>
-          </div>
+          <LogoImg src={configuracion.logo_url || "/TechnoFix/assets/Logo.png"} alt="TechnoFix" style={{ marginBottom: "1.2rem" }} />
+          <Subtitulo>Iniciar sesión</Subtitulo>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Input
               type="email"
@@ -142,8 +142,8 @@ export function Login({ onLogin }) {
             {error && <ErrorMsg>{error}</ErrorMsg>}
           </form>
           <BarraSeparadora />
-          <Subtitulo>¿No tienes cuenta?</Subtitulo>
-          <Entrar type="button" onClick={() => navigate("/register")}>
+          <Subtitulo className="sub">¿No tienes cuenta?</Subtitulo>
+          <Entrar type="button" onClick={() => navigate("/register")}> 
             Regístrate
           </Entrar>
         </LoginCaja>

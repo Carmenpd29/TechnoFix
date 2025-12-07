@@ -31,7 +31,7 @@ export const useClienteDetalle = () => {
         const { data: reparacionesData, error: reparacionesError } = await supabase
           .from("reparaciones")
           .select("*")
-          .eq("cliente_id", id);
+          .eq("idcliente", id);
 
         if (reparacionesError) {
           console.error("Error al obtener reparaciones:", reparacionesError);
@@ -42,19 +42,7 @@ export const useClienteDetalle = () => {
         // Obtener ventas del cliente
         const { data: ventasData, error: ventasError } = await supabase
           .from("ventas")
-          .select(`
-            *,
-            detalles_venta (
-              cantidad,
-              precio_unitario,
-              iva_porcentaje,
-              subtotal,
-              nombre_producto,
-              productos (
-                nombre
-              )
-            )
-          `)
+          .select("*")
           .eq("cliente_id", id)
           .order("fecha_venta", { ascending: false });
 

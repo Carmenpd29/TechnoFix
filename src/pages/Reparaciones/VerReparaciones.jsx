@@ -86,7 +86,8 @@ export function VerReparaciones() {
         <p>Selecciona una reparación para Editar o Eliminar.</p>
       </ManualPage>
       <TablaContainer>
-        <Tabla>
+        <div style={{overflowY: 'auto', maxHeight: '420px', width: '100%'}}>
+          <Tabla>
           <thead>
             <tr>
               <th>Cliente</th>
@@ -132,15 +133,16 @@ export function VerReparaciones() {
                     : "-"}
                 </td>
                 <td>{r.articulo}</td>
-                <td>{r.precio ? `${r.precio} €` : "-"}</td>
-                <td>{r.tecnico ? r.tecnico.nombre : "-"}</td>
+                <td style={{ textAlign: 'right' }}>{r.precio ? `${r.precio} €` : "-"}</td>
+                <td style={{ textAlign: 'center' }}>{r.tecnico ? r.tecnico.nombre : "-"}</td>
                 <td>
                   {r.fecha ? new Date(r.fecha).toLocaleDateString() : "-"}
                 </td>
               </tr>
             ))}
           </tbody>
-        </Tabla>
+          </Tabla>
+        </div>
       </TablaContainer>
       {selected && (
         <EditarContainer>

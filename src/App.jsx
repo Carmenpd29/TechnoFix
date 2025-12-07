@@ -24,24 +24,33 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let timeoutId;
     (async () => {
-      const { data: { user: supaUser } } = await supabase.auth.getUser();
-      if (supaUser) {
-        const { data: usuarioDB } = await supabase
-          .from("usuarios")
-          .select("*")
-          .eq("uid", supaUser.id)
-          .single();
-        if (usuarioDB && usuarioDB.rol) {
-          login(usuarioDB);
+      timeoutId = setTimeout(() => setLoading(false), 6000); // Timeout de seguridad 6s
+      try {
+        const { data: { user: supaUser } } = await supabase.auth.getUser();
+        if (supaUser) {
+          const { data: usuarioDB } = await supabase
+            .from("usuarios")
+            .select("*")
+            .eq("uid", supaUser.id)
+            .single();
+          if (usuarioDB && usuarioDB.rol) {
+            login(usuarioDB);
+          } else {
+            logout();
+          }
         } else {
           logout();
         }
-      } else {
+      } catch (e) {
         logout();
+      } finally {
+        setLoading(false);
+        clearTimeout(timeoutId);
       }
-      setLoading(false);
     })();
+    return () => clearTimeout(timeoutId);
   }, [login, logout]);
 
   if (loading) return <div>Cargando...</div>;
@@ -68,12 +77,28 @@ function App() {
           element={
             user ? (
               <Container>
-                {!menuOpen && (
-                  <Header>
-                    <HamburguesaButton onClick={() => setMenuOpen(true)}>
-                      <FiMenu size={30} color="#003459" />
-                    </HamburguesaButton>
-                  </Header>
+                {!menuOpen && window.innerWidth <= 900 && (
+                  <HamburguesaButton
+                    onClick={() => setMenuOpen(true)}
+                    style={{
+                      position: 'fixed',
+                      top: '18px',
+                      left: '18px',
+                      zIndex: 210,
+                      background: '#fff',
+                      borderRadius: '50%',
+                      boxShadow: '0 2px 8px #404a4c22',
+                      width: '48px',
+                      height: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <FiMenu size={30} color="#003459" />
+                  </HamburguesaButton>
                 )}
                 <section className="contentSidebar">
                   <Sidebar user={user} onLogout={logout} />

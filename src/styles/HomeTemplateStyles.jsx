@@ -4,7 +4,7 @@ export const Fondo = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #e7f7fa 0%, #b3c6d1 100%);
   padding: 0.5rem 1rem;
@@ -12,11 +12,12 @@ export const Fondo = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 
-  @media (max-width: 700px) {
-    height: 100dvh;
-    max-height: 100dvh;
+  @media (max-width: 900px) {
+    height: 100%;
+    max-height: none;
     min-height: 0;
-    padding-bottom: 1.5rem;
+    padding-bottom: 0;
+    align-items: flex-start;
   }
 `;
 

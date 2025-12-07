@@ -378,15 +378,31 @@ export function ConfiguracionEmpresa() {
 
         <FormGroup>
           <label htmlFor="logo">Logo de la Empresa</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', marginBottom: '0.5rem' }}>
+            {previewUrl ? (
+              <PreviewImage src={previewUrl} alt="Preview del logo" />
+            ) : (
+              <PreviewImage src="/TechnoFix/assets/Logo.png" alt="Logo por defecto TechnoFix" />
+            )}
+            <IconBtn
+              type="button"
+              style={{ background: '#e57373', color: '#fff' }}
+              onClick={() => {
+                setPreviewUrl('');
+                setLogoFile(null);
+                setConfiguracion(prev => ({ ...prev, logo_url: '' }));
+              }}
+              disabled={loading}
+            >
+              Quitar logo
+            </IconBtn>
+          </div>
           <FileInput
             type="file"
             id="logo"
             accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
             onChange={handleFileChange}
           />
-          {previewUrl && (
-            <PreviewImage src={previewUrl} alt="Preview del logo" />
-          )}
           <small style={{ color: '#666', display: 'block', marginTop: '0.5rem' }}>
             <strong>🖼️ Logo automático:</strong><br/>
             • Las imágenes grandes se redimensionan automáticamente a 400×200px<br/>
