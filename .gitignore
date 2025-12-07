@@ -1,3 +1,6 @@
+# Ignorar manuales locales
+GuiaTecnica.md
+ManualUsuario.md
 # Logs
 logs
 *.log
