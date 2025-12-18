@@ -76,7 +76,7 @@ export const validarDatosVenta = (ventaData, usuario = null) => {
     }
     
     // Validar método de pago
-    const metodosValidos = ['efectivo', 'tarjeta', 'transferencia', 'mixto'];
+    const metodosValidos = ['efectivo', 'bizum', 'tarjeta', 'transferencia', 'mixto'];
     if (!ventaData.metodoPago || !metodosValidos.includes(ventaData.metodoPago)) {
       resultado.valido = false;
       resultado.errores.metodoPago = 'Método de pago no válido';

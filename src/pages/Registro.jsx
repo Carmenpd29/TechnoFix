@@ -19,31 +19,27 @@ export function Register() {
       setMensaje("Rellena todos los campos.");
       return;
     }
+    if (password.length < 6) {
+      setMensaje("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
     if (error) {
-      setMensaje("Error al registrar, email en uso o contraseña de menos de 6 caracteres.");
+      console.error('supabase.signUp error:', error);
+      // Mostrar mensaje concreto para depuración
+      setMensaje(error.message || "Error al registrar. Comprueba la consola.");
       return;
     }
     if (data?.user) {
-      const { error: insertError } = await supabase
-        .from("usuarios")
-        .insert([{
-          nombre,
-          email,
-          rol: null,
-          uid: data.user.id,
-        }]);
-      if (insertError) {
-        setMensaje("Error al guardar usuario: " + insertError.message);
-      } else {
-        setMensaje("¡Registro enviado! Espera a que el admin te valide.");
-        setNombre("");
-        setEmail("");
-        setPassword("");
-      }
+      // No intentamos insertar desde el cliente para evitar RLS.
+      // La creación del registro en `usuarios` debe gestionarse server-side (trigger o endpoint con service role).
+      setMensaje("¡Registro enviado! Confirma tu correo. El admin validará tu cuenta.");
+      setNombre("");
+      setEmail("");
+      setPassword("");
     }
   };
 

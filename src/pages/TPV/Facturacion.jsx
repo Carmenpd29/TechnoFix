@@ -223,7 +223,7 @@ export function Facturacion() {
 
     const marginLeft = 40;
     const marginRight = 40;
-    const pageWidth = 595; // A4 width in points
+    const pageWidth = 595; // A4 width 
     let y = 40;
 
     // Logo (usar configuración de empresa si existe)

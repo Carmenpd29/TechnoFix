@@ -146,7 +146,7 @@ export function VerReparaciones() {
       </TablaContainer>
       {selected && (
         <EditarContainer>
-          {(user?.rol === "admin" || user?.rol === "encargado") && (
+          {(user?.rol === "admin" || user?.rol === "encargado" || user?.rol === "empleado") && (
             <IconBtn
               title="Editar"
               onClick={() =>

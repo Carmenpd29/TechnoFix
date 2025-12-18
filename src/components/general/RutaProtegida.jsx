@@ -115,7 +115,7 @@ export function RutaAdmin({ children }) {
 // Componente para rutas que requieren autenticación básica
 export function RutaAutenticada({ children }) {
   return (
-    <RutaProtegida requiereRol={['admin', 'trabajador', 'encargado']}>
+    <RutaProtegida requiereRol={['admin', 'encargado', 'empleado']}>
       {children}
     </RutaProtegida>
   );

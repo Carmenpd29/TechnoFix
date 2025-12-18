@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FiTrash } from "react-icons/fi";
 import { FaCalculator, FaChevronDown, FaChevronUp, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
-import { FiPlus, FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart } from "react-icons/fi";
 import { BotonVolver, TituloPage, WrapperPage, supabase } from "../../index";
 import { IconBtnTabla } from "../../styles/TablaAdminStyles";
-import { IconBtn } from "../../components/general/IconBtn";
 import { obtenerCodigoDisplay } from "../../utils/formatearCodigo";
 import { useCalculadora } from "../../hooks/useCalculadora";
 import { useProductos } from "../../hooks/useProductos";
@@ -19,15 +18,12 @@ import {
   ProductoItem,
   ProductoInput,
   ProductoNombre,
-  EliminarBtn,
   AgregarProductoForm,
-  AgregarBtn,
   CalculadoraSection,
   TotalSection,
   TotalLinea,
   DescuentoInput,
   CalculadoraGrid,
-  CalculadoraDisplay,
   CalculadoraBtn,
   AccionesSection,
   AccionBtn,
@@ -78,8 +74,8 @@ export function Caja() {
   const ventasManager = useVentas();
 
   // Cargar clientes y productos al montar el componente
-  useEffect(() => {
-    async function cargarDatos() {
+  const cargarDatos = async () => {
+    try {
       // Cargar clientes
       const { data: clientesData } = await supabase
         .from("clientes")
@@ -90,27 +86,34 @@ export function Caja() {
       // Cargar productos
       const { data: productosData, error } = await supabase
         .from("productos")
-        .select("id, codigo, nombre, precio, iva, activo")
+        .select("id, codigo, nombre, precio, iva, activo, stock")
         .order("nombre", { ascending: true });
       
       if (error) {
         console.error("Error al cargar productos:", error);
       }
-      console.log("=== DATOS DE BASE DE DATOS ===");
-      console.log("Total productos cargados:", productosData?.length || 0);
-      console.log("Primeros 3 productos completos:", productosData?.slice(0, 3));
-      
-      // Revisar específicamente los códigos
-      productosData?.forEach((producto, index) => {
-        console.log(`Producto ${index + 1}: ID=${producto.id}, Código="${producto.codigo}", Nombre="${producto.nombre}"`);
-      });
-      
-      const productosConCodigo = productosData?.filter(p => p.codigo && p.codigo.trim() !== '') || [];
-      console.log("Productos con código válido:", productosConCodigo.length);
-      console.log("==============================");
       setProductosDB(productosData || []);
+    } catch (err) {
+      console.error('Error en cargarDatos:', err);
     }
+  };
+
+  useEffect(() => {
     cargarDatos();
+
+    const handler = () => {
+      cargarDatos();
+    };
+
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('venta:completada', handler);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && window.removeEventListener) {
+        window.removeEventListener('venta:completada', handler);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -163,44 +166,12 @@ export function Caja() {
 
   // Filtrar productos según búsqueda por código
   const productosFiltradosCodigo = busquedaCodigo && productosDB && busquedaCodigo.trim().length > 0 ? productosDB.filter(producto => {
-    console.log(`=== ANÁLISIS INDIVIDUAL PRODUCTO ===`);
-    console.log(`ID: ${producto.id}`);
-    console.log(`Código raw:`, producto.codigo);
-    console.log(`Código type:`, typeof producto.codigo);
-    console.log(`Código length:`, producto.codigo ? producto.codigo.length : 'null/undefined');
-    console.log(`Nombre:`, producto.nombre);
-    console.log(`Objeto completo:`, producto);
-    
     const codigo = producto.codigo || '';
-    console.log(`Código después de || '':`, codigo);
-    console.log(`¿Está vacío?:`, !codigo || codigo.trim() === '');
-    
-    if (!codigo || codigo.trim() === '') {
-      console.log(`❌ RECHAZADO: Código vacío o nulo`);
-      return false;
-    }
-    
+    if (!codigo || codigo.trim() === '') return false;
     const busqueda = busquedaCodigo.toLowerCase().trim();
     const codigoLimpio = codigo.toLowerCase().trim();
-    
-    console.log(`Búsqueda procesada: "${busqueda}"`);
-    console.log(`Código procesado: "${codigoLimpio}"`);
-    
-    const coincide = codigoLimpio.includes(busqueda);
-    console.log(`¿Coincide "${codigoLimpio}".includes("${busqueda}")? ${coincide}`);
-    
-    if (coincide) {
-      console.log(`✅ ENCONTRADO: ${codigoLimpio} contiene ${busqueda} (${producto.nombre})`);
-    } else {
-      console.log(`❌ NO COINCIDE: ${codigoLimpio} no contiene ${busqueda}`);
-    }
-    console.log(`=== FIN ANÁLISIS ===`);
-    return coincide;
+    return codigoLimpio.includes(busqueda);
   }) : [];
-  
-  if (busquedaCodigo) {
-    console.log(`Búsqueda '${busquedaCodigo}' encontró ${productosFiltradosCodigo.length} productos`);
-  }
 
   // Función para seleccionar producto de la base de datos
   const seleccionarProductoDB = (producto) => {
@@ -829,6 +800,7 @@ export function Caja() {
               <label>Método de Pago:</label>
               <select value={ventasManager.metodoPago} onChange={(e) => ventasManager.setMetodoPago(e.target.value)}>
                 <option value="efectivo">Efectivo</option>
+                <option value="bizum">Bizum</option>
                 <option value="tarjeta">Tarjeta</option>
                 <option value="transferencia">Transferencia</option>
                 <option value="mixto">Pago Mixto</option>

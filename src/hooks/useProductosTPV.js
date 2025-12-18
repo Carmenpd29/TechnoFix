@@ -83,6 +83,27 @@ export const useProductosTPV = () => {
     setCategorias(data || []);
   };
 
+  // Escuchar evento global cuando se complete una venta para recargar productos
+  useEffect(() => {
+    const handler = () => {
+      try {
+        cargarDatos();
+      } catch (e) {
+        console.error('Error recargando productos tras venta:', e);
+      }
+    };
+
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('venta:completada', handler);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && window.removeEventListener) {
+        window.removeEventListener('venta:completada', handler);
+      }
+    };
+  }, []);
+
   // Filtrar productos por búsqueda
   const productosFiltrados = productos.filter(producto =>
     producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -131,8 +152,8 @@ export const useProductosTPV = () => {
         descripcion: formulario.descripcion,
         precio: parseFloat(formulario.precio) || 0,
         iva: parseFloat(formulario.iva) || 21,
-        stock: parseInt(formulario.stock) || 0,
-        stock_minimo: parseInt(formulario.stockMinimo) || 5,
+        stock: Math.max(0, parseInt(formulario.stock) || 0),
+        stock_minimo: Math.max(0, parseInt(formulario.stockMinimo) || 5),
         categoria_id: parseInt(formulario.categoria) || null
       };
 
