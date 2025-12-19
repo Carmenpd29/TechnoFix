@@ -181,7 +181,6 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
     head: [[
       "Fecha",
       "Productos",
-      "Unidades",
       "Método Pago",
       "Subtotal",
       "IVA",
@@ -191,9 +190,9 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
       formatearFecha(venta.fecha_venta),
       venta.detalles_venta?.map(detalle => {
         const nombre = detalle.productos?.nombre || detalle.nombre_producto || 'Producto manual';
-        return nombre;
+        const cantidad = detalle.cantidad != null ? ` (${detalle.cantidad})` : '';
+        return `${nombre}${cantidad}`;
       }).join('\n') || 'Sin detalles',
-      venta.detalles_venta?.map(detalle => detalle.cantidad.toString()).join('\n') || '-',
       venta.metodo_pago?.charAt(0).toUpperCase() + (venta.metodo_pago?.slice(1) || ''),
       `€${venta.subtotal?.toFixed(2) || '0.00'}`,
       `€${venta.impuestos?.toFixed(2) || '0.00'}`,
@@ -215,23 +214,30 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
     },
     columnStyles: {
       0: { cellWidth: 70 }, // Fecha
-      1: { cellWidth: 140 }, // Productos 
-      2: { cellWidth: 50, halign: "center" }, // Unidades
-      3: { cellWidth: 80 }, // Método Pago 
-      4: { cellWidth: 60, halign: "right" }, // Subtotal
-      5: { cellWidth: 50, halign: "right" }, // IVA
-      6: { cellWidth: 60, halign: "right" } // Total
+      1: { cellWidth: 140 }, // Productos (permitir salto de línea)
+      2: { cellWidth: 80 }, // Método Pago
+      3: { cellWidth: 60, halign: "right" }, // Subtotal
+      4: { cellWidth: 50, halign: "right" }, // IVA
+      5: { cellWidth: 110, halign: "right" } // Total
     }
   });
 
-  // Footer en la parte inferior de la página
-  const pageHeight = 842; // Altura de página A4 en puntos
-  const footerY = pageHeight - 40; // 40pt desde el final de la página
-  
-  pdf.setFontSize(9);
-  pdf.setFont("helvetica", "normal");
-  pdf.setTextColor(100, 100, 100); // Gris para el footer
-  pdf.text(configuracion.mensaje_footer || "TechnoFix - Sistema de Gestión", marginLeft, footerY);
+  // Añadir footer y numeración de páginas en cada página
+  const pageCount = pdf.getNumberOfPages ? pdf.getNumberOfPages() : pdf.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    pdf.setPage(i);
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const footerY = pageHeight - 40; // 40pt desde el final de la página
+
+    pdf.setFontSize(9);
+    pdf.setFont("helvetica", "normal");
+    pdf.setTextColor(100, 100, 100); // Gris para el footer
+    pdf.text(configuracion.mensaje_footer || "TechnoFix - Sistema de Gestión", marginLeft, footerY);
+
+    const pageStr = `Página ${i} / ${pageCount}`;
+    pdf.text(pageStr, pageWidth - marginLeft, footerY, { align: 'right' });
+  }
 
   pdf.save(`ficha_completa_${cliente?.nombre || ""}_${cliente?.nif || ""}.pdf`);
 }

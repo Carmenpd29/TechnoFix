@@ -50,13 +50,6 @@ export const useClienteDetalle = () => {
         if (ventasError) {
           console.error("Error al obtener ventas:", ventasError);
         } else {
-          // Log temporal para depuración
-          try {
-            console.log('useClienteDetalle: ventasData', ventasData);
-            console.log('useClienteDetalle: ventasData length', ventasData?.length);
-          } catch (e) {
-            console.error('Error al loggear ventasData', e);
-          }
           setVentas(ventasData || []);
         }
 
