@@ -111,9 +111,11 @@ export function VerClienteId() {
                           <span style={{ fontWeight: "600" }}>
                             {detalle.productos?.nombre || detalle.nombre_producto || 'Producto manual'}
                           </span>
-                          <span style={{ color: "#666", marginLeft: "0.5rem" }}>
-                            {detalle.cantidad}
-                          </span>
+                          {detalle.cantidad != null && (
+                            <span style={{ color: "#666", marginLeft: "0.5rem" }}>
+                              ({detalle.cantidad})
+                            </span>
+                          )}
                         </div>
                       )) || 'Sin detalles'}
                     </div>

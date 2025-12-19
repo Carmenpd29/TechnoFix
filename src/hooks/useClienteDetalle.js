@@ -39,16 +39,24 @@ export const useClienteDetalle = () => {
           setReparaciones(reparacionesData || []);
         }
 
-        // Obtener ventas del cliente
+        // Obtener ventas del cliente, incluyendo detalles y datos de producto
+        // Selección simplificada: todos los campos de ventas y todos los detalles
         const { data: ventasData, error: ventasError } = await supabase
           .from("ventas")
-          .select("*")
+          .select('*, detalles_venta(*)')
           .eq("cliente_id", id)
           .order("fecha_venta", { ascending: false });
 
         if (ventasError) {
           console.error("Error al obtener ventas:", ventasError);
         } else {
+          // Log temporal para depuración
+          try {
+            console.log('useClienteDetalle: ventasData', ventasData);
+            console.log('useClienteDetalle: ventasData length', ventasData?.length);
+          } catch (e) {
+            console.error('Error al loggear ventasData', e);
+          }
           setVentas(ventasData || []);
         }
 

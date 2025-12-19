@@ -37,15 +37,50 @@ export function Register() {
       setTipoMensaje('error');
       return;
     }
-    if (data?.user) {
-      // No intentamos insertar desde el cliente para evitar RLS.
-      // La creación del registro en `usuarios` debe gestionarse server-side (trigger o endpoint con service role).
-      setMensaje("Registro enviado. El admin validará tu cuenta.");
-      setTipoMensaje('success');
-      setNombre("");
-      setEmail("");
-      setPassword("");
+    let user = data?.user;
+    // Si signUp no devuelve el user (p. ej. requiere confirmación por email), intentar obtenerlo
+    if (!user) {
+      try {
+        const { data: getUserData, error: getUserError } = await supabase.auth.getUser();
+        if (getUserError) console.warn('supabase.getUser error:', getUserError);
+        user = getUserData?.user || null;
+      } catch (e) {
+        console.warn('Exception fetching user after signup:', e);
+      }
     }
+
+    if (user) {
+      const v_nombre = nombre.trim() || (user.user_metadata?.full_name) || user.email.split('@')[0];
+
+      try {
+        const { error: insertError } = await supabase
+          .from('usuarios')
+          .insert([{ nombre: v_nombre, email: user.email, uid: user.id }]);
+
+        if (insertError) {
+          console.error('Error inserting into usuarios:', insertError);
+          setMensaje('Registro creado, pero no se pudo guardar el perfil. Contacta al admin.');
+          setTipoMensaje('error');
+        } else {
+          setMensaje('Registro completado. El admin validará tu cuenta.');
+          setTipoMensaje('success');
+        }
+      } catch (e) {
+        console.error('Exception inserting usuario:', e);
+        setMensaje('Registro creado, pero error al guardar perfil. Contacta al admin.');
+        setTipoMensaje('error');
+      }
+    }
+
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.warn('Error signing out after signup', e);
+      }
+
+      setNombre('');
+      setEmail('');
+      setPassword('');
   };
 
   return (
