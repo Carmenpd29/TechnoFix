@@ -2,6 +2,10 @@
 
 Aplicación web para la gestión de reparaciones, clientes, ventas y usuarios en talleres técnicos.
 
+## Acceso a aplicación
+
+https://carmenpd29.github.io/TechnoFix
+
 ## Instalación
 
 1. Clona el repositorio:
@@ -28,6 +32,11 @@ Aplicación web para la gestión de reparaciones, clientes, ventas y usuarios en
 - Vite
 - Bootstrap 5
 - Supabase
+
+## Documentación disponible
+
+- Manual Técnico
+- Manual de Usuario
 
 ## Contacto
 Autor: Carmen Pulido Díaz

@@ -85,8 +85,8 @@ export function VerReparaciones() {
       <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
         <p>Selecciona una reparación para Editar o Eliminar.</p>
       </ManualPage>
-      <TablaContainer>
-        <div style={{overflowY: 'auto', maxHeight: '420px', width: '100%'}}>
+      <TablaContainer style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+        <div style={{ width: '100%' }}>
           <Tabla>
           <thead>
             <tr>

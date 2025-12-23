@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BotonVolver, supabase, TituloPage, WrapperPage, ZonaCliente } from "../../index";
 import { FormReparacionesBootstrap } from "../../components/reparaciones/FormReparacionesBootstrap.jsx";
 import { useEffect, useState } from "react";
+import { ModalOverlay, ModalContent, ModalHeader, ModalMessage, ModalButton } from "../../styles/CajaStyles";
 
 // Hook para debounce
 function useDebounce(value, delay = 400) {
@@ -37,6 +38,9 @@ export function AddReparacion() {
   const [loadingClientes, setLoadingClientes] = useState(false);
   const [tecnicos, setTecnicos] = useState([]);
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarModalError, setMostrarModalError] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
 
   // Debounce para la búsqueda
   const debouncedBusqueda = useDebounce(busqueda);
@@ -114,10 +118,8 @@ export function AddReparacion() {
       precio === "" ||
       isNaN(Number(precio))
     ) {
-      setMensaje({
-        texto: "Rellena todos los campos obligatorios",
-        tipo: "error",
-      });
+      setMensajeModal('Rellena todos los campos obligatorios');
+      setMostrarModalError(true);
       return;
     }
 
@@ -134,11 +136,13 @@ export function AddReparacion() {
       .single();
 
     if (!clienteExiste) {
-      setMensaje({ texto: "El cliente seleccionado no existe.", tipo: "error" });
+      setMensajeModal('El cliente seleccionado no existe.');
+      setMostrarModalError(true);
       return;
     }
     if (!tecnicoExiste) {
-      setMensaje({ texto: "El técnico seleccionado no existe.", tipo: "error" });
+      setMensajeModal('El técnico seleccionado no existe.');
+      setMostrarModalError(true);
       return;
     }
 
@@ -155,9 +159,11 @@ export function AddReparacion() {
 
     const { error } = await supabase.from("reparaciones").insert([datos]);
     if (error) {
-      setMensaje({ texto: `Error al guardar la reparación: ${error.message}`, tipo: "error" });
+      setMensajeModal(`Error al guardar la reparación: ${error.message}`);
+      setMostrarModalError(true);
     } else {
-      setMensaje({ texto: "Reparación guardada correctamente", tipo: "ok" });
+      setMensajeModal('Reparación guardada correctamente');
+      setMostrarModalExito(true);
       setCliente({
         id: "",
         nombre: "",
@@ -208,11 +214,31 @@ export function AddReparacion() {
         setDescripcion={setDescripcion}
         observaciones={observaciones}
         setObservaciones={setObservaciones}
-        mensaje={mensaje}
+        mensaje={null}
         onSubmit={handleSubmit}
         loading={loadingClientes}
         modoEdicion={false}
       />
+      {/* Modal Éxito */}
+      {mostrarModalExito && (
+        <ModalOverlay onClick={() => setMostrarModalExito(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader className="success">✅</ModalHeader>
+            <ModalMessage>{mensajeModal}</ModalMessage>
+            <ModalButton onClick={() => setMostrarModalExito(false)}>Aceptar</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+      {/* Modal Error */}
+      {mostrarModalError && (
+        <ModalOverlay onClick={() => setMostrarModalError(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader className="error">❌</ModalHeader>
+            <ModalMessage>{mensajeModal}</ModalMessage>
+            <ModalButton error onClick={() => setMostrarModalError(false)}>Cerrar</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </WrapperPage>
   );
 }

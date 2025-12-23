@@ -72,7 +72,7 @@ export function VerClientes() {
       <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
         <p>Selecciona un cliente para Ver, Editar o Eliminar.</p>
       </ManualPage>
-      <TablaContainer>
+      <TablaContainer style={{ maxHeight: '50vh', overflowY: 'auto' }}>
         <Tabla>
           <thead>
             <tr>

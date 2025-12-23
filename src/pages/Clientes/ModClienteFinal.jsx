@@ -1,6 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BotonVolver, supabase, TituloPage, WrapperPage, IconBtn } from "../../index";
+import { ModalOverlay, ModalContent, ModalHeader, ModalMessage, ModalButton } from "../../styles/CajaStyles";
 import { FiSave } from "react-icons/fi";
 import { Form, Field, Label, Input, Mensaje, ErrorMsg, ObligatorioMsg } from "../../styles/ModClienteFinalStyles";
 import { FormularioBootstrap } from "../../components/general/FormularioBootstrap";
@@ -22,6 +23,9 @@ export function ModClienteFinal() {
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarModalError, setMostrarModalError] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState("");
 
   // Cargar datos del cliente
   useEffect(() => {
@@ -82,9 +86,11 @@ export function ModClienteFinal() {
       .eq("id", id);
     setLoading(false);
     if (error) {
-      setError("Error al modificar el cliente.");
+      setMensajeModal('Error al modificar el cliente.');
+      setMostrarModalError(true);
     } else {
-      setMensaje("Cliente modificado correctamente.");
+      setMensajeModal('Cliente modificado correctamente.');
+      setMostrarModalExito(true);
       setTimeout(() => navigate("/clientes/ver"), 1200);
     }
   };
@@ -106,11 +112,29 @@ export function ModClienteFinal() {
         onChange={handleChange}
         onSubmit={handleSubmit}
         loading={loading}
-        mensaje={mensaje ? { tipo: "ok", texto: mensaje } : error ? { tipo: "error", texto: error } : null}
+        mensaje={null}
         buttonText={loading ? "Modificando..." : "Modificar"}
       >
         <div className="text-muted mb-2" style={{ fontSize: '0.9rem' }}><span>*</span> Campos obligatorios</div>
       </FormularioBootstrap>
+        {mostrarModalExito && (
+          <ModalOverlay onClick={() => setMostrarModalExito(false)}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <ModalHeader className="success">✅</ModalHeader>
+              <ModalMessage>{mensajeModal}</ModalMessage>
+              <ModalButton onClick={() => setMostrarModalExito(false)}>Aceptar</ModalButton>
+            </ModalContent>
+          </ModalOverlay>
+        )}
+        {mostrarModalError && (
+          <ModalOverlay onClick={() => setMostrarModalError(false)}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <ModalHeader className="error">❌</ModalHeader>
+              <ModalMessage>{mensajeModal}</ModalMessage>
+              <ModalButton error onClick={() => setMostrarModalError(false)}>Cerrar</ModalButton>
+            </ModalContent>
+          </ModalOverlay>
+        )}
     </WrapperPage>
   );
 }
