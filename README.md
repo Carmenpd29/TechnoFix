@@ -16,7 +16,7 @@ https://carmenpd29.github.io/TechnoFix
 	```sh
 	npm install
 	npm install bootstrap
-	npm install @supabase/supabase-js html2canvas jspdf jspdf-autotable styled-components react-icons express
+	npm install @supabase/supabase-js html2canvas jspdf jspdf-autotable styled-components react-icons
 	```
 3. Ejecuta en modo desarrollo:
 	```sh
@@ -27,11 +27,21 @@ https://carmenpd29.github.io/TechnoFix
 	npm run build
 	```
 
-## Tecnologías
-- React 19
-- Vite
-- Bootstrap 5
-- Supabase
+## Tecnologías y versiones
+- `react` 19.1.0
+- `react-dom` 19.1.0
+- `vite` 6.3.5
+- `@supabase/supabase-js` 2.58.0
+- `bootstrap` 5.3.8
+- `styled-components` 6.1.18
+- `zustand` 5.0.5
+- `html2canvas` 1.4.1
+- `jspdf` 3.0.3
+- `jspdf-autotable` 5.0.2
+- DevDependencies clave:
+- `@vitejs/plugin-react` 4.4.1
+- `vite` 6.3.5
+- `@eslint/js` 9.25.0
 
 ## Documentación disponible
 
