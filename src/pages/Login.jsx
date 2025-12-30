@@ -70,8 +70,9 @@ export function Login({ onLogin }) {
       return;
     }
 
-    // build redirect base from env or current origin (strip trailing slash)
-    const redirectBase = (import.meta.env.VITE_APP_URL || window.location.origin).replace(/\/$/, '');
+    // build redirect base from env or current origin+pathname (strip trailing slash)
+    // This ensures GitHub Pages subpath (e.g. /TechnoFix) is included when VITE_APP_URL isn't set.
+    const redirectBase = (import.meta.env.VITE_APP_URL || (window.location.origin + window.location.pathname)).replace(/\/$/, '');
 
     // 1. Registrar en Supabase Auth (incluyendo redirect a /confirm)
     const { data, error } = await supabase.auth.signUp({

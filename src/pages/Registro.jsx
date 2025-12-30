@@ -26,8 +26,7 @@ export function Register() {
       return;
     }
 
-    // build redirect base from env or current origin (strip trailing slash)
-    const redirectBase = (import.meta.env.VITE_APP_URL || window.location.origin).replace(/\/$/, '');
+    const redirectBase = (import.meta.env.VITE_APP_URL || (window.location.origin + window.location.pathname)).replace(/\/$/, '');
 
     const { data, error } = await supabase.auth.signUp({
       email,
