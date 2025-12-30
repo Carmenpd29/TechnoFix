@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../index';
 import { WrapperPage, TituloPage, Footer } from '../index';
@@ -15,60 +15,57 @@ const Box = styled.div`
 `;
 
 export function Confirm() {
-  const [status, setStatus] = useState('checking'); 
-  const [message, setMessage] = useState('Comprobando confirmación...');
+  const [status, setStatus] = useState('checking');
+  const [message, setMessage] = useState('Confirmando tu correo...');
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
+    const confirm = async () => {
       try {
-        if (supabase?.auth?.getSessionFromUrl) {
-          try {
-            await supabase.auth.getSessionFromUrl({ storeSession: true });
-          } catch (e) {
-            console.warn('getSessionFromUrl:', e.message || e);
-          }
+        const { error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
+        );
+
+        if (error) {
+          setStatus('error');
+          setMessage('El enlace de confirmación no es válido o ha expirado.');
+          console.error(error);
+          return;
         }
 
-        const params = new URLSearchParams(window.location.search);
-        const email = params.get('email');
-
-        if (email) {
-          const { data, error } = await supabase
-            .from('usuarios')
-            .select('email, email_confirmed_at')
-            .eq('email', email)
-            .maybeSingle();
-
-          if (!error && data) {
-            if (data.email_confirmed_at) {
-              setStatus('success');
-              setMessage('Correo confirmado correctamente. Ya puedes iniciar sesión.');
-              return;
-            }
-          }
-        }
-
-        // Si no podemos confirmar desde DB, mostramos success de todos modos (Supabase ya confirmó el email en auth.users)
         setStatus('success');
-        setMessage('Correo confirmado correctamente. Ya puedes iniciar sesión.');
+        setMessage('Correo confirmado correctamente. Espera a que el administrador valide tu cuenta.');
       } catch (e) {
         setStatus('error');
-        setMessage('No se ha podido confirmar el correo. Intenta de nuevo o contacta con el admin.');
-        console.error('Confirm error:', e);
+        setMessage('No se ha podido confirmar el correo.');
+        console.error(e);
       }
-    })();
+    };
+
+    confirm();
   }, []);
 
   return (
     <WrapperPage>
       <TituloPage>Confirmación de correo</TituloPage>
       <Box>
-        <h3>{status === 'checking' ? 'Comprobando...' : status === 'success' ? '¡Confirmado!' : 'Error'}</h3>
+        <h3>
+          {status === 'checking'
+            ? 'Confirmando...'
+            : status === 'success'
+            ? '¡Confirmado!'
+            : 'Error'}
+        </h3>
+
         <p>{message}</p>
-        <div style={{ marginTop: 16 }}>
-          <button onClick={() => navigate('/login')}>Ir a Iniciar sesión</button>
-        </div>
+
+        {status === 'success' && (
+          <div style={{ marginTop: 16 }}>
+            <button onClick={() => navigate('/login')}>
+              Ir a Iniciar sesión
+            </button>
+          </div>
+        )}
       </Box>
       <Footer />
     </WrapperPage>
