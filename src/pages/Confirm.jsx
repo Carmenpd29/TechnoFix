@@ -22,7 +22,7 @@ export function Confirm() {
   useEffect(() => {
     const confirm = async () => {
       try {
-        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        const { data, error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
 
         if (error) {
           setStatus('error');
@@ -32,7 +32,7 @@ export function Confirm() {
         }
 
         setStatus('success');
-        setMessage('Correo confirmado correctamente. Espera a que el administrador valide tu cuenta.');
+        setMessage('Correo confirmado correctamente. Ya puedes iniciar sesión.');
       } catch (e) {
         setStatus('error');
         setMessage('No se ha podido confirmar el correo.');
