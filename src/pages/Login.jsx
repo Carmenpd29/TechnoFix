@@ -70,10 +70,16 @@ export function Login({ onLogin }) {
       return;
     }
 
-    // 1. Registrar en Supabase Auth
+    // build redirect base from env or current origin (strip trailing slash)
+    const redirectBase = (import.meta.env.VITE_APP_URL || window.location.origin).replace(/\/$/, '');
+
+    // 1. Registrar en Supabase Auth (incluyendo redirect a /confirm)
     const { data, error } = await supabase.auth.signUp({
       email: regEmail,
       password: regPassword,
+    }, {
+      emailRedirectTo: `${redirectBase}/confirm`,
+      redirectTo: `${redirectBase}/confirm`,
     });
 
     if (error) {
