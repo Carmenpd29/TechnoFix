@@ -5,7 +5,6 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { LoginWrapper, RegistroCaja, Input, Entrar, ErrorMsg, RegMsg, FondoDegradado, PasswordWrapper, EyeButton } from "../styles/RegistroStyles";
 
 export function Register() {
-  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -16,7 +15,7 @@ export function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setMensaje("");
-    if (!nombre.trim() || !email.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       setMensaje("Rellena todos los campos.");
       setTipoMensaje('error');
       return;
@@ -35,7 +34,7 @@ export function Register() {
       password,
     }, {
       emailRedirectTo: `${redirectBase}/confirm`,
-      data: { full_name: nombre }
+      redirectTo: `${redirectBase}/confirm`,
     });
     if (error) {
       console.error('supabase.signUp error:', error);
@@ -58,7 +57,6 @@ export function Register() {
     }
 
     // Preparar valores comunes
-    const v_nombre = nombre.trim() || (user?.user_metadata?.full_name) || (email.split ? email.split('@')[0] : '');
     const emailToUse = user?.email || email;
 
     // Si el signUp devuelve un user intentamos obtener la session; solo con session
@@ -67,11 +65,11 @@ export function Register() {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
       if (session && !sessionError) {
-        try {
+          try {
           const { error: upsertError } = await supabase
             .from('usuarios')
             .upsert(
-              [{ nombre: v_nombre, email: emailToUse, uid: user.id }],
+              [{ email: emailToUse, uid: user.id }],
               { onConflict: 'email' }
             );
 
@@ -96,7 +94,7 @@ export function Register() {
           console.warn('Error signing out after signup', e);
         }
 
-        setNombre('');
+        // limpiar campos
         setEmail('');
         setPassword('');
       } else {
@@ -107,7 +105,7 @@ export function Register() {
           const { error: upsertAnonError } = await supabase
             .from('usuarios')
             .upsert(
-              [{ nombre: v_nombre, email: emailToUse, uid: null }],
+              [{ email: emailToUse, uid: null }],
               { onConflict: 'email' }
             );
 
@@ -122,7 +120,7 @@ export function Register() {
         setMensaje('Registro creado. Confirma tu correo para completar el perfil.');
         setTipoMensaje('success');
 
-        setNombre('');
+        // limpiar campos
         setEmail('');
         setPassword('');
       }
@@ -135,14 +133,7 @@ export function Register() {
         <RegistroCaja>
           <TituloPage>Registro de nuevo usuario</TituloPage>
           <form onSubmit={handleRegister} style={{ width: "100%" }}>
-            <Input
-              type="text"
-              placeholder="Nombre"
-              value={nombre}
-              onChange={e => setNombre(e.target.value)}
-              required
-              autoComplete="off"
-            />
+            {/* Nombre eliminado del formulario: lo asignará el admin en la validación */}
             <Input
               type="email"
               placeholder="Email"
