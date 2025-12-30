@@ -95,6 +95,7 @@ export * from './pages/Empresa';
 export * from './pages/Home';
 export * from './pages/Login';
 export * from './pages/Registro';
+export * from './pages/Confirm';
 export * from './pages/Reparaciones';
 export * from './pages/TPV';
 export * from './pages/Usuarios';

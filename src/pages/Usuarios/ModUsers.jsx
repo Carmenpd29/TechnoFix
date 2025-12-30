@@ -14,6 +14,7 @@ export function ModUsers() {
 
   const [form, setForm] = useState({
     rol: usuario?.rol || "",
+    nombre: usuario?.nombre || "",
   });
     useEffect(() => {
       async function checkUnicoAdmin() {
@@ -55,6 +56,12 @@ export function ModUsers() {
     setMensajeTipo("");
     setLoading(true);
 
+    if (!form.nombre) {
+      setMensaje("El nombre es obligatorio.");
+      setMensajeTipo("error");
+      setLoading(false);
+      return;
+    }
     if (!form.rol) {
       setMensaje("El rol es obligatorio.");
       setMensajeTipo("error");
@@ -69,29 +76,33 @@ export function ModUsers() {
       return;
     }
 
-    const { error } = await supabase
+    const { data: updatedUser, error } = await supabase
       .from("usuarios")
-      .update({ rol: form.rol })
-      .eq("id", usuario.id);
+      .update({ rol: form.rol, nombre: form.nombre })
+      .eq("id", usuario.id)
+      .select()
+      .maybeSingle();
 
     setLoading(false);
 
     if (error) {
-      setMensaje("Error al actualizar el usuario.");
+      console.error('Error actualizando usuario:', error);
+      setMensaje(error.message || "Error al actualizar el usuario.");
       setMensajeTipo("error");
-    } else {
+    } else if (updatedUser) {
       setMensaje("Rol actualizado correctamente.");
       setMensajeTipo("success");
       // Refrescar el usuario en el store si es el usuario logueado
       if (usuario.id === useUserStore.getState().user?.id) {
-        // Recargar datos del usuario desde supabase
-        const { data: userActualizado } = await supabase
-          .from("usuarios")
-          .select("*")
-          .eq("id", usuario.id)
-          .single();
-        if (userActualizado) login(userActualizado);
+        login(updatedUser);
       }
+      // opcional: volver a la lista para ver cambios
+      // navigate('/usuarios/lista');
+    } else {
+      // No rows updated (possible RLS/policy preventing the UPDATE)
+      console.warn('Update returned no rows (possible RLS policy).');
+      setMensaje('No se han aplicado cambios: comprueba las políticas RLS o permisos en Supabase.');
+      setMensajeTipo('error');
     }
   };
 
@@ -105,9 +116,9 @@ export function ModUsers() {
             <Label>Nombre</Label>
             <Input
               name="nombre"
-              value={usuario.nombre}
-              disabled
-              readOnly
+              value={form.nombre}
+              onChange={handleChange}
+              disabled={loading}
             />
           </Field>
           <Field>

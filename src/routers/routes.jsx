@@ -17,6 +17,7 @@ import {
   ModUsers,
   ModMyUser,
   Register,
+  Confirm,
   Reparaciones,
   AddReparacion,
   VerReparaciones,
@@ -37,6 +38,7 @@ export function MyRoutes({ user }) {
       <Route path="/" element={<Navigate to="/home" replace />} />
       {/* Rutas públicas */}
       <Route path="/register" element={<Register />} />
+      <Route path="/confirm" element={<Confirm />} />
       {/* Rutas protegidas */}
       <Route path="/home" element={
         <RutaAutenticada>

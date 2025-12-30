@@ -47,6 +47,7 @@ export function AdminUsers() {
 
   const columns = [
     { key: "nombre", label: "Nombre" },
+    { key: "email_confirmed", label: "Estado" },
     { key: "rol", label: "Rol" },
   ];
 

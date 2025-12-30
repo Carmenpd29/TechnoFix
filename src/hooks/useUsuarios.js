@@ -63,12 +63,12 @@ export const useUsuarios = () => {
         return { success: false, error: authError.message };
       }
 
-      // Crear registro en tabla usuarios
+      // Crear registro en tabla usuarios (usar columnas `email` y `uid`)
       const { error } = await supabase.from("usuarios").insert([{
         nombre: datosUsuario.nombre,
-        correo: datosUsuario.email,
+        email: datosUsuario.email,
         rol: datosUsuario.rol,
-        auth_id: data.user.id
+        uid: data.user.id
       }]);
 
       if (error) {

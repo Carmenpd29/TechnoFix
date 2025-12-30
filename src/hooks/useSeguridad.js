@@ -21,11 +21,50 @@ export const useSeguridad = () => {
       }
 
       // Obtener datos del usuario desde la tabla usuarios
-      const { data: usuarioDB, error: dbError } = await supabase
-        .from('usuarios')
-        .select('*')
-        .eq('uid', authUser.id)
-        .single();
+        let usuarioDB = null;
+        const { data: usuarioByUid, error: dbError } = await supabase
+          .from('usuarios')
+          .select('*')
+          .eq('uid', authUser.id)
+          .single();
+
+        if (!dbError && usuarioByUid) {
+          usuarioDB = usuarioByUid;
+        } else {
+          // Si no existe registro por uid, intentar localizar por email
+          try {
+            const { data: usuarioByEmail, error: emailError } = await supabase
+              .from('usuarios')
+              .select('*')
+              .eq('email', authUser.email)
+              .single();
+
+            if (!emailError && usuarioByEmail) {
+              // Sincronizar uid en la fila existente (cliente puede hacerlo)
+              const { error: updError } = await supabase
+                .from('usuarios')
+                .update({ uid: authUser.id })
+                .eq('email', authUser.email);
+
+              if (!updError) {
+                usuarioDB = usuarioByEmail;
+                usuarioDB.uid = authUser.id;
+              } else {
+                logSeguridad('ERROR_ACTUALIZANDO_UID', usuarioByEmail, { error: updError.message });
+              }
+            } else {
+              setUsuario(null);
+              setError('Usuario no encontrado en la base de datos');
+              logSeguridad('USUARIO_NO_ENCONTRADO_DB', null, { uid: authUser.id });
+              return false;
+            }
+          } catch (e) {
+            setUsuario(null);
+            setError('Usuario no encontrado en la base de datos');
+            logSeguridad('USUARIO_NO_ENCONTRADO_DB', null, { uid: authUser.id, error: e.message });
+            return false;
+          }
+        }
 
       if (dbError || !usuarioDB) {
         setUsuario(null);

@@ -26,18 +26,26 @@ export function Register() {
       setTipoMensaje('error');
       return;
     }
+
+    // build redirect base from env or current origin (strip trailing slash)
+    const redirectBase = (import.meta.env.VITE_APP_URL || window.location.origin).replace(/\/$/, '');
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+    }, {
+      emailRedirectTo: `${redirectBase}/confirm`,
+      data: { full_name: nombre }
     });
     if (error) {
       console.error('supabase.signUp error:', error);
-      // Mostrar mensaje concreto para depuración
       setMensaje(error.message || "Error al registrar. Comprueba la consola.");
       setTipoMensaje('error');
       return;
     }
+
     let user = data?.user;
+
     // Si signUp no devuelve el user (p. ej. requiere confirmación por email), intentar obtenerlo
     if (!user) {
       try {
@@ -49,38 +57,76 @@ export function Register() {
       }
     }
 
+    // Preparar valores comunes
+    const v_nombre = nombre.trim() || (user?.user_metadata?.full_name) || (email.split ? email.split('@')[0] : '');
+    const emailToUse = user?.email || email;
+
+    // Si el signUp devuelve un user intentamos obtener la session; solo con session
+    // podemos llamar a PostgREST como usuario autenticado (políticas RLS).
     if (user) {
-      const v_nombre = nombre.trim() || (user.user_metadata?.full_name) || user.email.split('@')[0];
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-      try {
-        const { error: insertError } = await supabase
-          .from('usuarios')
-          .insert([{ nombre: v_nombre, email: user.email, uid: user.id }]);
+      if (session && !sessionError) {
+        try {
+          const { error: upsertError } = await supabase
+            .from('usuarios')
+            .upsert(
+              [{ nombre: v_nombre, email: emailToUse, uid: user.id }],
+              { onConflict: 'email' }
+            );
 
-        if (insertError) {
-          console.error('Error inserting into usuarios:', insertError);
-          setMensaje('Registro creado, pero no se pudo guardar el perfil. Contacta al admin.');
+          if (upsertError) {
+            console.error('Error upserting into usuarios:', upsertError);
+            setMensaje('Registro creado, pero no se pudo guardar el perfil. Contacta al admin.');
+            setTipoMensaje('error');
+          } else {
+            setMensaje('Registro completado. El admin validará tu cuenta.');
+            setTipoMensaje('success');
+          }
+        } catch (e) {
+          console.error('Exception upserting usuario:', e);
+          setMensaje('Registro creado, pero error al guardar perfil. Contacta al admin.');
           setTipoMensaje('error');
-        } else {
-          setMensaje('Registro completado. El admin validará tu cuenta.');
-          setTipoMensaje('success');
         }
-      } catch (e) {
-        console.error('Exception inserting usuario:', e);
-        setMensaje('Registro creado, pero error al guardar perfil. Contacta al admin.');
-        setTipoMensaje('error');
+
+        // Cerrar sesión del cliente después de crear el perfil
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.warn('Error signing out after signup', e);
+        }
+
+        setNombre('');
+        setEmail('');
+        setPassword('');
+      } else {
+        // No hay session: normalmente ocurre cuando se requiere confirmación por email.
+        // Intentamos guardar nombre/email inmediatamente (anon insert). Esto requiere
+        // una policy RLS que permita INSERTs por role=anon con uid IS NULL.
+        try {
+          const { error: upsertAnonError } = await supabase
+            .from('usuarios')
+            .upsert(
+              [{ nombre: v_nombre, email: emailToUse, uid: null }],
+              { onConflict: 'email' }
+            );
+
+          if (upsertAnonError) {
+            console.warn('Upsert anon failed (could be RLS):', upsertAnonError);
+            // No mostramos error al usuario, sólo informamos que confirme el correo
+          }
+        } catch (e) {
+          console.warn('Exception upserting anon usuario:', e);
+        }
+
+        setMensaje('Registro creado. Confirma tu correo para completar el perfil.');
+        setTipoMensaje('success');
+
+        setNombre('');
+        setEmail('');
+        setPassword('');
       }
     }
-
-      try {
-        await supabase.auth.signOut();
-      } catch (e) {
-        console.warn('Error signing out after signup', e);
-      }
-
-      setNombre('');
-      setEmail('');
-      setPassword('');
   };
 
   return (
