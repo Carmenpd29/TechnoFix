@@ -22,9 +22,7 @@ export function Confirm() {
   useEffect(() => {
     const confirm = async () => {
       try {
-        const { error } = await supabase.auth.exchangeCodeForSession(
-          window.location.href
-        );
+        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
 
         if (error) {
           setStatus('error');
