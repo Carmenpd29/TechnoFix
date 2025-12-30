@@ -15,26 +15,21 @@ const Box = styled.div`
 `;
 
 export function Confirm() {
-  const [status, setStatus] = useState('checking'); // checking | success | error
+  const [status, setStatus] = useState('checking'); 
   const [message, setMessage] = useState('Comprobando confirmación...');
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       try {
-        // Para supabase-js v2: intentar procesar la URL (si contiene tokens)
-        // Esto no es obligatorio para la confirmación, pero permite iniciar sesión automáticamente si viene sesión en la URL.
         if (supabase?.auth?.getSessionFromUrl) {
           try {
             await supabase.auth.getSessionFromUrl({ storeSession: true });
           } catch (e) {
-            // no bloquear: seguir comprobando
             console.warn('getSessionFromUrl:', e.message || e);
           }
         }
 
-        // Opcional: podríamos verificar en la tabla usuarios si existe registro y si email_confirmed_at está presente.
-        // Si has implementado el trigger que actualiza `public.usuarios.email_confirmed_at`, puedes comprobarlo aquí.
         const params = new URLSearchParams(window.location.search);
         const email = params.get('email');
 

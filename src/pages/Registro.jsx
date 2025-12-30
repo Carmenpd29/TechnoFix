@@ -28,13 +28,15 @@ export function Register() {
 
     const redirectBase = (import.meta.env.VITE_APP_URL || (window.location.origin + window.location.pathname)).replace(/\/$/, '');
 
+    const signUpOptions = {
+      emailRedirectTo: `${redirectBase}/#/confirm`,
+      redirectTo: `${redirectBase}/#/confirm`,
+    };
+    console.log('Signup redirectBase:', redirectBase, 'options:', signUpOptions);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-    }, {
-      emailRedirectTo: `${redirectBase}/confirm`,
-      redirectTo: `${redirectBase}/confirm`,
-    });
+    }, signUpOptions);
     if (error) {
       console.error('supabase.signUp error:', error);
       setMensaje(error.message || "Error al registrar. Comprueba la consola.");

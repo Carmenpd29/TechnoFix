@@ -74,14 +74,16 @@ export function Login({ onLogin }) {
     // This ensures GitHub Pages subpath (e.g. /TechnoFix) is included when VITE_APP_URL isn't set.
     const redirectBase = (import.meta.env.VITE_APP_URL || (window.location.origin + window.location.pathname)).replace(/\/$/, '');
 
-    // 1. Registrar en Supabase Auth (incluyendo redirect a /confirm)
+    // 1. Registrar en Supabase Auth (incluyendo redirect a #/confirm)
+    const signUpOptions = {
+      emailRedirectTo: `${redirectBase}/#/confirm`,
+      redirectTo: `${redirectBase}/#/confirm`,
+    };
+    console.log('Login signUp redirectBase:', redirectBase, 'options:', signUpOptions);
     const { data, error } = await supabase.auth.signUp({
       email: regEmail,
       password: regPassword,
-    }, {
-      emailRedirectTo: `${redirectBase}/confirm`,
-      redirectTo: `${redirectBase}/confirm`,
-    });
+    }, signUpOptions);
 
     if (error) {
       setRegMensaje("Error al registrar, email en uso o contraseña de menos de 6 caracteres.");
