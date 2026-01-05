@@ -6,7 +6,7 @@ import { BusquedaContainer } from "../../styles/BuscadorClientesStyles";
 export function BuscadorClientes({
   busqueda,
   setBusqueda,
-  placeholder = "Buscar por nombre o NIF...",
+  placeholder = "Buscar por nombre, NIF o teléfono...",
   soloInput = false,
 }) {
   return (

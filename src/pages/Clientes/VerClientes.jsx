@@ -31,7 +31,7 @@ export function VerClientes() {
       setLoading(true);
       const { data } = await supabase
         .from("clientes")
-        .select("id, nombre, telefono, nif, direccion, correo")
+        .select("id, nombre, apellidos, telefono, nif, direccion, correo")
         .order("nombre", { ascending: true });
       setClientes(data || []);
       setLoading(false);
@@ -40,12 +40,20 @@ export function VerClientes() {
   }, []);
 
   useEffect(() => {
+    const q = (busqueda || "").toLowerCase();
     setClientesFiltrados(
-      clientes.filter(
-        (c) =>
-          c.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-          (c.correo && c.correo.toLowerCase().includes(busqueda.toLowerCase()))
-      )
+      clientes.filter((c) => {
+        const nombre = (c.nombre || "").toLowerCase();
+        const correo = (c.correo || "").toLowerCase();
+        const nif = (c.nif || "").toLowerCase();
+        const telefono = (c.telefono || "").toString().toLowerCase();
+        return (
+          nombre.includes(q) ||
+          correo.includes(q) ||
+          nif.includes(q) ||
+          telefono.includes(q)
+        );
+      })
     );
   }, [busqueda, clientes]);
 
@@ -93,7 +101,7 @@ export function VerClientes() {
                 }}
                 onClick={() => setSelected(c)}
               >
-                <td>{c.nombre}</td>
+                  <td>{`${c.nombre || ""} ${c.apellidos || ""}`.trim()}</td>
                 <td>{c.telefono}</td>
                 <td>{c.nif}</td>
                 <td>{c.direccion}</td>
