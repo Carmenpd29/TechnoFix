@@ -4,7 +4,7 @@ import styled from "styled-components";
  * IconBtn
  * Botón estilizado que muestra un icono y texto.
  */
-export const IconBtn = styled.button`
+export const IconBtn = styled.button.withConfig({ shouldForwardProp: (prop) => prop !== 'eliminar' && prop !== '$eliminar' })`
   background: ${({ eliminar }) =>
     eliminar
       ? "linear-gradient(90deg, #b91c1c 0%, #f87171 100%)"

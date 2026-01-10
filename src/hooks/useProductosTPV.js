@@ -216,6 +216,65 @@ export const useProductosTPV = () => {
   };
 
   /**
+   * Manejo de cambios para el formulario de categoría
+   */
+  const manejarCambioCategoria = (e) => {
+    const { name, value } = e.target;
+    setFormularioCategoria(prev => ({ ...prev, [name]: value }));
+  };
+
+  /**
+   * Guardar nueva categoría
+   */
+  const guardarCategoria = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setCargando(true);
+    try {
+      const payload = {
+        nombre: formularioCategoria.nombre,
+        descripcion: formularioCategoria.descripcion,
+        icono: formularioCategoria.icono,
+        activa: true
+      };
+
+      const { data, error } = await withTimeout(
+        supabase.from("categorias_productos").insert([payload]).select(),
+        15000
+      );
+
+      if (error) {
+        console.error('Error guardarCategoria:', error);
+        setMensajeModal('Error al crear la categoría');
+        setMostrarModalError(true);
+      } else {
+        await cargarCategorias();
+        setMensajeModal('Categoría creada correctamente');
+        setMostrarModalExito(true);
+        setFormularioCategoria({ nombre: "", descripcion: "", icono: "📱" });
+      }
+    } catch (err) {
+      console.error('guardarCategoria (timeout or network):', err);
+      setMensajeModal('Error al crear la categoría (tiempo de espera)');
+      setMostrarModalError(true);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const cerrarModalExito = () => {
+    setMostrarModalExito(false);
+  };
+
+  const cerrarModalError = () => {
+    setMostrarModalError(false);
+  };
+
+  const cancelarEliminacion = () => {
+    setProductoAEliminar(null);
+    setMostrarModalConfirmacion(false);
+  };
+
+  /**
    * Estadísticas del inventario
    */
   const estadisticas = {
@@ -235,11 +294,16 @@ export const useProductosTPV = () => {
     setBusqueda,
     cargando,
     manejarCambio,
+    manejarCambioCategoria,
     guardarProducto,
+    guardarCategoria,
     editarProducto,
     eliminarProducto,
     confirmarEliminacion,
     cancelarEdicion,
+    cerrarModalExito,
+    cerrarModalError,
+    cancelarEliminacion,
     estadisticas,
     mostrarModalExito,
     mostrarModalError,

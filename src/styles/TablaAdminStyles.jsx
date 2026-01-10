@@ -35,16 +35,16 @@ export const ColEstado = styled.td`
 `;
 import styled from "styled-components";
 
-export const IconBtnTabla = styled.button`
+export const IconBtnTabla = styled.button.withConfig({ shouldForwardProp: (prop) => prop !== 'eliminar' && prop !== '$eliminar' })`
   background: none;
   border: none;
-  color: ${({ $eliminar }) => ($eliminar ? "#d32f2f" : "#607074")};
+  color: ${(props) => ((props.$eliminar ?? props.eliminar) ? "#d32f2f" : "#607074")};
   font-size: 1.2rem;
   cursor: pointer;
   margin-right: 0.7rem;
   transition: color 0.2s;
   &:not(:disabled):hover {
-    color: ${({ $eliminar }) => ($eliminar ? "#a31515" : "#003459")};
+    color: ${(props) => ((props.$eliminar ?? props.eliminar) ? "#a31515" : "#003459")};
   }
   &:disabled {
     opacity: 0.5;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FiSearch, FiPackage, FiArrowLeft, FiPlus, FiFolder, FiHelpCircle, FiEdit, FiSave, FiX, FiTrash2 } from "react-icons/fi";
 import { BotonVolver, TituloPage, WrapperPage, Opciones, ManualPage, Tabla, TablaContainer, IconBtn, BotonesContainer, BotonMenu } from "../../index";
 import { formatearCodigoProducto } from "../../utils/formatearCodigo";
-import { TPVBotonMenu } from "../../styles/TPVBotonMenuStyles";
 import { ModalOverlay, ModalContent, ModalHeader, ModalMessage, ModalButton } from "../../styles/CajaStyles";
 import { useProductosTPV } from "../../hooks/useProductosTPV";
 import {

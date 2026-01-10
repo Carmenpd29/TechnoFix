@@ -82,7 +82,7 @@ export function FormReparaciones({
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
         <IconBtn type="submit" disabled={loading}>
           <FiSave size={16} />
-          <span>{modoEdicion ? 'Guardar cambios' : 'Guardar'}</span>
+          <span>Guardar</span>
         </IconBtn>
       </div>
     </form>
