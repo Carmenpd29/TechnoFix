@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { supabase } from "../index"; 
+import { supabase } from "../supabase/supabaseClient"; 
 
 export const useUserStore = create(persist(
   (set) => ({

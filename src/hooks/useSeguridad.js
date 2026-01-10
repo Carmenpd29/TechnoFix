@@ -12,17 +12,28 @@ export const useSeguridad = () => {
   const [error, setError] = useState(null);
 
   const verificarAutenticacion = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("No autenticado");
+      const resp = await supabase.auth.getUser();
+      const user = resp?.data?.user;
+      if (!user) {
+        setUsuario(null);
+        return false;
+      }
 
-      const { data } = await supabase
+      const { data, error: dbError } = await supabase
         .from("usuarios")
         .select("*")
         .eq("uid", user.id)
         .single();
 
-      if (!data) throw new Error("Usuario no encontrado");
+      if (dbError || !data) {
+        setUsuario(null);
+        setError(dbError?.message || "Usuario no encontrado");
+        logSeguridad("ERROR_AUTH", null, { error: dbError?.message });
+        return false;
+      }
 
       setUsuario(data);
       logSeguridad("USUARIO_AUTENTICADO", data);
@@ -30,8 +41,8 @@ export const useSeguridad = () => {
 
     } catch (err) {
       setUsuario(null);
-      setError(err.message);
-      logSeguridad("ERROR_AUTH", null, { error: err.message });
+      setError(err?.message || String(err));
+      logSeguridad("ERROR_AUTH", null, { error: err?.message || String(err) });
       return false;
     } finally {
       setLoading(false);
@@ -51,8 +62,28 @@ export const useSeguridad = () => {
 
   useEffect(() => {
     verificarAutenticacion();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(verificarAutenticacion);
-    return () => subscription.unsubscribe();
+
+    let subscription;
+    try {
+      const res = supabase.auth.onAuthStateChange((event, session) => {
+        verificarAutenticacion();
+      });
+      subscription = res?.data?.subscription;
+    } catch (e) {
+      console.warn("onAuthStateChange error:", e);
+    }
+
+    return () => {
+      try {
+        if (subscription && typeof subscription.unsubscribe === "function") {
+          subscription.unsubscribe();
+        } else if (typeof subscription === "function") {
+          subscription();
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
   }, []);
 
   return {
