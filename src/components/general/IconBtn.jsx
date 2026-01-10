@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+/**
+ * IconBtn
+ * Botón estilizado que muestra un icono y texto.
+ */
 export const IconBtn = styled.button`
   background: ${({ eliminar }) =>
     eliminar

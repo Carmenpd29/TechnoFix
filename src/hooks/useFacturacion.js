@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase/supabaseClient";
 
-// Hook para manejar filtros y datos de facturación/ventas
+/**
+ * useFacturacion
+ * Hook personalizado para gestionar la facturación y ventas.
+ * Permite cargar ventas desde Supabase, aplicar filtros y calcular estadísticas agregadas.
+ */
 export const useFacturacion = () => {
+  // Listado completo de ventas transformadas
   const [ventas, setVentas] = useState([]);
+
+  // Indica si las ventas están siendo cargadas
   const [loading, setLoading] = useState(true);
+
+  // Filtros aplicables a la facturación
   const [filtros, setFiltros] = useState({
     fechaInicio: "",
     fechaFin: "",
@@ -13,6 +22,9 @@ export const useFacturacion = () => {
     maxImporte: ""
   });
 
+  /**
+   * Carga las ventas desde la base de datos (Supabase) junto con sus clientes y detalles de venta.
+   */
   const cargarVentas = async () => {
     setLoading(true);
     try {
@@ -50,8 +62,10 @@ export const useFacturacion = () => {
 
       if (error) throw error;
 
-      // Transformar los datos para que coincidan con el formato esperado
-      const ventasTransformadas = ventasData.map((venta, index) => ({
+      /**
+       * Transformación de los datos obtenidos para adaptarlos al formato utilizado por la interfaz de usuario.
+       */
+      const ventasTransformadas = ventasData.map((venta) => ({
         id: venta.id,
         numero: 'V2024-' + String(venta.id).padStart(3, '0'),
         fecha: venta.created_at,
@@ -74,15 +88,19 @@ export const useFacturacion = () => {
     } catch (error) {
       console.error('Error cargando ventas:', error);
     } finally {
+      // Finaliza el estado de carga
       setLoading(false);
     }
   };
 
+  // Cargar ventas al montar el componente que use este hook
   useEffect(() => {
     cargarVentas();
   }, []);
 
-  // Filtrar ventas según criterios
+  /**
+   * Aplica los filtros seleccionados sobre el listado de ventas
+   */
   const ventasFiltradas = ventas.filter(venta => {
     const fechaVenta = new Date(venta.fecha);
     const fechaInicio = filtros.fechaInicio ? new Date(filtros.fechaInicio) : null;
@@ -97,20 +115,27 @@ export const useFacturacion = () => {
     return true;
   });
 
-  // Calcular estadísticas
+  /**
+   * Estadísticas calculadas a partir de las ventas filtradas
+   */
   const estadisticas = {
     totalVentas: ventasFiltradas.length,
     importeTotal: ventasFiltradas.reduce((sum, v) => sum + v.total, 0),
-    ticketPromedio: ventasFiltradas.length > 0 
-      ? ventasFiltradas.reduce((sum, v) => sum + v.total, 0) / ventasFiltradas.length 
+    ticketPromedio: ventasFiltradas.length > 0
+      ? ventasFiltradas.reduce((sum, v) => sum + v.total, 0) / ventasFiltradas.length
       : 0,
-    efectivo: ventasFiltradas.filter(v => v.metodoPago === 'efectivo').reduce((sum, v) => sum + v.total, 0)
+    efectivo: ventasFiltradas
+      .filter(v => v.metodoPago === 'efectivo')
+      .reduce((sum, v) => sum + v.total, 0)
   };
 
+  /**
+   * Actualiza uno o varios filtros de facturación
+   */
   const actualizarFiltros = (nuevosFiltros) => {
     setFiltros({ ...filtros, ...nuevosFiltros });
   };
-
+ 
   return {
     ventas: ventasFiltradas,
     filtros,
@@ -121,7 +146,9 @@ export const useFacturacion = () => {
   };
 };
 
-// Utilidades para formateo
+/**
+ * Utilidad para formatear fechas en formato español
+ */
 export const formatearFecha = (fecha) => {
   return new Date(fecha).toLocaleString('es-ES', {
     day: '2-digit',
@@ -132,6 +159,9 @@ export const formatearFecha = (fecha) => {
   });
 };
 
+/**
+ * Utilidad para convertir códigos de método de pago en textos legibles para la interfaz
+ */
 export const formatearMetodoPago = (metodo) => {
   const metodos = {
     'bizum': 'Bizum',

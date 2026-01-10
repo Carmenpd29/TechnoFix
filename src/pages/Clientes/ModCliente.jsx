@@ -3,10 +3,20 @@ import { BotonVolver, BuscadorClientes, TituloPage, WrapperPage, IconBtn } from 
 import { FiCheck } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * ModCliente
+ * Pantalla intermedia para seleccionar un cliente antes de modificarlo.
+ */
 export function ModCliente() {
+  // Cliente seleccionado en el buscador
   const [seleccionado, setSeleccionado] = useState(null);
+
+  // Navegación programática
   const navigate = useNavigate();
 
+  /**
+   * Navega a la pantalla final de edición
+   */
   const handleAceptar = () => {
     if (seleccionado) {
       navigate(`/clientes/modificar/${seleccionado.id}`, {
@@ -19,7 +29,11 @@ export function ModCliente() {
     <WrapperPage>
       <BotonVolver to="/clientes" />
       <TituloPage>Modificar Cliente</TituloPage>
+
+      {/* Buscador de clientes */}
       <BuscadorClientes onSeleccionar={setSeleccionado} />
+
+      {/* Botón aceptar */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
         <IconBtn disabled={!seleccionado} onClick={handleAceptar}>
           <FiCheck size={16} />

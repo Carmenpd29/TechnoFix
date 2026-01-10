@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FiPrinter, FiDownload, FiEye, FiFilter, FiBarChart, FiRefreshCw, FiX } from "react-icons/fi";
+import { useState } from "react";
+import { FiDownload, FiEye, FiFilter, FiBarChart, FiRefreshCw, FiX } from "react-icons/fi";
 import styled from "styled-components";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -73,8 +73,6 @@ const Select = styled.select`
     border-color: ${primaryColor};
   }
 `;
-
-// Removed - using IconBtn now
 
 const VentasGrid = styled.div`
   display: grid;
@@ -156,8 +154,6 @@ const VentaAcciones = styled.div`
   padding-top: 1rem;
   border-top: 1px solid #eee;
 `;
-
-// Removed - using IconBtn now
 
 const EstadisticasGrid = styled.div`
   display: grid;

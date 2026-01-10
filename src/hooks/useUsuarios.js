@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../index";
+import { supabase } from "../supabase/supabaseClient";
+import { withTimeout } from "../utils/supabaseUtils";
 
-// Hook para manejar usuarios y operaciones de admin
+/**
+ * Hook de administración de usuarios.
+ * Permite listar, crear, actualizar y eliminar usuarios.
+ */
 export const useUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,93 +14,61 @@ export const useUsuarios = () => {
   const fetchUsuarios = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("usuarios")
-        .select("*")
-        .order("nombre", { ascending: true });
-      if (error) {
-        setMensaje("Error al cargar usuarios");
-        console.error(error);
-      } else {
-        setUsuarios(data || []);
-      }
-    } catch (error) {
-      setMensaje("Error inesperado al cargar usuarios");
-      console.error(error);
+      const { data, error } = await withTimeout(
+        supabase.from("usuarios").select("*").order("nombre"),
+        15000
+      );
+      if (!error) setUsuarios(data || []);
+      else console.error('Error fetching usuarios:', error);
+    } catch (err) {
+      console.error('Error fetching usuarios (timeout or network):', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const eliminarUsuario = async (usuarioId) => {
+  const eliminarUsuario = async (id) => {
     try {
-      const { error } = await supabase
-        .from("usuarios")
-        .delete()
-        .eq("id", usuarioId);
-
-      if (error) {
-        setMensaje("Error al eliminar usuario");
-        return { success: false, error: error.message };
-      } else {
-        setMensaje("Usuario eliminado correctamente");
-        // Recargar lista
-        await fetchUsuarios();
-        return { success: true };
-      }
-    } catch (error) {
-      setMensaje("Error inesperado al eliminar usuario");
-      return { success: false, error: error.message };
+      await withTimeout(supabase.from("usuarios").delete().eq("id", id), 10000);
+      await fetchUsuarios();
+    } catch (err) {
+      console.error('Error eliminando usuario:', err);
     }
   };
 
-  const crearUsuario = async (datosUsuario) => {
+  const crearUsuario = async (datos) => {
     try {
-      // Crear usuario en auth
-      const { data, error: authError } = await supabase.auth.admin.createUser({
-        email: datosUsuario.email,
-        password: datosUsuario.password,
-        email_confirm: true
-      });
+      const { data } = await withTimeout(
+        supabase.auth.admin.createUser({
+          email: datos.email,
+          password: datos.password,
+          email_confirm: true
+        }),
+        15000
+      );
 
-      if (authError) {
-        return { success: false, error: authError.message };
-      }
-
-      // Crear registro en tabla usuarios (usar columnas `email` y `uid`)
-      const { error } = await supabase.from("usuarios").insert([{
-        nombre: datosUsuario.nombre,
-        email: datosUsuario.email,
-        rol: datosUsuario.rol,
-        uid: data.user.id
-      }]);
-
-      if (error) {
-        return { success: false, error: error.message };
-      }
+      await withTimeout(
+        supabase.from("usuarios").insert([{
+          nombre: datos.nombre,
+          email: datos.email,
+          rol: datos.rol,
+          uid: data.user.id
+        }]),
+        15000
+      );
 
       await fetchUsuarios();
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
+    } catch (err) {
+      console.error('Error creando usuario:', err);
     }
   };
 
-  const actualizarUsuario = async (usuarioId, datosUsuario) => {
+  const actualizarUsuario = async (id, datos) => {
     try {
-      const { error } = await supabase
-        .from("usuarios")
-        .update(datosUsuario)
-        .eq("id", usuarioId);
-
-      if (error) {
-        return { success: false, error: error.message };
-      }
-
+      await withTimeout(supabase.from("usuarios").update(datos).eq("id", id), 10000);
       await fetchUsuarios();
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
+    } catch (err) {
+      console.error('Error actualizando usuario:', err);
     }
   };
 

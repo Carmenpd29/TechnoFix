@@ -1,8 +1,15 @@
 import { useState } from "react";
 
-// Hook para manejar la gestión de productos en la caja
+/**
+ * useProductos
+ * Hook personalizado para gestionar productos en la caja/venta.
+ * Permite agregar, editar y eliminar productos, tanto manuales como procedentes de la base de datos.
+ */
 export const useProductos = (onProductoAgregado = null) => {
+  // Lista de productos añadidos a la venta
   const [productos, setProductos] = useState([]);
+
+  // Estado del formulario para un nuevo producto
   const [nuevoProducto, setNuevoProducto] = useState({
     codigo: "",
     nombre: "",
@@ -13,14 +20,16 @@ export const useProductos = (onProductoAgregado = null) => {
     ivaIncluido: true
   });
 
+  /**
+   * Agrega un producto introducido manualmente
+   */
   const agregarProducto = (e) => {
     e.preventDefault();
     if (!nuevoProducto.nombre || !nuevoProducto.precio) return;
 
     const producto = {
-      // Usar el id de la base de datos si existe, si no generar uno temporal
-      id: nuevoProducto.id || Date.now(),
-      codigo: nuevoProducto.codigo || null, // Agregar código si existe
+      id: nuevoProducto.id || Date.now(), // ID temporal si no viene de BD
+      codigo: nuevoProducto.codigo || null,
       ...nuevoProducto,
       precio: parseFloat(nuevoProducto.precio) || 0,
       cantidad: parseFloat(nuevoProducto.cantidad) || 1,
@@ -30,6 +39,8 @@ export const useProductos = (onProductoAgregado = null) => {
     };
 
     setProductos([...productos, producto]);
+
+    // Reset del formulario de nuevo producto
     setNuevoProducto({
       nombre: "",
       precio: "",
@@ -39,16 +50,18 @@ export const useProductos = (onProductoAgregado = null) => {
       ivaIncluido: true
     });
 
-    // Llamar callback si existe (para limpiar buscador)
+    // Callback opcional (ej. limpiar buscador)
     if (onProductoAgregado) {
       onProductoAgregado();
     }
   };
 
-  // Función para agregar un producto desde la base de datos
+  /**
+   * Agrega un producto seleccionado desde la base de datos
+   */
   const agregarProductoBD = (productoBD) => {
     const producto = {
-      id: productoBD.id, // ID real de la base de datos
+      id: productoBD.id,
       codigo: productoBD.codigo || null,
       nombre: productoBD.nombre,
       precio: productoBD.precio,
@@ -61,16 +74,25 @@ export const useProductos = (onProductoAgregado = null) => {
     setProductos([...productos, producto]);
   };
 
+  /**
+   * Elimina un producto de la lista
+   */
   const eliminarProducto = (id) => {
     setProductos(productos.filter(p => p.id !== id));
   };
 
+  /**
+   * Actualiza un campo concreto de un producto
+   */
   const actualizarProducto = (id, campo, valor) => {
-    setProductos(productos.map(p => 
+    setProductos(productos.map(p =>
       p.id === id ? { ...p, [campo]: valor } : p
     ));
   };
 
+  /**
+   * Limpia todos los productos y reinicia el formulario
+   */
   const limpiarProductos = () => {
     setProductos([]);
     setNuevoProducto({

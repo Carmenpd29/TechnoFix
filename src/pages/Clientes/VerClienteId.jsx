@@ -1,12 +1,28 @@
-import React from "react";
-import { WrapperPage, TituloPage, Cargando, BotonVolver, ClienteCard, BotonPDFImprimir, Tabla, TablaContainer } from "../../index";
+import {
+  WrapperPage,
+  TituloPage,
+  Cargando,
+  BotonVolver,
+  ClienteCard,
+  BotonPDFImprimir,
+  Tabla,
+  TablaContainer
+} from "../../index";
+
 import { useClienteDetalle } from "../../hooks/useClienteDetalle";
 import { crearPDF } from "../../components/clientes/crearPDF";
 import { formatearFecha } from "../../utils/fecha";
 
+/**
+ * VerClienteId
+ * Muestra la ficha completa del cliente, reparaciones y ventas
+ */
 export function VerClienteId() {
   const { cliente, reparaciones, ventas, loading } = useClienteDetalle();
 
+  /**
+   * Genera el PDF del cliente
+   */
   const handlePDF = () => {
     crearPDF(cliente, reparaciones, ventas);
   };
@@ -17,46 +33,33 @@ export function VerClienteId() {
     <WrapperPage maxWidth={1400}>
       <BotonVolver to="/clientes/ver" />
       <TituloPage>Ficha del Cliente</TituloPage>
-      
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        background: 'transparent',
-        padding: 0,
-        marginTop: '0.5rem'
-      }}>
-        {cliente && <ClienteCard cliente={cliente} />}
 
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem", marginTop: "1rem" }}>
-        <BotonPDFImprimir onClick={handlePDF}>Descargar PDF</BotonPDFImprimir>
+      {cliente && <ClienteCard cliente={cliente} />}
+
+      <div style={{ display: "flex", justifyContent: "center", margin: "1rem 0" }}>
+        <BotonPDFImprimir onClick={handlePDF}>
+          Descargar PDF
+        </BotonPDFImprimir>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem" }}>
-        <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Reparaciones</h3>
-      </div>
+      {/* Reparaciones */}
+      <h3 style={{ textAlign: "center" }}>Reparaciones</h3>
 
-      <TablaContainer style={{ overflowX: 'scroll', margin: '0', width: '100%' }}>
-        <div style={{overflowY: 'auto', width: '100%', maxWidth: '100vw', maxHeight: '350px'}}>
-          <Tabla id="tabla-reparaciones" style={{ width: '100%', tableLayout: 'fixed', minWidth: '800px' }}>
+      <TablaContainer>
+        <Tabla>
           <thead>
             <tr>
               <th>Artículo</th>
               <th>Descripción</th>
               <th>Fecha</th>
-              <th>Fecha Entrega</th>
+              <th>Entrega</th>
               <th>Precio</th>
               <th>Observaciones</th>
             </tr>
           </thead>
           <tbody>
             {reparaciones.length === 0 ? (
-              <tr>
-                <td colSpan="6" style={{ textAlign: "center", padding: "2rem", fontStyle: "italic", color: "#666" }}>
-                  No hay registros
-                </td>
-              </tr>
+              <tr><td colSpan="6" style={{ textAlign: "center" }}>No hay registros</td></tr>
             ) : (
               reparaciones.map((r) => (
                 <tr key={r.idreparacion}>
@@ -71,83 +74,45 @@ export function VerClienteId() {
             )}
           </tbody>
         </Tabla>
-        </div>
       </TablaContainer>
 
-      {/* Sección de Ventas */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem", marginTop: "2rem" }}>
-        <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Historial de Ventas TPV</h3>
-      </div>
+      {/* Ventas */}
+      <h3 style={{ textAlign: "center", marginTop: "2rem" }}>
+        Historial de Ventas
+      </h3>
 
-      <TablaContainer style={{ overflowX: 'scroll', margin: '0', width: '100%' }}>
-        <div style={{overflowY: 'auto', width: '100%', maxWidth: '100vw', maxHeight: '350px'}}>
-          <Tabla id="tabla-ventas" style={{ width: '100%', tableLayout: 'fixed', minWidth: '900px' }}>
+      <TablaContainer>
+        <Tabla>
           <thead>
             <tr>
               <th>Fecha</th>
-              <th style={{ width: "30%" }}>Productos</th>
+              <th>Productos</th>
               <th>Pago</th>
-              <th>Subtotal</th>
-              <th>IVA</th>
               <th>Total</th>
-              <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             {ventas.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ textAlign: "center", padding: "2rem", fontStyle: "italic", color: "#666" }}>
-                  No hay registros
-                </td>
-              </tr>
+              <tr><td colSpan="4" style={{ textAlign: "center" }}>No hay registros</td></tr>
             ) : (
-              ventas.map((venta) => (
-                <tr key={venta.id}>
-                  <td>{formatearFecha(venta.fecha_venta)}</td>
+              ventas.map((v) => (
+                <tr key={v.id}>
+                  <td>{formatearFecha(v.fecha_venta)}</td>
                   <td>
-                    <div>
-                      {venta.detalles_venta?.map((detalle, index) => (
-                        <div key={index} style={{ marginBottom: "0.25rem" }}>
-                          <span style={{ fontWeight: "600" }}>
-                            {detalle.productos?.nombre || detalle.nombre_producto || 'Producto manual'}
-                          </span>
-                          {detalle.cantidad != null && (
-                            <span style={{ color: "#666", marginLeft: "0.5rem" }}>
-                              ({detalle.cantidad})
-                            </span>
-                          )}
-                        </div>
-                      )) || 'Sin detalles'}
-                    </div>
+                    {v.detalles_venta?.map((d, i) => (
+                      <div key={i}>
+                        {d.productos?.nombre || d.nombre_producto}
+                      </div>
+                    ))}
                   </td>
-                  <td style={{ textTransform: "capitalize" }}>
-                    {venta.metodo_pago}
-                  </td>
-                  <td>€{venta.subtotal.toFixed(2)}</td>
-                  <td>€{venta.impuestos.toFixed(2)}</td>
-                  <td style={{ fontWeight: "bold", color: "#28a745" }}>
-                    €{venta.total.toFixed(2)}
-                  </td>
-                  <td>
-                    <span style={{
-                      backgroundColor: venta.estado === 'completada' ? "#d4edda" : "#fff3cd",
-                      color: venta.estado === 'completada' ? "#155724" : "#856404",
-                      padding: "0.25rem 0.5rem",
-                      borderRadius: "4px",
-                      fontSize: "0.8rem",
-                      fontWeight: "500"
-                    }}>
-                      {venta.estado}
-                    </span>
-                  </td>
+                  <td>{v.metodo_pago}</td>
+                  <td>€{v.total.toFixed(2)}</td>
                 </tr>
               ))
             )}
           </tbody>
         </Tabla>
-        </div>
       </TablaContainer>
-      </div>
     </WrapperPage>
   );
 }

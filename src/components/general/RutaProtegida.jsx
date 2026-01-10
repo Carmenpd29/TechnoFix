@@ -1,8 +1,11 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSeguridad } from '../../hooks/useSeguridad';
 import { Cargando } from './Cargando';
 
+/**
+ * RutaProtegida
+ * Protege rutas que requieren autenticación, rol o permisos.
+ */
 // Componente para proteger rutas que requieren autenticación
 export function RutaProtegida({ children, requiereRol = null, funcionalidad = null }) {
   const { usuario, loading, error, tieneRol, puedeAcceder } = useSeguridad();

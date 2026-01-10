@@ -1,5 +1,9 @@
 import { FooterContainer } from "../../styles/FooterStyles";
 
+/**
+ * Footer
+ * Componente simple que muestra la marca/pie de página.
+ */
 export function Footer() {
   return (
     <FooterContainer>

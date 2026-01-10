@@ -1,22 +1,27 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase/supabaseClient";
 import { obtenerCodigoUnico } from "../utils/generarCodigoProducto";
+import { withTimeout } from "../utils/supabaseUtils";
 
-// Hook para manejar la gestión de productos TPV
+/**
+ * Hook personalizado para la gestión de productos del TPV.
+ * Maneja CRUD de productos, categorías, stock, filtros de búsqueda y control de modales de confirmación, éxito y error.
+ */
 export const useProductosTPV = () => {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [productoEditando, setProductoEditando] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [cargando, setCargando] = useState(true);
-  
+
   // Estados para modales
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mostrarModalError, setMostrarModalError] = useState(false);
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
   const [mensajeModal, setMensajeModal] = useState("");
   const [productoAEliminar, setProductoAEliminar] = useState(null);
-  
+
+  // Formulario de producto
   const [formulario, setFormulario] = useState({
     codigo: "",
     nombre: "",
@@ -28,13 +33,17 @@ export const useProductosTPV = () => {
     stock: "0",
     stockMinimo: "5"
   });
+
+  // Formulario de categoría
   const [formularioCategoria, setFormularioCategoria] = useState({
     nombre: "",
     descripcion: "",
     icono: "📱"
   });
 
-  // Cargar productos y categorías de la base de datos
+  /**
+   * Carga inicial de productos y categorías
+   */
   useEffect(() => {
     cargarDatos();
   }, []);
@@ -43,111 +52,83 @@ export const useProductosTPV = () => {
     setCargando(true);
     try {
       await Promise.all([cargarProductos(), cargarCategorias()]);
-    } catch (error) {
-      console.error('Error cargando datos:', error);
     } finally {
       setCargando(false);
     }
   };
 
   const cargarProductos = async () => {
-    const { data, error } = await supabase
-      .from('productos')
-      .select(`
-        *,
-        categoria:categorias_productos(nombre)
-      `)
-      .eq('activo', true)
-      .order('codigo');
-    
-    if (error) {
-      console.error('Error cargando productos:', error);
-      return;
+    try {
+      const { data, error } = await withTimeout(
+        supabase.from("productos").select("*, categoria:categorias_productos(nombre)").eq("activo", true).order("codigo"),
+        15000
+      );
+      if (!error) setProductos(data || []);
+      else console.error('Error cargarProductos:', error);
+    } catch (err) {
+      console.error('Error cargarProductos (timeout or network):', err);
     }
-    
-    setProductos(data || []);
   };
 
   const cargarCategorias = async () => {
-    const { data, error } = await supabase
-      .from('categorias_productos')
-      .select('*')
-      .eq('activa', true)
-      .order('nombre');
-    
-    if (error) {
-      console.error('Error cargando categorías:', error);
-      return;
+    try {
+      const { data, error } = await withTimeout(
+        supabase.from("categorias_productos").select("*").eq("activa", true).order("nombre"),
+        15000
+      );
+      if (!error) setCategorias(data || []);
+      else console.error('Error cargarCategorias:', error);
+    } catch (err) {
+      console.error('Error cargarCategorias (timeout or network):', err);
     }
-    
-    setCategorias(data || []);
   };
 
-  // Escuchar evento global cuando se complete una venta para recargar productos
+  /**
+   * Recarga productos tras completar una venta
+   */
   useEffect(() => {
-    const handler = () => {
-      try {
-        cargarDatos();
-      } catch (e) {
-        console.error('Error recargando productos tras venta:', e);
-      }
-    };
-
-    if (typeof window !== 'undefined' && window.addEventListener) {
-      window.addEventListener('venta:completada', handler);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && window.removeEventListener) {
-        window.removeEventListener('venta:completada', handler);
-      }
-    };
+    const handler = () => cargarDatos();
+    window?.addEventListener("venta:completada", handler);
+    return () => window?.removeEventListener("venta:completada", handler);
   }, []);
 
-  // Filtrar productos por búsqueda
-  const productosFiltrados = productos.filter(producto =>
-    producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-    producto.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
-    producto.categoria.toLowerCase().includes(busqueda.toLowerCase()) ||
-    producto.codigoBarras.toLowerCase().includes(busqueda.toLowerCase())
+  /**
+   * Filtrado de productos por texto de búsqueda
+   */
+  const productosFiltrados = productos.filter(p =>
+    [p.nombre, p.descripcion, p.categoria, p.codigoBarras]
+      .join(" ")
+      .toLowerCase()
+      .includes(busqueda.toLowerCase())
   );
 
-  // Manejar cambios en el formulario
+  /**
+   * Manejo de cambios del formulario de producto
+   */
   const manejarCambio = async (e) => {
     const { name, value } = e.target;
-    
-    // Si cambió la categoría y no hay código manual, generar uno sugerido
-    if (name === 'categoria' && value && !formulario.codigo?.trim() && !productoEditando) {
-      try {
-        // Obtener nombre de la categoría
-        const categoria = categorias.find(cat => cat.id === parseInt(value));
-        if (categoria) {
-          const codigoSugerido = await obtenerCodigoUnico(supabase, parseInt(value), categoria.nombre);
-          setFormulario(prev => ({
-            ...prev,
-            [name]: value,
-            codigo: codigoSugerido
-          }));
-          return;
-        }
-      } catch (error) {
-        console.error('Error generando código sugerido:', error);
+
+    if (name === "categoria" && value && !formulario.codigo && !productoEditando) {
+      const categoria = categorias.find(c => c.id === parseInt(value));
+      if (categoria) {
+        const codigo = await obtenerCodigoUnico(supabase, categoria.id, categoria.nombre);
+        setFormulario(prev => ({ ...prev, categoria: value, codigo }));
+        return;
       }
     }
-    
-    setFormulario(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    setFormulario(prev => ({ ...prev, [name]: value }));
   };
 
-  // Guardar producto (crear o editar)
+  /**
+   * Crear o actualizar producto
+   */
   const guardarProducto = async (e) => {
     e.preventDefault();
     setCargando(true);
-    
+
     try {
-      const datosProducto = {
+      const datos = {
         nombre: formulario.nombre,
         descripcion: formulario.descripcion,
         precio: parseFloat(formulario.precio) || 0,
@@ -158,131 +139,68 @@ export const useProductosTPV = () => {
       };
 
       if (productoEditando) {
-        // Editar producto existente - no cambiar el código
-        const { error } = await supabase
-          .from('productos')
-          .update(datosProducto)
-          .eq('id', productoEditando.id);
-        
-        if (error) throw error;
+        await supabase.from("productos").update(datos).eq("id", productoEditando.id);
       } else {
-        // Crear nuevo producto
-        
-        let codigoFinal = formulario.codigo?.trim();
-        
-        // Si no hay código manual, generar uno automático
-        if (!codigoFinal) {
-          // 1. Obtener la información de la categoría para generar el código
-          let nombreCategoria = 'general';
-          if (datosProducto.categoria_id) {
-            const { data: categoria } = await supabase
-              .from('categorias_productos')
-              .select('nombre')
-              .eq('id', datosProducto.categoria_id)
-              .single();
-            
-            if (categoria) {
-              nombreCategoria = categoria.nombre;
-            }
-          }
-          
-          // 2. Generar código único automático
-          codigoFinal = await obtenerCodigoUnico(supabase, datosProducto.categoria_id, nombreCategoria);
+        if (!formulario.codigo) {
+          const nombreCategoria = categorias.find(c => c.id === datos.categoria_id)?.nombre || "general";
+          datos.codigo = await obtenerCodigoUnico(supabase, datos.categoria_id, nombreCategoria);
+        } else {
+          datos.codigo = formulario.codigo;
         }
-        
-        // 3. Agregar el código final a los datos del producto
-        datosProducto.codigo = codigoFinal;
-        
-        // 4. Insertar el producto con el código
-        const { error } = await supabase
-          .from('productos')
-          .insert([datosProducto]);
-        
-        if (error) throw error;
+
+        await supabase.from("productos").insert([datos]);
       }
-      
-      // Recargar productos
+
       await cargarProductos();
-      
-      const eraEdicion = productoEditando !== null;
       limpiarFormulario();
       setProductoEditando(null);
-      
-      setMensajeModal(eraEdicion ? 'Producto actualizado correctamente' : 'Producto creado correctamente');
+      setMensajeModal("Producto guardado correctamente");
       setMostrarModalExito(true);
+
     } catch (error) {
-      console.error('Error guardando producto:', error);
-      setMensajeModal('Error al guardar el producto: ' + error.message);
+      setMensajeModal("Error al guardar el producto");
       setMostrarModalError(true);
     } finally {
       setCargando(false);
     }
   };
 
-  // Editar producto
   const editarProducto = (producto) => {
     setProductoEditando(producto);
     setFormulario({
       codigo: producto.codigo || "",
       nombre: producto.nombre || "",
       descripcion: producto.descripcion || "",
-      precio: producto.precio ? producto.precio.toString() : "",
-      categoria: producto.categoria_id ? producto.categoria_id.toString() : "",
-      iva: producto.iva ? producto.iva.toString() : "21",
+      precio: producto.precio?.toString() || "",
+      categoria: producto.categoria_id?.toString() || "",
+      iva: producto.iva?.toString() || "21",
       codigoBarras: producto.codigo_barras || "",
-      stock: producto.stock ? producto.stock.toString() : "0",
-      stockMinimo: producto.stock_minimo ? producto.stock_minimo.toString() : "5"
+      stock: producto.stock?.toString() || "0",
+      stockMinimo: producto.stock_minimo?.toString() || "5"
     });
   };
 
-  // Eliminar producto (desactivar)
   const eliminarProducto = (id) => {
-    const producto = productos.find(p => p.id === id);
-    setProductoAEliminar(producto);
-    setMensajeModal(`¿Estás seguro de que quieres eliminar el producto "${producto?.nombre}"?`);
+    const prod = productos.find(p => p.id === id);
+    setProductoAEliminar(prod);
+    setMensajeModal(`¿Eliminar "${prod?.nombre}"?`);
     setMostrarModalConfirmacion(true);
   };
 
   const confirmarEliminacion = async () => {
     if (!productoAEliminar) return;
-    
-    setCargando(true);
+    await supabase.from("productos").update({ activo: false }).eq("id", productoAEliminar.id);
+    await cargarProductos();
     setMostrarModalConfirmacion(false);
-    
-    try {
-      const { error } = await supabase
-        .from('productos')
-        .update({ activo: false })
-        .eq('id', productoAEliminar.id);
-      
-      if (error) throw error;
-      
-      await cargarProductos();
-      setMensajeModal('Producto eliminado correctamente');
-      setMostrarModalExito(true);
-    } catch (error) {
-      console.error('Error eliminando producto:', error);
-      setMensajeModal('Error al eliminar el producto: ' + error.message);
-      setMostrarModalError(true);
-    } finally {
-      setCargando(false);
-      setProductoAEliminar(null);
-    }
+    setMostrarModalExito(true);
+    setMensajeModal("Producto eliminado");
   };
 
-  const cancelarEliminacion = () => {
-    setMostrarModalConfirmacion(false);
-    setProductoAEliminar(null);
-    setMensajeModal("");
-  };
-
-  // Cancelar edición
   const cancelarEdicion = () => {
     setProductoEditando(null);
     limpiarFormulario();
   };
 
-  // Limpiar formulario
   const limpiarFormulario = () => {
     setFormulario({
       codigo: "",
@@ -297,59 +215,12 @@ export const useProductosTPV = () => {
     });
   };
 
-  // Funciones para categorías
-  const manejarCambioCategoria = (e) => {
-    const { name, value } = e.target;
-    setFormularioCategoria(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const guardarCategoria = async (e) => {
-    e.preventDefault();
-    setCargando(true);
-    
-    try {
-      const { error } = await supabase
-        .from('categorias_productos')
-        .insert([{
-          nombre: formularioCategoria.nombre,
-          descripcion: formularioCategoria.descripcion,
-          icono: formularioCategoria.icono,
-          activa: true
-        }]);
-      
-      if (error) throw error;
-      
-      await cargarCategorias();
-      setFormularioCategoria({ nombre: "", descripcion: "", icono: "📱" });
-      setMensajeModal('Categoría creada correctamente');
-      setMostrarModalExito(true);
-    } catch (error) {
-      console.error('Error guardando categoría:', error);
-      setMensajeModal('Error al crear la categoría: ' + error.message);
-      setMostrarModalError(true);
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  // Funciones para cerrar modales
-  const cerrarModalExito = () => {
-    setMostrarModalExito(false);
-    setMensajeModal("");
-  };
-
-  const cerrarModalError = () => {
-    setMostrarModalError(false);
-    setMensajeModal("");
-  };
-
-  // Calcular estadísticas
+  /**
+   * Estadísticas del inventario
+   */
   const estadisticas = {
     totalProductos: productos.length,
-    valorInventario: productos.reduce((sum, p) => sum + (p.precio * p.stock), 0),
+    valorInventario: productos.reduce((s, p) => s + p.precio * p.stock, 0),
     stockBajo: productos.filter(p => p.stock <= p.stock_minimo).length,
     categorias: categorias.length
   };
@@ -357,29 +228,22 @@ export const useProductosTPV = () => {
   return {
     productos: productosFiltrados,
     categorias,
+    formulario,
+    formularioCategoria,
     productoEditando,
     busqueda,
     setBusqueda,
-    formulario,
-    formularioCategoria,
     cargando,
     manejarCambio,
-    manejarCambioCategoria,
     guardarProducto,
-    guardarCategoria,
     editarProducto,
     eliminarProducto,
+    confirmarEliminacion,
     cancelarEdicion,
-    cargarDatos,
     estadisticas,
-    // Estados y funciones para modales
     mostrarModalExito,
     mostrarModalError,
     mostrarModalConfirmacion,
-    mensajeModal,
-    cerrarModalExito,
-    cerrarModalError,
-    confirmarEliminacion,
-    cancelarEliminacion
+    mensajeModal
   };
 };

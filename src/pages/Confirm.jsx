@@ -14,6 +14,11 @@ const Box = styled.div`
   text-align: center;
 `;
 
+/**
+ * Confirm
+ * Página que procesa la confirmación de correo desde el enlace de Supabase.
+ * Valida la sesión desde la URL y muestra el resultado al usuario.
+ */
 export function Confirm() {
   const [status, setStatus] = useState('checking');
   const [message, setMessage] = useState('Confirmando tu correo...');

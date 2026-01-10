@@ -1,12 +1,27 @@
 import { useState } from "react";
 
-// Hook para manejar las funciones de calculadora
+/**
+ * useCalculadora
+ * Hook personalizado que encapsula la lógica de una calculadora básica.
+ * Gestiona operaciones aritméticas, entrada de dígitos y control de estado.
+ */
 export const useCalculadora = () => {
+  // Estado actual mostrado en la pantalla de la calculadora
   const [calculadora, setCalculadora] = useState("0");
+
+  // Valor almacenado de la operación anterior
   const [operacionAnterior, setOperacionAnterior] = useState("");
+
+  // Operador seleccionado (+, -, ×, ÷)
   const [operador, setOperador] = useState("");
+
+  // Indica si se espera la entrada de un nuevo operando
   const [esperandoOperando, setEsperandoOperando] = useState(false);
 
+  /**
+   * Maneja la entrada de un dígito numérico.
+   * Si se está esperando un operando, reemplaza el valor actual.
+   */
   const inputDigito = (digito) => {
     if (esperandoOperando) {
       setCalculadora(String(digito));
@@ -16,6 +31,10 @@ export const useCalculadora = () => {
     }
   };
 
+  /**
+   * Maneja la entrada de un operador aritmético.
+   * Calcula la operación pendiente si existe una previa.
+   */
   const inputOperador = (nextOperador) => {
     const inputValue = parseFloat(calculadora);
 
@@ -23,6 +42,7 @@ export const useCalculadora = () => {
       setOperacionAnterior(inputValue);
     } else if (operador) {
       const currentValue = operacionAnterior || 0;
+      // Se ejecuta la operación anterior antes de guardar el nuevo operador
       const newValue = calcular(currentValue, inputValue, operador);
 
       setCalculadora(String(newValue));
@@ -33,6 +53,9 @@ export const useCalculadora = () => {
     setOperador(nextOperador);
   };
 
+  /**
+   * Ejecuta el cálculo aritmético entre dos valores.
+   */
   const calcular = (firstValue, secondValue, operator) => {
     switch (operator) {
       case "+":
@@ -48,6 +71,9 @@ export const useCalculadora = () => {
     }
   };
 
+  /**
+   * Ejecuta el cálculo final al pulsar el botón de igual.
+   */
   const ejecutarCalculo = () => {
     const inputValue = parseFloat(calculadora);
 
@@ -60,6 +86,9 @@ export const useCalculadora = () => {
     }
   };
 
+  /**
+   * Restablece la calculadora a su estado inicial.
+   */
   const limpiarCalculadora = () => {
     setCalculadora("0");
     setOperacionAnterior("");
@@ -67,6 +96,10 @@ export const useCalculadora = () => {
     setEsperandoOperando(false);
   };
 
+  /**
+   * Maneja la entrada del separador decimal.
+   * Evita múltiples decimales en un mismo número.
+   */
   const inputDecimal = () => {
     if (esperandoOperando) {
       setCalculadora("0.");

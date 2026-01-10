@@ -13,52 +13,66 @@ import {
   Cargando,
   BotonesContainer,
 } from "../../index";
+
 import { FiEdit, FiTrash2, FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * VerClientes
+ * Listado general de clientes con acciones
+ */
 export function VerClientes() {
   const [clientes, setClientes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const [clientesFiltrados, setClientesFiltrados] = useState(clientes);
   const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [eliminando, setEliminando] = useState(false);
+
   const user = useUserStore((state) => state.user);
   const navigate = useNavigate();
 
+  /**
+   * Carga clientes desde Supabase
+   */
   useEffect(() => {
     async function fetchClientes() {
       setLoading(true);
       const { data } = await supabase
         .from("clientes")
         .select("id, nombre, apellidos, telefono, nif, direccion, correo")
-        .order("nombre", { ascending: true });
+        .order("nombre");
+
       setClientes(data || []);
+      setClientesFiltrados(data || []);
       setLoading(false);
     }
+
     fetchClientes();
   }, []);
 
+  /**
+   * Filtrado por texto
+   */
   useEffect(() => {
-    const q = (busqueda || "").toLowerCase();
+    const q = busqueda.toLowerCase();
+
     setClientesFiltrados(
-      clientes.filter((c) => {
-        const nombre = (c.nombre || "").toLowerCase();
-        const correo = (c.correo || "").toLowerCase();
-        const nif = (c.nif || "").toLowerCase();
-        const telefono = (c.telefono || "").toString().toLowerCase();
-        return (
-          nombre.includes(q) ||
-          correo.includes(q) ||
-          nif.includes(q) ||
-          telefono.includes(q)
-        );
-      })
+      clientes.filter((c) =>
+        [c.nombre, c.apellidos, c.telefono, c.nif, c.correo]
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      )
     );
   }, [busqueda, clientes]);
 
+  /**
+   * Elimina el cliente seleccionado
+   */
   const handleEliminar = async () => {
     if (!selected) return;
+
     setEliminando(true);
     await supabase.from("clientes").delete().eq("id", selected.id);
     setClientes(clientes.filter((c) => c.id !== selected.id));
@@ -67,20 +81,24 @@ export function VerClientes() {
   };
 
   return (
-    <WrapperPage style={{ position: "relative" }}>
+    <WrapperPage>
       <BotonVolver to="/clientes" />
       <TituloPage>Listado de Clientes</TituloPage>
-      {loading && <Cargando>Cargando...</Cargando>}
+
+      {loading && <Cargando />}
+
       <BuscadorClientes
         soloFiltrar
         soloInput
         busqueda={busqueda}
         setBusqueda={setBusqueda}
       />
-      <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
+
+      <ManualPage>
         <p>Selecciona un cliente para Ver, Editar o Eliminar.</p>
       </ManualPage>
-      <TablaContainer style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+
+      <TablaContainer>
         <Tabla>
           <thead>
             <tr>
@@ -95,13 +113,13 @@ export function VerClientes() {
             {clientesFiltrados.map((c) => (
               <tr
                 key={c.id}
+                onClick={() => setSelected(c)}
                 style={{
                   cursor: "pointer",
                   background: selected?.id === c.id ? "#e6f0f3" : "white",
                 }}
-                onClick={() => setSelected(c)}
               >
-                  <td>{`${c.nombre || ""} ${c.apellidos || ""}`.trim()}</td>
+                <td>{`${c.nombre} ${c.apellidos || ""}`}</td>
                 <td>{c.telefono}</td>
                 <td>{c.nif}</td>
                 <td>{c.direccion}</td>
@@ -111,32 +129,21 @@ export function VerClientes() {
           </tbody>
         </Tabla>
       </TablaContainer>
+
       {selected && (
         <BotonesContainer>
-          <IconBtn
-            title="Ver"
-            onClick={() => navigate(`/clientes/ver/${selected.id}`)}
-            style={{ position: 'relative' }}
-          >
+          <IconBtn onClick={() => navigate(`/clientes/ver/${selected.id}`)}>
             <FiEye />
           </IconBtn>
+
           {(user?.rol === "admin" || user?.rol === "encargado") && (
-            <IconBtn
-              title="Editar"
-              onClick={() => navigate(`/clientes/modificar/${selected.id}`)}
-              style={{ position: 'relative' }}
-            >
+            <IconBtn onClick={() => navigate(`/clientes/modificar/${selected.id}`)}>
               <FiEdit />
             </IconBtn>
           )}
+
           {user?.rol === "admin" && (
-            <IconBtn
-              title="Eliminar"
-              eliminar="true"
-              disabled={eliminando}
-              onClick={handleEliminar}
-              style={{ position: 'relative' }}
-            >
+            <IconBtn eliminar disabled={eliminando} onClick={handleEliminar}>
               <FiTrash2 />
             </IconBtn>
           )}
@@ -145,4 +152,3 @@ export function VerClientes() {
     </WrapperPage>
   );
 }
-

@@ -1,8 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
 import { FiSave } from "react-icons/fi";
 import { IconBtn } from "./IconBtn";
 
+/**
+ * FormularioBootstrap
+ * Componente genérico para formularios con Bootstrap.
+ */
 export function FormularioBootstrap({
   fields,
   values,

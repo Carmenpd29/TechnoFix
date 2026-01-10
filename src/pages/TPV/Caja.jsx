@@ -68,7 +68,7 @@ export function Caja() {
     setMostrarSugerenciasCodigo(false);
   };
 
-  // Custom hooks para manejar la lógica
+  // Hooks para manejar la lógica
   const calculadora = useCalculadora();
   const productosManager = useProductos(limpiarBusquedaProducto);
   const ventasManager = useVentas();

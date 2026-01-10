@@ -1,10 +1,12 @@
-import React from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiShoppingCart, FiFileText, FiCreditCard } from "react-icons/fi";
 import { MdPointOfSale } from "react-icons/md";
-import { Opciones, WrapperPage, BotonMenu, InfoCard, TituloPage, IconBtn } from "../index";
+import { WrapperPage, InfoCard, TituloPage, IconBtn } from "../index";
 
+/**
+ * TPV
+ * Página principal del TPV que muestra accesos a Caja, Productos y Facturación.
+ */
 export function TPV() {
   const navigate = useNavigate();
 

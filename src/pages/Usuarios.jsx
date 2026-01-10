@@ -1,9 +1,11 @@
-import React from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiUsers, FiUserCheck } from "react-icons/fi";
 import { WrapperPage, InfoCard, TituloPage, IconBtn } from "../index";
 
+/**
+ * Usuarios
+ * Página de gestión de usuarios; muestra accesos para ver la lista y gestionar permisos/roles.
+ */
 export function Usuarios() {
   const navigate = useNavigate();
 

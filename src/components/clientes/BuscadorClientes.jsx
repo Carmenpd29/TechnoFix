@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
-import { supabase } from "../../index";
 import { BusquedaContainer } from "../../styles/BuscadorClientesStyles";
 
+/**
+ * BuscadorClientes
+ * Componente de búsqueda controlado usado en vistas de clientes.
+ */
 export function BuscadorClientes({
   busqueda,
   setBusqueda,
   placeholder = "Buscar por nombre, NIF o teléfono...",
-  soloInput = false,
 }) {
   return (
     <BusquedaContainer>

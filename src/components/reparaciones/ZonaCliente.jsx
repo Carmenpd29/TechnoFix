@@ -1,39 +1,11 @@
-
 import React from "react";
 import { FiSearch } from "react-icons/fi";
 import { ZonaClienteStyled, Buscador } from "../../styles/ZonaClienteStyles";
-import styled from "styled-components";
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.18);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  padding: 1.2rem 1.5rem;
-  min-width: 320px;
-  max-width: 90vw;
-`;
-
-const ModalHeader = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 0.7rem;
-  color: #007bff;
-`;
-
-
+/**
+ * ZonaCliente
+ * Buscador de clientes con autocompletado.
+ */
 export function ZonaCliente({
   busqueda,
   setBusqueda,
@@ -42,8 +14,14 @@ export function ZonaCliente({
   setCliente,
   loadingClientes
 }) {
-  const [inputFocused, setInputFocused] = React.useState(false);
+  // Controla si el input está enfocado para mostrar el desplegable
+  const [inputFocused, setInputFocused] = React.useState(false);  
+  
+  // Evita que el desplegable se cierre al interactuar con él
   const [dropdownHovered, setDropdownHovered] = React.useState(false);
+
+  // Filtra los clientes según el texto de búsqueda introducido
+  // Se comparan nombre, apellidos, teléfono y DNI/NIF (normalizados a minúsculas)
   const clientesFiltrados = busqueda && clientes && busqueda.trim().length > 0
     ? clientes.filter(c => {
         const nombre = c.nombre || "";
@@ -51,6 +29,7 @@ export function ZonaCliente({
         const telefono = c.telefono || "";
         const dni = c.dni || c.nif || "";
         const b = busqueda.toLowerCase();
+        // Normalización de campos para evitar errores si vienen nulos desde la API
         return nombre.toLowerCase().includes(b) ||
           apellidos.toLowerCase().includes(b) ||
           telefono.toLowerCase().includes(b) ||
@@ -58,10 +37,12 @@ export function ZonaCliente({
       })
     : [];
 
-
   return (
     <ZonaClienteStyled>
       <Buscador style={{ position: 'relative' }}>
+        {/* Input de búsqueda de clientes.
+          * Al perder el foco se cierra el desplegable con un pequeño delay
+          * para permitir el click en los resultados. */}
         <input
           type="text"
           placeholder="Buscar cliente por DNI o nombre"
@@ -76,6 +57,7 @@ export function ZonaCliente({
         <span className="icono-lupa">
           <FiSearch size={22} color="#607074" />
         </span>
+        {/* Desplegable de resultados filtrados. Solo se muestra si hay búsqueda activa y el input tiene foco. */}
         {(busqueda && busqueda.length > 0 && inputFocused) && (
           <div
             style={{
@@ -128,6 +110,7 @@ export function ZonaCliente({
                 borderRadius: "8px",
                 fontSize: "1em"
               }}>
+                {/* Mensaje informativo cuando no hay coincidencias con la búsqueda */}
                 No se encontraron clientes con "{busqueda}".
               </div>
             )}
@@ -137,33 +120,4 @@ export function ZonaCliente({
     </ZonaClienteStyled>
   );
 
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.18);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  padding: 1.2rem 1.5rem;
-  min-width: 320px;
-  max-width: 90vw;
-`;
-
-const ModalHeader = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 0.7rem;
-  color: #007bff;
-`;
 }

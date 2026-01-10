@@ -1,10 +1,14 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiSettings } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
 import { useUserStore, UserInfo } from "../../index";
 import { useConfiguracionEmpresaContext } from "../../contexts/ConfiguracionEmpresaContext";
 import { SidebarWrapper, LogoMenu, MenuLinks, MenuOption, SalirButton, BarraSeparadora } from "../../styles/SidebarStyles";
 
+/**
+ * Sidebar
+ * Barra lateral con logo, información de usuario y enlaces de navegación.
+ */
 export function Sidebar({ user }) {
   const navigate = useNavigate();
   const rol = user?.rol;

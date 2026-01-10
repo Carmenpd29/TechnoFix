@@ -11,26 +11,33 @@ import {
   IconBtn,
   BuscadorClientes
 } from "../../index";
-import { BusquedaContainer, EditarContainer } from "../../styles/VerReparacionesStyles";
-import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi";
+import { EditarContainer } from "../../styles/VerReparacionesStyles";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Listado general de reparaciones con filtrado, selección, edición y eliminación según rol.
+ */
 export function VerReparaciones() {
   const [reparaciones, setReparaciones] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [eliminando, setEliminando] = useState(false);
+
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
 
+  /**
+   * Carga inicial del listado de reparaciones
+   */
   useEffect(() => {
     async function fetchReparaciones() {
       setLoading(true);
+
       const { data } = await supabase
         .from("reparaciones")
-        .select(
-          `
+        .select(`
           idreparacion,
           articulo,
           fecha,
@@ -44,30 +51,44 @@ export function VerReparaciones() {
             id,
             nombre
           )
-        `
-        )
+        `)
         .order("fecha", { ascending: false });
+
       setReparaciones(data || []);
       setLoading(false);
     }
+
     fetchReparaciones();
   }, []);
 
-  // Filtrado por nombre de cliente
+  /**
+   * Filtrado por nombre de cliente
+   */
   const reparacionesFiltradas = reparaciones.filter((r) =>
-    (r.clientes?.nombre || "").toLowerCase().includes(busqueda.toLowerCase())
+    (r.clientes?.nombre || "")
+      .toLowerCase()
+      .includes(busqueda.toLowerCase())
   );
 
+  /**
+   * Eliminación de una reparación seleccionada
+   */
   const handleEliminar = async () => {
     if (!selected) return;
+
     setEliminando(true);
+
     await supabase
       .from("reparaciones")
       .delete()
       .eq("idreparacion", selected.idreparacion);
+
     setReparaciones(
-      reparaciones.filter((r) => r.idreparacion !== selected.idreparacion)
+      reparaciones.filter(
+        (r) => r.idreparacion !== selected.idreparacion
+      )
     );
+
     setSelected(null);
     setEliminando(false);
   };
@@ -76,18 +97,22 @@ export function VerReparaciones() {
     <WrapperPage>
       <BotonVolver to="/reparaciones" />
       <TituloPage>Listado de Reparaciones</TituloPage>
+
+      {/* Buscador */}
       <BuscadorClientes
-              soloFiltrar
-              soloInput
-              busqueda={busqueda}
-              setBusqueda={setBusqueda}
-            />
-      <ManualPage style={{ marginBottom: 0, textAlign: "center" }}>
+        soloFiltrar
+        soloInput
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
+      />
+
+      <ManualPage style={{ textAlign: "center" }}>
         <p>Selecciona una reparación para Editar o Eliminar.</p>
       </ManualPage>
-      <TablaContainer style={{ maxHeight: '50vh', overflowY: 'auto' }}>
-        <div style={{ width: '100%' }}>
-          <Tabla>
+
+      {/* Tabla */}
+      <TablaContainer style={{ maxHeight: "50vh", overflowY: "auto" }}>
+        <Tabla>
           <thead>
             <tr>
               <th>Cliente</th>
@@ -105,19 +130,19 @@ export function VerReparaciones() {
                 </td>
               </tr>
             )}
+
             {!loading && reparacionesFiltradas.length === 0 && (
               <tr>
-                <td
-                  colSpan={5}
-                  style={{ textAlign: "center", color: "#607074" }}
-                >
+                <td colSpan={5} style={{ textAlign: "center", color: "#607074" }}>
                   No hay reparaciones registradas.
                 </td>
               </tr>
             )}
+
             {reparacionesFiltradas.map((r) => (
               <tr
                 key={r.idreparacion}
+                onClick={() => setSelected(r)}
                 style={{
                   cursor: "pointer",
                   background:
@@ -125,7 +150,6 @@ export function VerReparaciones() {
                       ? "#e6f0f3"
                       : "white",
                 }}
-                onClick={() => setSelected(r)}
               >
                 <td>
                   {r.clientes
@@ -133,37 +157,45 @@ export function VerReparaciones() {
                     : "-"}
                 </td>
                 <td>{r.articulo}</td>
-                <td style={{ textAlign: 'right' }}>{r.precio ? `${r.precio} €` : "-"}</td>
-                <td style={{ textAlign: 'center' }}>{r.tecnico ? r.tecnico.nombre : "-"}</td>
+                <td style={{ textAlign: "right" }}>
+                  {r.precio ? `${r.precio} €` : "-"}
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  {r.tecnico?.nombre || "-"}
+                </td>
                 <td>
-                  {r.fecha ? new Date(r.fecha).toLocaleDateString() : "-"}
+                  {r.fecha
+                    ? new Date(r.fecha).toLocaleDateString()
+                    : "-"}
                 </td>
               </tr>
             ))}
           </tbody>
-          </Tabla>
-        </div>
+        </Tabla>
       </TablaContainer>
+
+      {/* Acciones */}
       {selected && (
         <EditarContainer>
-          {(user?.rol === "admin" || user?.rol === "encargado" || user?.rol === "empleado") && (
+          {(user?.rol === "admin" ||
+            user?.rol === "encargado" ||
+            user?.rol === "empleado") && (
             <IconBtn
               title="Editar"
               onClick={() =>
                 navigate(`/reparaciones/mod/${selected.idreparacion}`)
               }
-              style={{ position: 'relative' }}
             >
               <FiEdit />
             </IconBtn>
           )}
+
           {user?.rol === "admin" && (
             <IconBtn
               title="Eliminar"
               eliminar="true"
               disabled={eliminando}
               onClick={handleEliminar}
-              style={{ position: 'relative' }}
             >
               <FiTrash2 />
             </IconBtn>

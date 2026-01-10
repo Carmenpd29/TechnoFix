@@ -1,20 +1,39 @@
-import styled from "styled-components";
-import { BotonVolver, supabase, TituloPage, WrapperPage, ZonaCliente } from "../../index";
-import { FormReparacionesBootstrap } from "../../components/reparaciones/FormReparacionesBootstrap.jsx";
 import { useEffect, useState } from "react";
-import { ModalOverlay, ModalContent, ModalHeader, ModalMessage, ModalButton } from "../../styles/CajaStyles";
+import {
+  BotonVolver,
+  supabase,
+  TituloPage,
+  WrapperPage,
+  ZonaCliente
+} from "../../index";
+import { FormReparacionesBootstrap } from "../../components/reparaciones/FormReparacionesBootstrap.jsx";
+import {
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalMessage,
+  ModalButton
+} from "../../styles/CajaStyles";
 
-// Hook para debounce
+/**
+ * Hook personalizado para aplicar debounce a un valor.
+ * Evita lanzar consultas a la BD en cada pulsación de teclado.
+ */
 function useDebounce(value, delay = 400) {
   const [debounced, setDebounced] = useState(value);
+
   useEffect(() => {
     const handler = setTimeout(() => setDebounced(value), delay);
     return () => clearTimeout(handler);
   }, [value, delay]);
+
   return debounced;
 }
 
 export function AddReparacion() {
+  /* ============================
+     Estados de búsqueda y cliente
+     ============================ */
   const [busqueda, setBusqueda] = useState("");
   const [cliente, setCliente] = useState({
     id: "",
@@ -25,6 +44,10 @@ export function AddReparacion() {
     direccion: "",
     correo: "",
   });
+
+  /* ============================
+     Estados del formulario
+     ============================ */
   const [fecha, setFecha] = useState(() =>
     new Date().toISOString().slice(0, 10)
   );
@@ -34,18 +57,27 @@ export function AddReparacion() {
   const [descripcion, setDescripcion] = useState("");
   const [observaciones, setObservaciones] = useState("");
   const [precio, setPrecio] = useState("");
+
+  /* ============================
+     Estados auxiliares
+     ============================ */
   const [clientes, setClientes] = useState([]);
   const [loadingClientes, setLoadingClientes] = useState(false);
   const [tecnicos, setTecnicos] = useState([]);
-  const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
+
+  /* ============================
+     Estados de modales
+     ============================ */
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mostrarModalError, setMostrarModalError] = useState(false);
-  const [mensajeModal, setMensajeModal] = useState('');
+  const [mensajeModal, setMensajeModal] = useState("");
 
-  // Debounce para la búsqueda
+  // Valor de búsqueda con debounce aplicado
   const debouncedBusqueda = useDebounce(busqueda);
 
-  // Carga los técnicos desde la tabla usuarios
+  /**
+   * Carga inicial de técnicos desde la tabla usuarios
+   */
   useEffect(() => {
     supabase
       .from("usuarios")
@@ -54,35 +86,38 @@ export function AddReparacion() {
       .then(({ data }) => setTecnicos(data || []));
   }, []);
 
-  // Búsqueda automática de clientes por nombre, apellidos o nif
+  /**
+   * Búsqueda automática de clientes por:
+   * - ID (si es numérico)
+   * - Nombre, apellidos o NIF
+   */
   useEffect(() => {
     if (!debouncedBusqueda) {
       setClientes([]);
-      // No limpiar el cliente seleccionado si ya hay uno
       return;
     }
+
     setLoadingClientes(true);
 
-    // Si la búsqueda es numérica, busca por id exacto
+    // Búsqueda por ID exacto
     if (/^\d+$/.test(debouncedBusqueda)) {
       supabase
         .from("clientes")
         .select("*")
         .eq("id", debouncedBusqueda)
-        .then(({ data, error }) => {
+        .then(({ data }) => {
           setLoadingClientes(false);
-          if (error || !data || data.length === 0) {
+          if (!data || data.length === 0) {
             setClientes([]);
             return;
           }
           setClientes(data);
-          // Solo actualizar cliente si no hay uno seleccionado o si el id es diferente
           if (!cliente.id || cliente.id !== data[0].id) {
             setCliente(data[0]);
           }
         });
     } else {
-      // Busca por nombre, apellidos o nif
+      // Búsqueda por texto
       supabase
         .from("clientes")
         .select("*")
@@ -90,14 +125,13 @@ export function AddReparacion() {
           `nombre.ilike.%${debouncedBusqueda}%,apellidos.ilike.%${debouncedBusqueda}%,nif.ilike.%${debouncedBusqueda}%`
         )
         .order("nombre", { ascending: true })
-        .then(({ data, error }) => {
+        .then(({ data }) => {
           setLoadingClientes(false);
-          if (error || !data || data.length === 0) {
+          if (!data || data.length === 0) {
             setClientes([]);
             return;
           }
           setClientes(data);
-          // Solo actualizar cliente si no hay uno seleccionado o si la búsqueda es exactamente igual al nombre completo
           if (!cliente.id && data.length === 1) {
             setCliente(data[0]);
           }
@@ -105,10 +139,13 @@ export function AddReparacion() {
     }
   }, [debouncedBusqueda]);
 
+  /**
+   * Envío del formulario de creación de reparación
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación de campos obligatorios y FK
+    // Validación de campos obligatorios
     if (
       !cliente.id ||
       !tecnico ||
@@ -118,11 +155,12 @@ export function AddReparacion() {
       precio === "" ||
       isNaN(Number(precio))
     ) {
-      setMensajeModal('Rellena todos los campos obligatorios');
+      setMensajeModal("Rellena todos los campos obligatorios");
       setMostrarModalError(true);
       return;
     }
 
+    // Validación de claves foráneas
     const { data: clienteExiste } = await supabase
       .from("clientes")
       .select("id")
@@ -136,16 +174,18 @@ export function AddReparacion() {
       .single();
 
     if (!clienteExiste) {
-      setMensajeModal('El cliente seleccionado no existe.');
-      setMostrarModalError(true);
-      return;
-    }
-    if (!tecnicoExiste) {
-      setMensajeModal('El técnico seleccionado no existe.');
+      setMensajeModal("El cliente seleccionado no existe.");
       setMostrarModalError(true);
       return;
     }
 
+    if (!tecnicoExiste) {
+      setMensajeModal("El técnico seleccionado no existe.");
+      setMostrarModalError(true);
+      return;
+    }
+
+    // Datos finales a insertar
     const datos = {
       idcliente: Number(cliente.id),
       idtecnico: Number(tecnico),
@@ -158,12 +198,15 @@ export function AddReparacion() {
     };
 
     const { error } = await supabase.from("reparaciones").insert([datos]);
+
     if (error) {
       setMensajeModal(`Error al guardar la reparación: ${error.message}`);
       setMostrarModalError(true);
     } else {
-      setMensajeModal('Reparación guardada correctamente');
+      setMensajeModal("Reparación guardada correctamente");
       setMostrarModalExito(true);
+
+      // Reset del formulario
       setCliente({
         id: "",
         nombre: "",
@@ -189,6 +232,8 @@ export function AddReparacion() {
     <WrapperPage>
       <BotonVolver to="/reparaciones" />
       <TituloPage>Reparaciones</TituloPage>
+
+      {/* Zona de búsqueda y selección de cliente */}
       <ZonaCliente
         busqueda={busqueda}
         setBusqueda={setBusqueda}
@@ -197,6 +242,8 @@ export function AddReparacion() {
         setCliente={setCliente}
         loadingClientes={loadingClientes}
       />
+
+      {/* Formulario principal */}
       <FormReparacionesBootstrap
         cliente={cliente}
         tecnicos={tecnicos}
@@ -219,27 +266,32 @@ export function AddReparacion() {
         loading={loadingClientes}
         modoEdicion={false}
       />
-      {/* Modal Éxito */}
+
+      {/* Modal de éxito */}
       {mostrarModalExito && (
         <ModalOverlay onClick={() => setMostrarModalExito(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader className="success">✅</ModalHeader>
             <ModalMessage>{mensajeModal}</ModalMessage>
-            <ModalButton onClick={() => setMostrarModalExito(false)}>Aceptar</ModalButton>
+            <ModalButton onClick={() => setMostrarModalExito(false)}>
+              Aceptar
+            </ModalButton>
           </ModalContent>
         </ModalOverlay>
       )}
-      {/* Modal Error */}
+
+      {/* Modal de error */}
       {mostrarModalError && (
         <ModalOverlay onClick={() => setMostrarModalError(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader className="error">❌</ModalHeader>
             <ModalMessage>{mensajeModal}</ModalMessage>
-            <ModalButton error onClick={() => setMostrarModalError(false)}>Cerrar</ModalButton>
+            <ModalButton error onClick={() => setMostrarModalError(false)}>
+              Cerrar
+            </ModalButton>
           </ModalContent>
         </ModalOverlay>
       )}
     </WrapperPage>
   );
 }
-

@@ -604,7 +604,7 @@ export const CalculadoraDisplay = styled.div`
   border: 1px solid ${accentColor};
 `;
 
-export const CalculadoraBtn = styled.button`
+export const CalculadoraBtn = styled.button.withConfig({ shouldForwardProp: (prop) => !['operator','equals','clear'].includes(prop) })`
   background: ${props => {
     if (props.operator) return `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
     if (props.equals) return `linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)`;
@@ -642,7 +642,7 @@ export const AccionesSection = styled.div`
   flex-shrink: 0;
 `;
 
-export const AccionBtn = styled.button`
+export const AccionBtn = styled.button.withConfig({ shouldForwardProp: (prop) => !['cobrar','limpiar'].includes(prop) })`
   background: ${props => {
     if (props.cobrar) return '#28a745';
     if (props.limpiar) return '#dc3545';

@@ -1,9 +1,11 @@
-import React from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiSettings, FiBriefcase } from "react-icons/fi";
 import { WrapperPage, InfoCard, TituloPage, IconBtn } from "../index";
 
+/**
+ * Empresa
+ * Página principal de configuración de la empresa: acceso a la configuración detallada (logo, mensaje footer, etc.).
+ */
 export function Empresa() {
   const navigate = useNavigate();
 

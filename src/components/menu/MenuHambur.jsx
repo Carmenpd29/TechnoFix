@@ -1,11 +1,15 @@
-import { FiLogOut, FiShoppingCart, FiUsers, FiUser, FiX, FiSettings } from "react-icons/fi";
+import { FiLogOut, FiUsers, FiUser, FiX, FiSettings } from "react-icons/fi";
 import { MdBuild } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useUserStore, UserInfo } from "../../index";
 import { useConfiguracionEmpresaContext } from "../../contexts/ConfiguracionEmpresaContext";
 import { Overlay, CloseButton, MenuLayout, ColLogo, LogoHambur, MenuLinks, SalirButton, MenuOption, Backdrop } from "../../styles/MenuHamburStyles";
 
-export function MenuHambur({ user, onLogout, open, setOpen }) {
+/**
+ * MenuHambur
+ * Overlay que muestra el logo, información del usuario y enlaces de navegación.
+ */
+export function MenuHambur({ user, open, setOpen }) {
   const navigate = useNavigate();
   const { rol } = user || {};
   const logout = useUserStore((state) => state.logout);

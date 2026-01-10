@@ -1,16 +1,11 @@
-import React from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FiPlusCircle, FiList, FiTool } from "react-icons/fi";
-import {
-  Opciones,
-  WrapperPage,
-  BotonMenu,
-  InfoCard,
-  TituloPage,
-  IconBtn,
-} from "../index";
+import { WrapperPage, InfoCard, TituloPage, IconBtn } from "../index";
 
+/**
+ * Reparaciones
+ * Página con accesos para ver y añadir reparaciones.
+ */
 export function Reparaciones() {
   const navigate = useNavigate();
 

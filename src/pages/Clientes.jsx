@@ -1,9 +1,12 @@
-import React from "react";
-import styled from "styled-components";
 import { FiUsers, FiUserPlus, } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { Opciones, WrapperPage, BotonMenu, InfoCard, TituloPage, IconBtn } from "../index";
+import { WrapperPage, InfoCard, TituloPage, IconBtn } from "../index";
 
+/**
+ * Clientes
+ * Página de administración de clientes: muestra accesos rápidos
+ * para ver y añadir clientes.
+ */
 export function Clientes({ user }) {
   const navigate = useNavigate();
 

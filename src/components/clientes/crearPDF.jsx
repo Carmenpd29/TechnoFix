@@ -66,25 +66,25 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
   const clientBoxHeight = 120;
   
   // Dibujar caja de datos del cliente
-  pdf.setDrawColor(165, 196, 202); // Color del borde (azul claro)
+  pdf.setDrawColor(165, 196, 202); 
   pdf.setLineWidth(1);
   pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight);
   
   // Fondo suave para la caja
-  pdf.setFillColor(245, 250, 252); // Azul muy claro
+  pdf.setFillColor(245, 250, 252); 
   pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight, 'F');
-  pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight); // Borde encima del relleno
+  pdf.rect(clientBoxX, y, clientBoxWidth, clientBoxHeight); 
   
   // Título de datos del cliente
   pdf.setFontSize(12);
   pdf.setFont("helvetica", "bold");
-  pdf.setTextColor(0, 52, 89); // Azul oscuro
+  pdf.setTextColor(0, 52, 89); 
   pdf.text("Datos del Cliente", clientBoxX + 10, y + 15);
   
   // Contenido de datos del cliente
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(10);
-  pdf.setTextColor(60, 60, 60); // Gris oscuro
+  pdf.setTextColor(60, 60, 60); 
   pdf.text(`Nombre: ${cliente?.nombre || ""} ${cliente?.apellidos || ""}`, clientBoxX + 10, y + 30);
   pdf.text(`NIF: ${cliente?.nif || ""}`, clientBoxX + 10, y + 45);
   pdf.text(`Teléfono: ${cliente?.telefono || ""}`, clientBoxX + 10, y + 60);
@@ -228,11 +228,11 @@ export async function crearPDF(cliente, reparaciones, ventas = []) {
     pdf.setPage(i);
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const footerY = pageHeight - 40; // 40pt desde el final de la página
+    const footerY = pageHeight - 40;
 
     pdf.setFontSize(9);
     pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(100, 100, 100); // Gris para el footer
+    pdf.setTextColor(100, 100, 100); 
     pdf.text(configuracion.mensaje_footer || "TechnoFix - Sistema de Gestión", marginLeft, footerY);
 
     const pageStr = `Página ${i} / ${pageCount}`;

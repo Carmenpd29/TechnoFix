@@ -4,6 +4,10 @@ import { supabase, Footer, TituloPage } from "../index";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { LoginWrapper, RegistroCaja, Input, Entrar, ErrorMsg, RegMsg, FondoDegradado, PasswordWrapper, EyeButton } from "../styles/RegistroStyles";
 
+/**
+ * Register
+ * Página de registro de nuevos usuarios. Registra en Supabase Auth y crea/actualiza el registro en la tabla `usuarios`.
+ */
 export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

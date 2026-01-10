@@ -1,8 +1,11 @@
-import { ZonaReparaciones } from "../../styles/ZonaReparacionesStyles";
 import { Fechas, Datos } from "../../styles/FormReparacionesStyles";
 import { IconBtn } from "../../index";
 import { FiSave } from "react-icons/fi";
 
+/**
+ * FormReparaciones
+ * Formulario principal para crear/editar una reparación.
+ */
 export function FormReparaciones({
   cliente,
   tecnicos,

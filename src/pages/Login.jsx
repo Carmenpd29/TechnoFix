@@ -5,6 +5,12 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { LoginWrapper, LoginCaja, Subtitulo, Input, PasswordWrapper, EyeButton, Entrar, ErrorMsg, BarraSeparadora, FondoDegradado, LogoImg } from "../styles/LoginStyles";
 import { useConfiguracionEmpresaContext } from "../contexts/ConfiguracionEmpresaContext";
 
+/**
+ * Login
+ * Componente de inicio de sesión. Gestiona autenticación con Supabase
+ * y realiza la validación del usuario en la tabla `usuarios`.
+ * @param {{onLogin: function}} props - Callback `onLogin` con datos del usuario.
+ */
 export function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

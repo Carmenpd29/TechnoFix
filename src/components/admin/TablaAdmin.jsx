@@ -1,6 +1,10 @@
 import { Tabla, TablaContainer } from "../../styles/TablaStyles";
 import { IconBtnTabla, ColRol, ColAcciones, ColNombre, ColEstado } from "../../styles/TablaAdminStyles";
 
+/**
+ * TablaAdmin
+ * Componente: tabla reutilizable para listados administrativos.
+ */
 export function TablaAdmin({
   columns = [],
   data = [],
@@ -16,6 +20,7 @@ export function TablaAdmin({
       <Tabla>
         <thead>
           <tr>
+            {/* Las cabeceras se generan desde `columns`. Si se pasan onEdit/onDelete se añade 'Acciones'. */}
             {columns.map((col) => (
               <th key={col.key}>{col.label}</th>
             ))}
@@ -25,6 +30,7 @@ export function TablaAdmin({
         <tbody>
           {loading && (
             <tr>
+              {/* Si `onEdit` y `onDelete` no están presentes, ese +1 provocará un colspan mayor al necesario. */}
               <td colSpan={columns.length + 1} style={{ textAlign: "center" }}>
                 Cargando...
               </td>
@@ -38,10 +44,12 @@ export function TablaAdmin({
             </tr>
           )}
           {data.map((row) => {
+            // `confirmed` comprueba dos posibles campos que la API puede devolver
             const confirmed = !!(row.email_confirmed || row.email_confirmed_at);
             return (
               <tr key={row.id}>
                 {columns.map((col) => {
+                  // Renderizados especiales según la clave de la columna
                   if (col.key === "nombre") return <ColNombre key={col.key}>{row[col.key]}</ColNombre>;
                   if (col.key === "rol") return <ColRol key={col.key}>{row[col.key]}</ColRol>;
                   if (col.key === "email_confirmed" || col.key === "email_confirmed_at") {
@@ -69,7 +77,7 @@ export function TablaAdmin({
                 })}
                 {(onEdit || onDelete) && (
                   <ColAcciones>
-                    {/* Ocultar acciones para admin */}
+                    {/* Regla de negocio: no permitir acciones sobre usuarios con rol 'admin'. */}
                     {row.rol !== "admin" && (
                       <>
                         {onEdit && IconEdit && (

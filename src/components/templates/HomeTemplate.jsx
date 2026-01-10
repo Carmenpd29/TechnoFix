@@ -3,6 +3,10 @@ import { useConfiguracionEmpresaContext } from "../../contexts/ConfiguracionEmpr
 import { InfoCard } from "../../index";
 import { FiHome } from "react-icons/fi";
 
+/**
+ * HomeTemplate
+ * Página de bienvenida principal que muestra el logo y un resumen de secciones.
+ */
 export function HomeTemplate() {
   const { configuracion } = useConfiguracionEmpresaContext();
   return (
